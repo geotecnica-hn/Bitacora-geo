@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Flota — Geotécnica</title>
+<title>Dashboard Flota ‚Äî Geot√©cnica</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -73,7 +73,7 @@
   .badge-med { background: rgba(245,158,11,0.15); color: #fcd34d; border: 1px solid #f59e0b; }
   .badge-low { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid #ef4444; }
 
-  /* ── Checklist por equipo ── */
+  /* ‚îÄ‚îÄ Checklist por equipo ‚îÄ‚îÄ */
   .equipo-check-card { background: #0f172a; border: 1px solid #1e293b; border-radius: 12px; margin-bottom: 16px; overflow: hidden; }
   .equipo-check-header { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid #1e293b; cursor: pointer; transition: background 0.2s; }
   .equipo-check-header:hover { background: rgba(255,255,255,0.02); }
@@ -110,22 +110,22 @@
 
 <div class="header">
   <div class="header-left">
-    <div class="header-icon"><img src="logo.png" alt="Geotécnica"></div>
+    <div class="header-icon"><img src="logo.png" alt="Geot√©cnica"></div>
     <div class="header-title">
       <h1>Dashboard de Flota</h1>
-      <p>Geotécnica Soluciones — Tegucigalpa, HN</p>
+      <p>Geot√©cnica Soluciones ‚Äî Tegucigalpa, HN</p>
     </div>
   </div>
   <div class="header-right">
     <div>
-      <div class="semana-badge" id="semana-badge">📅 Cargando...</div>
+      <div class="semana-badge" id="semana-badge">üìÖ Cargando...</div>
       <div class="last-update" id="last-update"></div>
     </div>
     <div class="live-dot">En vivo</div>
   </div>
 </div>
 
-<!-- ══ FILTROS ══ -->
+<!-- ‚ïê‚ïê FILTROS ‚ïê‚ïê -->
 <div class="filters">
   <div class="filter-group">
     <label>Semana</label>
@@ -143,36 +143,36 @@
       <option value="PER">Perforadora</option>
       <option value="COM">Compresor</option>
       <option value="EXC">Excavadora</option>
-      <option value="GRU">Grúa</option>
+      <option value="GRU">Gr√∫a</option>
       <option value="MIN">Minicargador</option>
       <option value="GEN">Generador</option>
-      <option value="INY">Planta Inyección</option>
+      <option value="INY">Planta Inyecci√≥n</option>
       <option value="OTR">Otro</option>
     </select>
   </div>
   <div class="filter-group">
     <label>&nbsp;</label>
-    <button class="btn-refresh" id="btnRefresh" onclick="loadData()"><span id="refresh-icon">⟳</span> Actualizar</button>
+    <button class="btn-refresh" id="btnRefresh" onclick="loadData()"><span id="refresh-icon">‚ü≥</span> Actualizar</button>
   </div>
 </div>
 
-<!-- ══ KPIs ══ -->
+<!-- ‚ïê‚ïê KPIs ‚ïê‚ïê -->
 <div class="kpi-grid" id="kpi-grid"></div>
 
-<!-- ══ RANKING + GRÁFICO (PIL) ══ -->
+<!-- ‚ïê‚ïê RANKING + GR√ÅFICO (PIL) ‚ïê‚ïê -->
 <div class="grid-2" id="sec-ranking">
   <div class="card" style="margin-bottom:0">
-    <div class="card-title"><span class="dot" style="background:#f59e0b"></span> <span id="ranking-title">Ranking ML/Hr por Máquina</span></div>
+    <div class="card-title"><span class="dot" style="background:#f59e0b"></span> <span id="ranking-title">Ranking ML/Hr por M√°quina</span></div>
     <div id="ranking-container"><div class="empty">Cargando datos...</div></div>
   </div>
   <div class="card" style="margin-bottom:0">
-    <div class="card-title"><span class="dot" style="background:#3b82f6"></span> <span id="chart1-title">ML/Hr por Máquina</span></div>
+    <div class="card-title"><span class="dot" style="background:#3b82f6"></span> <span id="chart1-title">ML/Hr por M√°quina</span></div>
     <div class="chart-wrap"><canvas id="chart1Canvas"></canvas></div>
     <div class="note" id="note-chart1"></div>
   </div>
 </div>
 
-<!-- ══ HORAS + PRODUCCIÓN ══ -->
+<!-- ‚ïê‚ïê HORAS + PRODUCCI√ìN ‚ïê‚ïê -->
 <div style="height:20px"></div>
 <div class="grid-2">
   <div class="card" style="margin-bottom:0">
@@ -186,10 +186,10 @@
   </div>
 </div>
 
-<!-- ══ TABLA DETALLE ══ -->
+<!-- ‚ïê‚ïê TABLA DETALLE ‚ïê‚ïê -->
 <div style="height:20px"></div>
 <div class="card">
-  <div class="card-title"><span class="dot" style="background:#ea580c"></span> Detalle de Bitácoras</div>
+  <div class="card-title"><span class="dot" style="background:#ea580c"></span> Detalle de Bit√°coras</div>
   <div class="table-wrap">
     <table>
       <thead id="tabla-head"></thead>
@@ -198,12 +198,12 @@
   </div>
 </div>
 
-<!-- ══ CHECKLIST POR EQUIPO ══ -->
+<!-- ‚ïê‚ïê CHECKLIST POR EQUIPO ‚ïê‚ïê -->
 <div class="card">
   <div class="card-title"><span class="dot" style="background:#ef4444"></span> Checklist por Equipo</div>
   <div id="check-equipo-grid"><div class="empty">Cargando...</div></div>
   <div class="note" style="margin-top:14px">
-    <b style="color:#4ade80">●</b> Bueno &nbsp;|&nbsp; <b style="color:#fcd34d">●</b> Intermedio &nbsp;|&nbsp; <b style="color:#f87171">●</b> Malo — requiere atención &nbsp;|&nbsp; <span style="color:#475569">—</span> No aplica
+    <b style="color:#4ade80">‚óè</b> Bueno &nbsp;|&nbsp; <b style="color:#fcd34d">‚óè</b> Intermedio &nbsp;|&nbsp; <b style="color:#f87171">‚óè</b> Malo ‚Äî requiere atenci√≥n &nbsp;|&nbsp; <span style="color:#475569">‚Äî</span> No aplica
   </div>
 </div>
 
@@ -211,46 +211,46 @@
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxYxKG8sxlRGQJrbZxGVeXhpu8YRrbgeHPYuqM_4FLtUOy5Ng2Hffts7hTm5B7iFmYi/exec';
 const REFRESH_INTERVAL = 60000;
 
-// Mapeo equipo → tipo (se llena dinámicamente)
+// Mapeo equipo ‚Üí tipo (se llena din√°micamente)
 let EQUIPO_TIPO_MAP = {};
 
 const CHECKLIST_COLS = [
-  // ═══ Niveles ═══
+  // ‚ïê‚ïê‚ïê Niveles ‚ïê‚ïê‚ïê
   { id: 'A_Combustible',             label: 'Combustible',             mode: 'fuel' },
   { id: 'A_Aceite_Motor',            label: 'Aceite motor',            mode: 'bim' },
-  { id: 'A_Aceite_Hidraulico',       label: 'Aceite hidráulico',       mode: 'bim' },
+  { id: 'A_Aceite_Hidraulico',       label: 'Aceite hidr√°ulico',       mode: 'bim' },
   { id: 'A_Reservorio_Compresores',  label: 'Reservorio compresor',    mode: 'bim' },
   { id: 'A_Aceite_Bombas_MR',        label: 'Aceite bombas MR',        mode: 'bim' },
   { id: 'A_Coolant_Agua',            label: 'Coolant/agua',            mode: 'bim' },
-  { id: 'A_Aceite_Mesa_Rotacion',    label: 'Aceite mesa rotación',    mode: 'bim' },
-  // ═══ Filtros ═══
+  { id: 'A_Aceite_Mesa_Rotacion',    label: 'Aceite mesa rotaci√≥n',    mode: 'bim' },
+  // ‚ïê‚ïê‚ïê Filtros ‚ïê‚ïê‚ïê
   { id: 'A_Filtro_Sep_Combustible',  label: 'Filtro sep. combustible', mode: 'bim' },
   { id: 'A_Filtro_Aire_Motor',       label: 'Filtro aire motor',       mode: 'bim' },
   { id: 'A_Filtro_Aire_Compresor',   label: 'Filtro aire compresor',   mode: 'bim' },
-  { id: 'A_Baterias',                label: 'Baterías',                mode: 'bim' },
-  // ═══ Fugas ═══
+  { id: 'A_Baterias',                label: 'Bater√≠as',                mode: 'bim' },
+  // ‚ïê‚ïê‚ïê Fugas ‚ïê‚ïê‚ïê
   { id: 'A_Fugas_Aceite_Motor',      label: 'Fugas aceite motor',      mode: 'sino' },
   { id: 'A_Fugas_Mangueras',         label: 'Fugas mangueras',         mode: 'sino' },
-  // ═══ Mantenimiento ═══
+  // ‚ïê‚ïê‚ïê Mantenimiento ‚ïê‚ïê‚ïê
   { id: 'A_Limpieza_General',        label: 'Limpieza general',        mode: 'sino_inv' },
   { id: 'A_Cables_Acero_Ganchos',    label: 'Cables y ganchos',        mode: 'bim' },
-  { id: 'A_Ruidos_Extraños',         label: 'Ruidos extraños',         mode: 'sino' },
+  { id: 'A_Ruidos_Extra√±os',         label: 'Ruidos extra√±os',         mode: 'sino' },
   { id: 'A_Engrase',                 label: 'Engrase',                 mode: 'sino_inv' },
-  // ═══ Específicos ═══
+  // ‚ïê‚ïê‚ïê Espec√≠ficos ‚ïê‚ïê‚ïê
   { id: 'A_Estado_Orugas',           label: 'Orugas / tren de rodaje', mode: 'bim' },
-  { id: 'A_Estado_Cucharon',         label: 'Cucharón',                mode: 'bim' },
+  { id: 'A_Estado_Cucharon',         label: 'Cuchar√≥n',                mode: 'bim' },
   { id: 'A_Pines_Bocinas',           label: 'Pines y bocinas',         mode: 'bim' },
   { id: 'A_Cables_Gancho_Grua',      label: 'Cables, gancho y seguro', mode: 'bim' },
   { id: 'A_Estabilizadores',         label: 'Estabilizadores',         mode: 'bim' },
   { id: 'A_Estado_Bucket_MIN',       label: 'Bucket / accesorio',      mode: 'bim' },
-  { id: 'A_Neumaticos',              label: 'Neumáticos / cadenas',    mode: 'bim' },
-  // ═══ Generador ═══
+  { id: 'A_Neumaticos',              label: 'Neum√°ticos / cadenas',    mode: 'bim' },
+  // ‚ïê‚ïê‚ïê Generador ‚ïê‚ïê‚ïê
   { id: 'A_Voltaje_Salida',          label: 'Voltaje de salida',       mode: 'sino_inv' },
-  { id: 'A_Conexiones_Cables',       label: 'Conexiones eléctricas',   mode: 'bim' },
+  { id: 'A_Conexiones_Cables',       label: 'Conexiones el√©ctricas',   mode: 'bim' },
   { id: 'A_Tablero_Control',         label: 'Tablero de control',      mode: 'sino_inv' },
-  // ═══ Variante B (INY) ═══
-  { id: 'B_Aceite_Hidraulico',       label: 'B - Aceite hidráulico',   mode: 'bim' },
-  { id: 'B_Fuga_Hidraulico',         label: 'B - Fuga hidráulico',     mode: 'sino' },
+  // ‚ïê‚ïê‚ïê Variante B (INY) ‚ïê‚ïê‚ïê
+  { id: 'B_Aceite_Hidraulico',       label: 'B - Aceite hidr√°ulico',   mode: 'bim' },
+  { id: 'B_Fuga_Hidraulico',         label: 'B - Fuga hidr√°ulico',     mode: 'sino' },
   { id: 'B_Fuga_Lechada',            label: 'B - Fuga lechada',        mode: 'sino' },
   { id: 'B_Limpieza_Bomba',          label: 'B - Limpieza bomba',      mode: 'sino_inv' },
   { id: 'B_Limpieza_Agitador',       label: 'B - Limpieza agitador',   mode: 'sino_inv' },
@@ -259,16 +259,16 @@ const CHECKLIST_COLS = [
   { id: 'B_Estado_Motor_Turbo',      label: 'B - Motor turbo',         mode: 'bim' },
   { id: 'B_Estado_Motor_Bomba',      label: 'B - Motor bomba',         mode: 'bim' },
   { id: 'B_Estado_Cuenta_Litros',    label: 'B - Cuenta litros',       mode: 'bim' },
-  { id: 'B_Estado_Panel_Electrico',  label: 'B - Panel eléctrico',     mode: 'bim' },
+  { id: 'B_Estado_Panel_Electrico',  label: 'B - Panel el√©ctrico',     mode: 'bim' },
 ];
 
-// Normaliza cualquier valor de checklist a B/I/M según su tipo
+// Normaliza cualquier valor de checklist a B/I/M seg√∫n su tipo
 function normalizeBIM(rawVal, mode) {
   if (!rawVal) return '';
   const v = rawVal.toString().toUpperCase().trim();
   // BIM items ya vienen como B/I/M
   if (mode === 'bim') return v;  // B, I, M
-  // Fuel: mapear nivel → B/I/M
+  // Fuel: mapear nivel ‚Üí B/I/M
   if (mode === 'fuel') {
     if (v === 'FULL' || v === '3/4') return 'B';
     if (v === '1/2') return 'I';
@@ -301,7 +301,7 @@ let chart1 = null, chartHoras = null, chartProd = null;
 
 document.addEventListener('DOMContentLoaded', () => { loadData(); setInterval(loadData, REFRESH_INTERVAL); });
 
-// ── Al escoger equipo → auto-selecciona tipo ──
+// ‚îÄ‚îÄ Al escoger equipo ‚Üí auto-selecciona tipo ‚îÄ‚îÄ
 function onEquipoChange() {
   const equipo = document.getElementById('fil-equipo').value;
   if (equipo && EQUIPO_TIPO_MAP[equipo]) {
@@ -312,7 +312,7 @@ function onEquipoChange() {
   applyFilters();
 }
 
-// ── Determinar el tipo activo del filtro ──
+// ‚îÄ‚îÄ Determinar el tipo activo del filtro ‚îÄ‚îÄ
 function getActiveTipo() {
   const tipo = document.getElementById('fil-tipo').value;
   if (tipo) return tipo;
@@ -337,12 +337,12 @@ async function loadData() {
       document.getElementById('last-update').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-HN');
     }
   } catch (e) {
-    document.getElementById('last-update').textContent = 'Sin conexión — mostrando últimos datos';
-  } finally { btn.classList.remove('loading'); icon.textContent = '⟳'; }
+    document.getElementById('last-update').textContent = 'Sin conexi√≥n ‚Äî mostrando √∫ltimos datos';
+  } finally { btn.classList.remove('loading'); icon.textContent = '‚ü≥'; }
 }
 
 function buildEquipoTipoMap() {
-  // Ordenar por fecha ascendente para que la última entrada (más reciente) sobrescriba al tipo
+  // Ordenar por fecha ascendente para que la √∫ltima entrada (m√°s reciente) sobrescriba al tipo
   const sorted = [...ALL_DATA].sort((a,b) => {
     const fa = new Date(a.Fecha || a.Timestamp || 0).getTime();
     const fb = new Date(b.Fecha || b.Timestamp || 0).getTime();
@@ -372,7 +372,7 @@ function applyFilters() {
     (!equipo || r.Nombre_Equipo === equipo) &&
     (!tipo   || r.Tipo_Equipo   === tipo)
   );
-  document.getElementById('semana-badge').textContent = `📅 Semana ${semana || 'Todas'}`;
+  document.getElementById('semana-badge').textContent = `üìÖ Semana ${semana || 'Todas'}`;
 
   const activeTipo = getActiveTipo();
   renderKPIs(activeTipo);
@@ -382,9 +382,9 @@ function applyFilters() {
   renderChecklist();
 }
 
-// ══════════════════════════════════════════════════════════
-//  KPIs — adaptativos por tipo
-// ══════════════════════════════════════════════════════════
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+//  KPIs ‚Äî adaptativos por tipo
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 function renderKPIs(tipo) {
   const total   = FILTERED.length;
   const horas   = FILTERED.reduce((s,r) => s + (parseFloat(r.Horas_Dia)||0), 0);
@@ -399,26 +399,26 @@ function renderKPIs(tipo) {
   const malos   = FILTERED.reduce((s,r) => s + CHECKLIST_COLS.filter(c => normalizeBIM(r[c.id], c.mode) === 'M').length, 0);
 
   let kpis = `
-    <div class="kpi"><div class="kpi-label">Bitácoras</div><div class="kpi-val kpi-white">${total}</div><div class="kpi-sub">registros enviados</div></div>
+    <div class="kpi"><div class="kpi-label">Bit√°coras</div><div class="kpi-val kpi-white">${total}</div><div class="kpi-sub">registros enviados</div></div>
     <div class="kpi"><div class="kpi-label">Horas totales</div><div class="kpi-val kpi-blue">${horas.toFixed(1)}</div><div class="kpi-sub">horas acumuladas</div></div>`;
 
   if (esTipoPerfora(tipo) || tipo === '') {
     kpis += `<div class="kpi"><div class="kpi-label">ML perforados</div><div class="kpi-val kpi-green">${ml.toFixed(1)}</div><div class="kpi-sub">metros lineales (PIL)</div></div>`;
-    kpis += `<div class="kpi"><div class="kpi-label">ML / Hr promedio</div><div class="kpi-val kpi-amber">${mlhr > 0 ? mlhr.toFixed(2) : '—'}</div><div class="kpi-sub">solo PIL/PER</div></div>`;
+    kpis += `<div class="kpi"><div class="kpi-label">ML / Hr promedio</div><div class="kpi-val kpi-amber">${mlhr > 0 ? mlhr.toFixed(2) : '‚Äî'}</div><div class="kpi-sub">solo PIL/PER</div></div>`;
   }
   if (tipo === 'INY') {
     kpis += `<div class="kpi"><div class="kpi-label">Bolsas de concreto</div><div class="kpi-val kpi-green">${bolsas}</div><div class="kpi-sub">bolsas totales</div></div>`;
   }
 
-  kpis += `<div class="kpi"><div class="kpi-label">Equipos activos</div><div class="kpi-val kpi-white">${equipos}</div><div class="kpi-sub">con bitácora</div></div>`;
-  kpis += `<div class="kpi"><div class="kpi-label">Ítems en MALO</div><div class="kpi-val kpi-red">${malos}</div><div class="kpi-sub">requieren atención</div></div>`;
+  kpis += `<div class="kpi"><div class="kpi-label">Equipos activos</div><div class="kpi-val kpi-white">${equipos}</div><div class="kpi-sub">con bit√°cora</div></div>`;
+  kpis += `<div class="kpi"><div class="kpi-label">√çtems en MALO</div><div class="kpi-val kpi-red">${malos}</div><div class="kpi-sub">requieren atenci√≥n</div></div>`;
 
   document.getElementById('kpi-grid').innerHTML = kpis;
 }
 
-// ══════════════════════════════════════════════════════════
-//  RANKING — solo PIL muestra ML/Hr, otros muestran Horas
-// ══════════════════════════════════════════════════════════
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+//  RANKING ‚Äî solo PIL muestra ML/Hr, otros muestran Horas
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 function renderRanking(tipo) {
   const secRanking = document.getElementById('sec-ranking');
   const container  = document.getElementById('ranking-container');
@@ -427,8 +427,8 @@ function renderRanking(tipo) {
   const numCls = ['gold','silver','bronze','','','','',''];
 
   if (esTipoPerfora(tipo) || tipo === '') {
-    // Ranking por ML/Hr — SOLO piloteadoras
-    document.getElementById('ranking-title').textContent = 'Ranking ML/Hr por Máquina (PIL/PER)';
+    // Ranking por ML/Hr ‚Äî SOLO piloteadoras
+    document.getElementById('ranking-title').textContent = 'Ranking ML/Hr por M√°quina (PIL/PER)';
     const pilOnly = agruparPorEquipo(FILTERED.filter(r => esRowPerfora(r)));
     const rankData = Object.entries(pilOnly)
       .filter(([,d]) => d.ml > 0)
@@ -442,14 +442,14 @@ function renderRanking(tipo) {
         <div class="rank-num ${numCls[i]}">#${i+1}</div>
         <div class="rank-info">
           <div class="rank-machine">${esc(d.maq)}</div>
-          <div class="rank-operator">${esc(d.op)} · ${esc(d.proy)}</div>
+          <div class="rank-operator">${esc(d.op)} ¬∑ ${esc(d.proy)}</div>
           <div class="rank-details"><div class="rank-detail">Hrs: <span>${d.hrs.toFixed(1)}</span></div><div class="rank-detail">ML: <span>${d.ml.toFixed(1)}</span></div></div>
         </div>
         <div><div class="rank-val">${d.val.toFixed(2)}</div><div class="rank-unit">ML / hr</div></div>
       </div>`).join('') + '</div>';
   } else if (tipo === 'INY') {
     // Ranking por bolsas
-    document.getElementById('ranking-title').textContent = 'Ranking Bolsas por Máquina';
+    document.getElementById('ranking-title').textContent = 'Ranking Bolsas por M√°quina';
     const rankData = Object.entries(byMaq)
       .map(([maq,d]) => ({ maq, hrs:d.horas, val:d.bolsas, op:d.operador, proy:d.proyecto }))
       .sort((a,b) => b.val - a.val);
@@ -461,14 +461,14 @@ function renderRanking(tipo) {
         <div class="rank-num ${numCls[i]}">#${i+1}</div>
         <div class="rank-info">
           <div class="rank-machine">${esc(d.maq)}</div>
-          <div class="rank-operator">${esc(d.op)} · ${esc(d.proy)}</div>
+          <div class="rank-operator">${esc(d.op)} ¬∑ ${esc(d.proy)}</div>
           <div class="rank-details"><div class="rank-detail">Hrs: <span>${d.hrs.toFixed(1)}</span></div></div>
         </div>
         <div><div class="rank-val">${d.val}</div><div class="rank-unit">bolsas</div></div>
       </div>`).join('') + '</div>';
   } else {
-    // COM, EXC, GRU, OTR — ranking por horas
-    document.getElementById('ranking-title').textContent = 'Ranking Horas por Máquina';
+    // COM, EXC, GRU, OTR ‚Äî ranking por horas
+    document.getElementById('ranking-title').textContent = 'Ranking Horas por M√°quina';
     const rankData = Object.entries(byMaq)
       .map(([maq,d]) => ({ maq, hrs:d.horas, op:d.operador, proy:d.proyecto }))
       .sort((a,b) => b.hrs - a.hrs);
@@ -480,16 +480,16 @@ function renderRanking(tipo) {
         <div class="rank-num ${numCls[i]}">#${i+1}</div>
         <div class="rank-info">
           <div class="rank-machine">${esc(d.maq)}</div>
-          <div class="rank-operator">${esc(d.op)} · ${esc(d.proy)}</div>
+          <div class="rank-operator">${esc(d.op)} ¬∑ ${esc(d.proy)}</div>
         </div>
         <div><div class="rank-val">${d.hrs.toFixed(1)}</div><div class="rank-unit">horas</div></div>
       </div>`).join('') + '</div>';
   }
 }
 
-// ══════════════════════════════════════════════════════════
-//  CHARTS — adaptativos
-// ══════════════════════════════════════════════════════════
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+//  CHARTS ‚Äî adaptativos
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 function renderCharts(tipo) {
   const byMaq  = agruparPorEquipo(FILTERED);
   const labels = Object.keys(byMaq);
@@ -502,7 +502,7 @@ function renderCharts(tipo) {
     scales: { x:{ grid:{color:'#1e293b'}, ticks:{color:'#64748b',font:{size:10},maxRotation:35} }, y:{ grid:{color:'#1e293b'}, ticks:{color:'#64748b',font:{size:10}}, beginAtZero:true } }
   });
 
-  // ── Chart 1 (ranking chart) ──
+  // ‚îÄ‚îÄ Chart 1 (ranking chart) ‚îÄ‚îÄ
   if (chart1) chart1.destroy();
   const c1Title = document.getElementById('chart1-title');
   const c1Note  = document.getElementById('note-chart1');
@@ -516,7 +516,7 @@ function renderCharts(tipo) {
     const pilMLHr = pilLabels.map(l => pilMaq[l].horas>0 ? pilMaq[l].ml/pilMaq[l].horas : 0);
     const pilHrs  = pilLabels.map(l => pilMaq[l].horas);
     const avg  = pilMLHr.filter(v=>v>0).reduce((s,v,_,a)=>s+v/a.length,0);
-    c1Title.textContent = 'ML/Hr por Máquina (PIL/PER)';
+    c1Title.textContent = 'ML/Hr por M√°quina (PIL/PER)';
     chart1 = new Chart(document.getElementById('chart1Canvas'), {
       type:'bar', data:{ labels:pilLabels, datasets:[
         { label:'ML/Hr', data:pilMLHr, backgroundColor:COLORS, borderRadius:8, borderSkipped:false },
@@ -526,28 +526,28 @@ function renderCharts(tipo) {
     c1Note.innerHTML = pilLabels.length ? `<b>Promedio:</b> ${avg.toFixed(2)} ML/hr &nbsp;|&nbsp; <b>Total ML:</b> ${pilML.reduce((s,v)=>s+v,0).toFixed(1)} &nbsp;|&nbsp; <b>Total Hrs PIL:</b> ${pilHrs.reduce((s,v)=>s+v,0).toFixed(1)}` : '<span>Sin datos de piloteadoras</span>';
   } else if (tipo === 'INY') {
     const bolsas = labels.map(l => byMaq[l].bolsas);
-    c1Title.textContent = 'Bolsas de Concreto por Máquina';
+    c1Title.textContent = 'Bolsas de Concreto por M√°quina';
     chart1 = new Chart(document.getElementById('chart1Canvas'), {
       type:'bar', data:{ labels, datasets:[{ label:'Bolsas', data:bolsas, backgroundColor:COLORS, borderRadius:8, borderSkipped:false }] }, options: chartOpts('bolsas')
     });
     c1Note.innerHTML = labels.length ? `<b>Total bolsas:</b> ${bolsas.reduce((s,v)=>s+v,0)} &nbsp;|&nbsp; <b>Total Hrs:</b> ${horas.reduce((s,v)=>s+v,0).toFixed(1)}` : '';
   } else {
-    // COM, EXC, GRU, OTR — horas por día promedio
+    // COM, EXC, GRU, OTR ‚Äî horas por d√≠a promedio
     const avgH = labels.map(l => { const rows = FILTERED.filter(r=>r.Nombre_Equipo===l); return rows.length ? byMaq[l].horas/rows.length : 0; });
-    c1Title.textContent = 'Horas Promedio por Día';
+    c1Title.textContent = 'Horas Promedio por D√≠a';
     chart1 = new Chart(document.getElementById('chart1Canvas'), {
-      type:'bar', data:{ labels, datasets:[{ label:'Hrs/día', data:avgH, backgroundColor:COLORS, borderRadius:8, borderSkipped:false }] }, options: chartOpts('hrs/día')
+      type:'bar', data:{ labels, datasets:[{ label:'Hrs/d√≠a', data:avgH, backgroundColor:COLORS, borderRadius:8, borderSkipped:false }] }, options: chartOpts('hrs/d√≠a')
     });
     c1Note.innerHTML = labels.length ? `<b>Total Hrs:</b> ${horas.reduce((s,v)=>s+v,0).toFixed(1)} &nbsp;|&nbsp; <b>Registros:</b> ${FILTERED.length}` : '';
   }
 
-  // ── Chart Horas ──
+  // ‚îÄ‚îÄ Chart Horas ‚îÄ‚îÄ
   if (chartHoras) chartHoras.destroy();
   chartHoras = new Chart(document.getElementById('horasChart'), {
     type:'bar', data:{ labels, datasets:[{ label:'Horas', data:horas, backgroundColor:COLORS, borderRadius:8, borderSkipped:false }] }, options: chartOpts('hrs')
   });
 
-  // ── Chart Producción (adapta según tipo) ──
+  // ‚îÄ‚îÄ Chart Producci√≥n (adapta seg√∫n tipo) ‚îÄ‚îÄ
   if (chartProd) chartProd.destroy(); chartProd = null;
   const prodTitle = document.getElementById('prodChartTitle');
   const prodEmpty = document.getElementById('prod-empty');
@@ -577,14 +577,14 @@ function renderCharts(tipo) {
     } else { prodEmpty.textContent = 'Sin datos de bolsas'; prodEmpty.style.display = 'block'; }
     prodCard.classList.remove('sec-hidden');
   } else {
-    // COM, EXC, GRU, OTR — no hay producción extra
+    // COM, EXC, GRU, OTR ‚Äî no hay producci√≥n extra
     prodCard.classList.add('sec-hidden');
   }
 }
 
-// ══════════════════════════════════════════════════════════
-//  TABLA — columnas adaptan según tipo
-// ══════════════════════════════════════════════════════════
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+//  TABLA ‚Äî columnas adaptan seg√∫n tipo
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 function renderTabla(tipo) {
   const thead = document.getElementById('tabla-head');
   const tbody = document.getElementById('tabla-body');
@@ -592,7 +592,7 @@ function renderTabla(tipo) {
   // Columnas base
   let cols = [
     { key:'Fecha', label:'Fecha' },
-    { key:'Nombre_Equipo', label:'Máquina' },
+    { key:'Nombre_Equipo', label:'M√°quina' },
     { key:'Operador', label:'Operador' },
     { key:'Proyecto', label:'Proyecto' },
     { key:'Horas_Dia', label:'Hrs' },
@@ -618,33 +618,33 @@ function renderTabla(tipo) {
     const bolsas = parseInt(r.Bolsas_Concreto)||0;
 
     let cells = `
-      <td>${r.Fecha||'—'}</td>
+      <td>${r.Fecha||'‚Äî'}</td>
       <td class="machine-tag">${esc(r.Nombre_Equipo)}</td>
       <td>${esc(r.Operador)}</td>
       <td>${esc(r.Proyecto)}</td>
       <td>${hrs.toFixed(1)}</td>`;
 
     if (esTipoPerfora(tipo) || tipo === '') {
-      cells += `<td>${ml>0?ml.toFixed(1):'—'}</td>`;
-      cells += `<td class="val-highlight">${mlhr!==null?mlhr.toFixed(2):'—'}</td>`;
-      const badge = mlhr===null?'—' : mlhr>=4?`<span class="badge badge-high">Alto</span>` : mlhr>=2?`<span class="badge badge-med">Medio</span>` : `<span class="badge badge-low">Bajo</span>`;
+      cells += `<td>${ml>0?ml.toFixed(1):'‚Äî'}</td>`;
+      cells += `<td class="val-highlight">${mlhr!==null?mlhr.toFixed(2):'‚Äî'}</td>`;
+      const badge = mlhr===null?'‚Äî' : mlhr>=4?`<span class="badge badge-high">Alto</span>` : mlhr>=2?`<span class="badge badge-med">Medio</span>` : `<span class="badge badge-low">Bajo</span>`;
       cells += `<td>${badge}</td>`;
     }
     if (tipo === 'INY') {
-      cells += `<td class="val-highlight">${bolsas>0?bolsas:'—'}</td>`;
+      cells += `<td class="val-highlight">${bolsas>0?bolsas:'‚Äî'}</td>`;
     }
     return `<tr>${cells}</tr>`;
   }).join('');
 }
 
-// ══════════════════════════════════════════════════════════
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 //  CHECKLIST POR EQUIPO
-// ══════════════════════════════════════════════════════════
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 function renderChecklist() {
   const container = document.getElementById('check-equipo-grid');
   if (!FILTERED.length) { container.innerHTML = '<div class="empty">Sin datos de checklist</div>'; return; }
 
-  // Agrupar bitácoras por equipo (usar la más reciente por equipo)
+  // Agrupar bit√°coras por equipo (usar la m√°s reciente por equipo)
   const porEquipo = {};
   FILTERED.forEach(r => {
     const nombre = r.Nombre_Equipo || 'Sin nombre';
@@ -652,7 +652,7 @@ function renderChecklist() {
     porEquipo[nombre].push(r);
   });
 
-  // Determinar qué columnas aplican según tipo
+  // Determinar qu√© columnas aplican seg√∫n tipo
   const CL_A_IDS = CHECKLIST_COLS.filter(c => c.id.startsWith('A_')).map(c => c.id);
   const CL_B_IDS = CHECKLIST_COLS.filter(c => c.id.startsWith('B_')).map(c => c.id);
 
@@ -667,12 +667,12 @@ function renderChecklist() {
       ? CHECKLIST_COLS.filter(c => CL_B_IDS.includes(c.id) || c.id === 'A_Combustible')
       : CHECKLIST_COLS.filter(c => CL_A_IDS.includes(c.id));
 
-    // Última bitácora de este equipo
+    // √öltima bit√°cora de este equipo
     const ultima = rows[rows.length - 1];
-    const fecha = ultima.Fecha || '—';
-    const operador = ultima.Operador || '—';
+    const fecha = ultima.Fecha || '‚Äî';
+    const operador = ultima.Operador || '‚Äî';
 
-    // Contar B/I/M de la última bitácora
+    // Contar B/I/M de la √∫ltima bit√°cora
     let totalB=0, totalI=0, totalM=0;
     relevantCols.forEach(col => {
       const n = normalizeBIM(ultima[col.id], col.mode);
@@ -689,26 +689,26 @@ function renderChecklist() {
       <div class="equipo-check-header" onclick="toggleCheckEquipo(${idx})">
         <div class="equipo-check-name">
           ${esc(nombre)}
-          <span class="tipo-tag">${tipo||'—'}</span>
-          <span style="font-size:11px;color:#64748b;font-weight:400">${fecha} · ${esc(operador)}</span>
+          <span class="tipo-tag">${tipo||'‚Äî'}</span>
+          <span style="font-size:11px;color:#64748b;font-weight:400">${fecha} ¬∑ ${esc(operador)}</span>
         </div>
         <div class="equipo-check-summary">
-          <div class="sum-dot sum-b">● ${totalB}</div>
-          ${totalI > 0 ? `<div class="sum-dot sum-i">● ${totalI}</div>` : ''}
-          ${totalM > 0 ? `<div class="sum-dot sum-m">● ${totalM}</div>` : ''}
-          <span class="toggle-arrow" id="arrow-${idx}">▶</span>
+          <div class="sum-dot sum-b">‚óè ${totalB}</div>
+          ${totalI > 0 ? `<div class="sum-dot sum-i">‚óè ${totalI}</div>` : ''}
+          ${totalM > 0 ? `<div class="sum-dot sum-m">‚óè ${totalM}</div>` : ''}
+          <span class="toggle-arrow" id="arrow-${idx}">‚ñ∂</span>
         </div>
       </div>
       <div class="equipo-check-body" id="checkbody-${idx}">
-        ${itemsMalos.length > 0 ? `<div class="equipo-alert">⚠️ ${itemsMalos.length} ítem${itemsMalos.length>1?'es':''} en MALO: ${itemsMalos.map(c=>'<b>'+c.label+'</b>').join(', ')}</div>` : ''}
+        ${itemsMalos.length > 0 ? `<div class="equipo-alert">‚ö†Ô∏è ${itemsMalos.length} √≠tem${itemsMalos.length>1?'es':''} en MALO: ${itemsMalos.map(c=>'<b>'+c.label+'</b>').join(', ')}</div>` : ''}
         <table class="check-table" style="margin-top:10px">
-          <thead><tr><th style="width:50%">Ítem</th><th>Último resultado</th><th>Historial (${rows.length} reg.)</th></tr></thead>
+          <thead><tr><th style="width:50%">√çtem</th><th>√öltimo resultado</th><th>Historial (${rows.length} reg.)</th></tr></thead>
           <tbody>
             ${relevantCols.map(col => {
               const rawVal = ultima[col.id];
               const norm = normalizeBIM(rawVal, col.mode);
               const cssClass = norm==='B'?'cv-b' : norm==='I'?'cv-i' : norm==='M'?'cv-m' : 'cv-na';
-              const displayVal = rawVal || '—';
+              const displayVal = rawVal || '‚Äî';
               // Mini historial: contar B/I/M en todas las filas
               const allNorm = rows.map(r => normalizeBIM(r[col.id], col.mode)).filter(Boolean);
               const hB = allNorm.filter(v=>v==='B').length;
@@ -760,9 +760,9 @@ function toggleCheckEquipo(idx) {
   }
 }
 
-// ══════════════════════════════════════════════════════════
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 //  HELPERS
-// ══════════════════════════════════════════════════════════
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 function agruparPorEquipo(data) {
   const out = {};
   data.forEach(r => {
