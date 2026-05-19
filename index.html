@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#E65100">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Bit√°cora GEO">
-  <meta name="description" content="Check List Diario de Revisi√≥n de Equipos ‚Äî Geot√©cnica Soluciones">
-  <title>Bit√°cora Digital ‚Äî Geot√©cnica</title>
+  <meta name="apple-mobile-web-app-title" content="Bitácora GEO">
+  <meta name="description" content="Check List Diario de Revisión de Equipos — Geotécnica Soluciones">
+  <title>Bitácora Digital — Geotécnica</title>
   <link rel="manifest" id="pwa-manifest">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,7 +48,7 @@
       box-shadow: 0 0 0 3px rgba(245,124,0,0.15);
     }
 
-    /* ‚îÄ‚îÄ HEADER ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
+    /* ── HEADER ─────────────────────────────── */
     .app-header {
       background: var(--green);
       position: sticky; top: 0; z-index: 100;
@@ -72,7 +72,7 @@
     .header-text p  { font-size: 0.65rem; color: rgba(255,255,255,0.65); margin-top: 1px; letter-spacing: 0.02em; }
     .header-stripe { height: 3px; background: linear-gradient(90deg, #FF9800, #FFCC80 60%, transparent); opacity: 0.6; }
 
-    /* ‚îÄ‚îÄ STEP NAV ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
+    /* ── STEP NAV ────────────────────────────── */
     .step-nav {
       background: var(--green2); padding: 10px 16px 13px;
       display: flex; justify-content: space-between; align-items: center; gap: 4px;
@@ -99,7 +99,7 @@
 
     main { max-width: 600px; margin: 0 auto; padding: 18px 16px; }
 
-    /* ‚îÄ‚îÄ CARDS ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
+    /* ── CARDS ───────────────────────────────── */
     .card {
       background: var(--card-bg); border-radius: var(--radius);
       box-shadow: var(--shadow); margin-bottom: 14px;
@@ -116,7 +116,7 @@
     }
     .card-body { padding: 18px; }
 
-    /* ‚îÄ‚îÄ FIELDS ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
+    /* ── FIELDS ──────────────────────────────── */
     .field { margin-bottom: 16px; }
     .field:last-child { margin-bottom: 0; }
     label {
@@ -161,7 +161,7 @@
       transition: border-color 0.3s, background 0.3s;
     }
 
-    /* ‚îÄ‚îÄ TIPO GRID ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
+    /* ── TIPO GRID ───────────────────────────── */
     .tipo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .tipo-btn {
       aspect-ratio: 1; border-radius: var(--radius-sm);
@@ -180,7 +180,7 @@
     .tipo-label { font-size: 0.7rem; font-weight: 600; color: var(--text); line-height: 1.3; }
     .tipo-btn.selected .tipo-label { color: var(--green2); }
 
-    /* ‚îÄ‚îÄ PILLS ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
+    /* ── PILLS ───────────────────────────────── */
     .pill-group { display: flex; gap: 7px; }
     .pill {
       flex: 1; height: 46px; border-radius: var(--radius-sm);
@@ -198,7 +198,7 @@
     .pill[data-invert="true"][data-v="SI"].selected { background: #E8F5E9; border-color: #2E7D32; color: #1B5E20; box-shadow: inset 0 0 0 1px #2E7D32; }
     .pill[data-invert="true"][data-v="NO"].selected { background: #FFEBEE; border-color: var(--red2); color: var(--red); box-shadow: inset 0 0 0 1px var(--red2); }
 
-    /* ‚îÄ‚îÄ FUEL ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
+    /* ── FUEL ────────────────────────────────── */
     .fuel-group { display: flex; gap: 0; border: 1.5px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; background: var(--page-bg); }
     .fuel-btn {
       flex: 1; height: 46px; border: none; border-right: 1px solid var(--border);
@@ -209,7 +209,7 @@
     .fuel-btn:last-child { border-right: none; }
     .fuel-btn.selected { background: var(--green); color: #fff; }
 
-    /* ‚îÄ‚îÄ CHECKLIST ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
+    /* ── CHECKLIST ───────────────────────────── */
     .check-item {
       padding: 14px 0; border-bottom: 1px solid #EAEEED;
       transition: background var(--transition);
@@ -266,7 +266,7 @@
     }
     .check-sep::before, .check-sep::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-    /* ‚îÄ‚îÄ BUTTONS ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
+    /* ── BUTTONS ─────────────────────────────── */
     .nav-bar {
       display: flex; gap: 10px; margin-top: 20px;
       position: sticky; bottom: 0;
@@ -292,7 +292,7 @@
       font-size: 0.8rem; color: var(--amber); margin-bottom: 14px; font-weight: 500;
     }
 
-    /* ‚îÄ‚îÄ TOAST ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
+    /* ── TOAST ───────────────────────────────── */
     #toast {
       position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px);
       background: var(--text); color: #fff; padding: 13px 22px;
@@ -304,7 +304,7 @@
     #toast.show  { transform: translateX(-50%) translateY(0); }
     #toast.error { background: var(--red); }
 
-    /* ‚îÄ‚îÄ LOADING ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
+    /* ── LOADING ─────────────────────────────── */
     #loading {
       position: fixed; inset: 0; background: rgba(15,30,17,0.82);
       backdrop-filter: blur(4px);
@@ -323,7 +323,7 @@
     .step.active { display: block; }
     .hidden { display: none !important; }
 
-    /* ‚îÄ‚îÄ RECEIPT MODAL ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
+    /* ── RECEIPT MODAL ──────────────────────── */
     #receiptModal {
       position: fixed; inset: 0; background: rgba(15,30,17,0.82);
       backdrop-filter: blur(4px); display: none;
@@ -370,7 +370,7 @@
       border-bottom: 1.5px solid var(--green-bg);
     }
 
-    /* ‚îÄ‚îÄ SUBMIT CARD ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ */
+    /* ── SUBMIT CARD ─────────────────────────── */
     #step-5 .card:last-of-type { background: var(--green-light); }
   </style>
 </head>
@@ -380,8 +380,8 @@
   <div class="header-inner">
     <div class="logo-circle">G</div>
     <div class="header-text">
-      <h1>Bit√°cora Digital de Flota</h1>
-      <p>Geot√©cnica Soluciones ¬∑ Tegucigalpa, HN</p>
+      <h1>Bitácora Digital de Flota</h1>
+      <p>Geotécnica Soluciones · Tegucigalpa, HN</p>
     </div>
   </div>
   <div class="header-stripe"></div>
@@ -395,7 +395,7 @@
   <!-- PASO 1 -->
   <section class="step" id="step-1">
     <div class="card">
-      <div class="card-header"><h2>üîß Tipo de Equipo</h2></div>
+      <div class="card-header"><h2>🔧 Tipo de Equipo</h2></div>
       <div class="card-body">
         <div class="field">
           <label>Selecciona el tipo de equipo <span class="req">*</span></label>
@@ -403,19 +403,19 @@
         </div>
         <div class="field" id="equipoField" style="display:none">
           <label for="sel_equipo">Nombre del equipo <span class="req">*</span></label>
-          <select id="sel_equipo" onchange="onEquipoSelect()"><option value="">‚Äî Seleccionar equipo ‚Äî</option></select>
+          <select id="sel_equipo" onchange="onEquipoSelect()"><option value="">— Seleccionar equipo —</option></select>
         </div>
       </div>
     </div>
     <div class="nav-bar">
-      <button class="btn btn-primary" onclick="goNext()">Siguiente ‚Üí</button>
+      <button class="btn btn-primary" onclick="goNext()">Siguiente →</button>
     </div>
   </section>
 
   <!-- PASO 2 -->
   <section class="step" id="step-2">
     <div class="card">
-      <div class="card-header"><h2>üìã Datos Generales</h2></div>
+      <div class="card-header"><h2>📋 Datos Generales</h2></div>
       <div class="card-body">
         <div class="field">
           <label for="f_operador">Operador <span class="req">*</span></label>
@@ -427,8 +427,8 @@
             <input type="date" id="f_fecha">
           </div>
           <div class="field">
-            <label>D√≠a de la semana</label>
-            <div class="readonly-field" id="f_dia">‚Äî</div>
+            <label>Día de la semana</label>
+            <div class="readonly-field" id="f_dia">—</div>
           </div>
         </div>
         <div class="field">
@@ -438,8 +438,8 @@
       </div>
     </div>
     <div class="nav-bar">
-      <button class="btn btn-outline" onclick="goPrev()">‚Üê Anterior</button>
-      <button class="btn btn-primary" onclick="goNext()">Siguiente ‚Üí</button>
+      <button class="btn btn-outline" onclick="goPrev()">← Anterior</button>
+      <button class="btn btn-primary" onclick="goNext()">Siguiente →</button>
     </div>
   </section>
 
@@ -448,15 +448,15 @@
 
     <!-- Variante A -->
     <div class="card" id="prod-a">
-      <div class="card-header"><h2>‚öôÔ∏è Producci√≥n</h2></div>
+      <div class="card-header"><h2>⚙️ Producción</h2></div>
       <div class="card-body">
         <div class="field-row">
           <div class="field">
-            <label for="f_horo_ini">Hor√≥metro inicial <span class="calc-badge">AUTO</span> <span class="req">*</span></label>
+            <label for="f_horo_ini">Horómetro inicial <span class="calc-badge">AUTO</span> <span class="req">*</span></label>
             <input type="number" id="f_horo_ini" step="0.1" min="0" placeholder="0.0" oninput="calcHoras()">
           </div>
           <div class="field">
-            <label for="f_horo_fin">Hor√≥metro final <span class="req">*</span></label>
+            <label for="f_horo_fin">Horómetro final <span class="req">*</span></label>
             <input type="number" id="f_horo_fin" step="0.1" min="0" placeholder="0.0" oninput="calcHoras()">
           </div>
         </div>
@@ -473,7 +473,7 @@
 
     <!-- Variante B -->
     <div class="card hidden" id="prod-b">
-      <div class="card-header"><h2>‚öôÔ∏è Producci√≥n</h2></div>
+      <div class="card-header"><h2>⚙️ Producción</h2></div>
       <div class="card-body">
         <div class="field">
           <label for="f_horas_dia_b_input">Total de horas <span style="font-size:0.75rem;color:#888">(opcional)</span></label>
@@ -487,18 +487,18 @@
     </div>
 
     <div class="nav-bar">
-      <button class="btn btn-outline" onclick="goPrev()">‚Üê Anterior</button>
-      <button class="btn btn-primary" onclick="goNext()">Siguiente ‚Üí</button>
+      <button class="btn btn-outline" onclick="goPrev()">← Anterior</button>
+      <button class="btn btn-primary" onclick="goNext()">Siguiente →</button>
     </div>
   </section>
 
   <!-- PASO 4 -->
   <section class="step" id="step-4">
     <div class="card">
-      <div class="card-header"><h2>üîç Revisiones Diarias</h2></div>
+      <div class="card-header"><h2>🔍 Revisiones Diarias</h2></div>
       <div class="card-body">
         <div class="bim-legend">
-          <div class="bim-legend-title">Gu√≠a de calificaci√≥n</div>
+          <div class="bim-legend-title">Guía de calificación</div>
           <div class="bim-legend-item"><span class="bim-legend-badge b">B</span> Bueno</div>
           <div class="bim-legend-item"><span class="bim-legend-badge i">I</span> Intermedio</div>
           <div class="bim-legend-item"><span class="bim-legend-badge m">M</span> Malo</div>
@@ -507,24 +507,24 @@
       </div>
     </div>
     <div class="card">
-      <div class="card-header"><h2>üìù Observaciones Generales</h2></div>
+      <div class="card-header"><h2>📝 Observaciones Generales</h2></div>
       <div class="card-body">
         <div class="field">
           <label for="f_obs">Observaciones</label>
-          <textarea id="f_obs" placeholder="Ingrese cualquier observaci√≥n adicional..."></textarea>
+          <textarea id="f_obs" placeholder="Ingrese cualquier observación adicional..."></textarea>
         </div>
       </div>
     </div>
     <div class="nav-bar">
-      <button class="btn btn-outline" onclick="goPrev()">‚Üê Anterior</button>
-      <button class="btn btn-primary" onclick="goNext()">Siguiente ‚Üí</button>
+      <button class="btn btn-outline" onclick="goPrev()">← Anterior</button>
+      <button class="btn btn-primary" onclick="goNext()">Siguiente →</button>
     </div>
   </section>
 
   <!-- PASO 5 -->
   <section class="step" id="step-5">
     <div class="card">
-      <div class="card-header"><h2>‚úçÔ∏è Firmas de Cierre</h2></div>
+      <div class="card-header"><h2>✍️ Firmas de Cierre</h2></div>
       <div class="card-body">
         <div class="banner">Nombre completo de cada responsable.</div>
         <div class="field">
@@ -539,13 +539,13 @@
     </div>
     <div class="card" style="background:var(--green-bg)">
       <div class="card-body" style="text-align:center;padding:20px">
-        <div style="font-size:0.82rem;color:var(--text2);margin-bottom:14px;line-height:1.5">Al enviar, esta bit√°cora quedar√° registrada en Google Sheets.</div>
-        <button class="btn btn-submit" id="submitBtn" onclick="submitForm()" style="max-width:320px;margin:0 auto;display:block">‚úì &nbsp;Enviar Bit√°cora</button>
-        <div class="draft-bar" id="draftStatus">üíæ Borrador guardado autom√°ticamente</div>
+        <div style="font-size:0.82rem;color:var(--text2);margin-bottom:14px;line-height:1.5">Al enviar, esta bitácora quedará registrada en Google Sheets.</div>
+        <button class="btn btn-submit" id="submitBtn" onclick="submitForm()" style="max-width:320px;margin:0 auto;display:block">✓ &nbsp;Enviar Bitácora</button>
+        <div class="draft-bar" id="draftStatus">💾 Borrador guardado automáticamente</div>
       </div>
     </div>
     <div class="nav-bar">
-      <button class="btn btn-outline" onclick="goPrev()">‚Üê Anterior</button>
+      <button class="btn btn-outline" onclick="goPrev()">← Anterior</button>
     </div>
   </section>
 
@@ -555,82 +555,82 @@
 <div id="receiptModal">
   <div class="receipt-card">
     <div class="receipt-header">
-      <h3>Bit√°cora Enviada ‚úÖ</h3>
+      <h3>Bitácora Enviada ✅</h3>
       <p id="receipt-subtitle"></p>
     </div>
     <div class="receipt-body" id="receipt-body"></div>
     <div class="receipt-actions">
-      <button class="btn btn-outline" onclick="copyReceipt()">üìã Copiar</button>
-      <button class="btn btn-primary" onclick="shareReceipt()">üì§ Compartir</button>
+      <button class="btn btn-outline" onclick="copyReceipt()">📋 Copiar</button>
+      <button class="btn btn-primary" onclick="shareReceipt()">📤 Compartir</button>
       <button class="btn btn-outline" onclick="closeReceipt()">Cerrar</button>
     </div>
   </div>
 </div>
 
 <div id="toast" role="alert"></div>
-<div id="loading"><div class="spinner"></div><div class="loading-text">Enviando bit√°cora...</div></div>
+<div id="loading"><div class="spinner"></div><div class="loading-text">Enviando bitácora...</div></div>
 
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxYxKG8sxlRGQJrbZxGVeXhpu8YRrbgeHPYuqM_4FLtUOy5Ng2Hffts7hTm5B7iFmYi/exec';
 
-// Botones visibles en el formulario (categor√≠as)
+// Botones visibles en el formulario (categorías)
 const TIPOS_EQUIPO = [
-  { codigo:'PIL', label:'Piloteadora / Perforadora', icon:'üî©', incluye:['PIL','PER'] },
-  { codigo:'COM', label:'Compresor',                 icon:'üí®', incluye:['COM'] },
-  { codigo:'INY', label:'Planta de Inyecci√≥n',       icon:'üß™', incluye:['INY'] },
-  { codigo:'OTR', label:'Otro equipo',               icon:'‚öôÔ∏è', incluye:['OTR','EXC','GRU','MIN','GEN'] },
+  { codigo:'PIL', label:'Piloteadora / Perforadora', icon:'🔩', incluye:['PIL','PER'] },
+  { codigo:'COM', label:'Compresor',                 icon:'💨', incluye:['COM'] },
+  { codigo:'INY', label:'Planta de Inyección',       icon:'🧪', incluye:['INY'] },
+  { codigo:'OTR', label:'Otro equipo',               icon:'⚙️', incluye:['OTR','EXC','GRU','MIN','GEN'] },
 ];
 
-// Mapeo para buscar el tipo real de una m√°quina seleccionada
+// Mapeo para buscar el tipo real de una máquina seleccionada
 function getTipoRealMaquina(nombre) {
   const maq = APP.maquinas.find(m => m.nombre === nombre);
   return maq ? maq.tipo : APP.categoriaSeleccionada || 'OTR';
 }
 
-const STEP_LABELS = ['Equipo','Datos','Producci√≥n','Revisiones','Firmas'];
+const STEP_LABELS = ['Equipo','Datos','Producción','Revisiones','Firmas'];
 
 const CL_A = [
-  // ‚ïê‚ïê‚ïê NIVELES ‚ïê‚ïê‚ïê
+  // ═══ NIVELES ═══
   { id:'A_Combustible',            num:1,  label:'Nivel de combustible',                       type:'fuel', showFor:['PIL','PER','COM','EXC','GRU','MIN','GEN','OTR'] },
   { id:'A_Aceite_Motor',           num:2,  label:'Nivel de aceite de motor',                   type:'bim',  showFor:['PIL','PER','COM','EXC','GRU','MIN','GEN','OTR'] },
-  { id:'A_Aceite_Hidraulico',      num:3,  label:'Nivel de aceite hidr√°ulico',                 type:'bim',  showFor:['PIL','PER','COM','EXC','GRU','MIN','OTR'] },
+  { id:'A_Aceite_Hidraulico',      num:3,  label:'Nivel de aceite hidráulico',                 type:'bim',  showFor:['PIL','PER','COM','EXC','GRU','MIN','OTR'] },
   { id:'A_Reservorio_Compresores', num:4,  label:'Nivel de reservorio de aceite "Compresores"',type:'bim',  showFor:['COM'] },
   { id:'A_Aceite_Bombas_MR',       num:5,  label:'Nivel de aceite de bombas M.R.',             type:'bim',  showFor:['PIL','PER','COM'] },
   { id:'A_Coolant_Agua',           num:6,  label:'Nivel de coolant / agua',                    type:'bim',  showFor:['PIL','PER','COM','EXC','GRU','MIN','GEN','OTR'] },
-  { id:'A_Aceite_Mesa_Rotacion',   num:7,  label:'Nivel de aceite mesa de rotaci√≥n o cabezote',type:'bim',  showFor:['PIL','PER'] },
-  // ‚ïê‚ïê‚ïê FILTROS ‚ïê‚ïê‚ïê
+  { id:'A_Aceite_Mesa_Rotacion',   num:7,  label:'Nivel de aceite mesa de rotación o cabezote',type:'bim',  showFor:['PIL','PER'] },
+  // ═══ FILTROS ═══
   { id:'A_Filtro_Sep_Combustible', num:8,  label:'Filtro separador agua/combustible',          type:'bim',  showFor:['PIL','PER','COM','EXC','GRU','MIN','GEN','OTR'] },
   { id:'A_Filtro_Aire_Motor',      num:9,  label:'Filtro de aire de motor',                    type:'bim',  showFor:['PIL','PER','COM','EXC','GRU','MIN','GEN','OTR'] },
   { id:'A_Filtro_Aire_Compresor',  num:10, label:'Filtro de aire de unidad compresora',        type:'bim',  showFor:['COM'] },
-  { id:'A_Baterias',               num:11, label:'Estado y limpieza de bater√≠as',              type:'bim',  showFor:['PIL','PER','COM','EXC','GRU','MIN','GEN','OTR'] },
-  // ‚ïê‚ïê‚ïê FUGAS ‚ïê‚ïê‚ïê
+  { id:'A_Baterias',               num:11, label:'Estado y limpieza de baterías',              type:'bim',  showFor:['PIL','PER','COM','EXC','GRU','MIN','GEN','OTR'] },
+  // ═══ FUGAS ═══
   { id:'A_Fugas_Aceite_Motor',     num:12, label:'Fugas de aceite en motor',                   type:'sino', badVal:'SI', showFor:['PIL','PER','COM','EXC','GRU','MIN','GEN','OTR'] },
-  { id:'A_Fugas_Mangueras',        num:13, label:'Fugas en mangueras hidr√°ulicas',             type:'sino', badVal:'SI', showFor:['PIL','PER','COM','EXC','GRU','MIN','OTR'] },
-  // ‚ïê‚ïê‚ïê MANTENIMIENTO ‚ïê‚ïê‚ïê
+  { id:'A_Fugas_Mangueras',        num:13, label:'Fugas en mangueras hidráulicas',             type:'sino', badVal:'SI', showFor:['PIL','PER','COM','EXC','GRU','MIN','OTR'] },
+  // ═══ MANTENIMIENTO ═══
   { id:'A_Limpieza_General',       num:14, label:'Limpieza general',                           type:'sino', invertSino:true, showFor:['PIL','PER','COM','EXC','GRU','MIN','GEN','OTR'] },
   { id:'A_Cables_Acero_Ganchos',   num:15, label:'Estado de cables de acero y ganchos',       type:'bim',  showFor:['PIL','PER'] },
-  { id:'A_Ruidos_Extra√±os',        num:16, label:'Ruidos extra√±os durante operaci√≥n',          type:'sino', badVal:'SI', showFor:['PIL','PER','COM','EXC','GRU','MIN','GEN','OTR'] },
+  { id:'A_Ruidos_Extraños',        num:16, label:'Ruidos extraños durante operación',          type:'sino', badVal:'SI', showFor:['PIL','PER','COM','EXC','GRU','MIN','GEN','OTR'] },
   { id:'A_Engrase',                num:17, label:'Engrase de maquinaria',                      type:'sino', invertSino:true, showFor:['PIL','PER','COM','EXC','GRU','MIN','OTR'] },
-  // ‚ïê‚ïê‚ïê TREN DE RODAJE ‚ïê‚ïê‚ïê
+  // ═══ TREN DE RODAJE ═══
   { id:'A_Estado_Orugas',          num:18, label:'Estado de orugas / tren de rodaje',          type:'bim',  showFor:['PIL','PER','EXC'] },
-  // ‚ïê‚ïê‚ïê EXCAVADORA (simplificado) ‚ïê‚ïê‚ïê
-  { id:'A_Estado_Cucharon',        num:20, label:'Estado del cuchar√≥n',                        type:'bim',  showFor:['EXC'] },
+  // ═══ EXCAVADORA (simplificado) ═══
+  { id:'A_Estado_Cucharon',        num:20, label:'Estado del cucharón',                        type:'bim',  showFor:['EXC'] },
   { id:'A_Pines_Bocinas',          num:21, label:'Pines y bocinas',                            type:'bim',  showFor:['EXC','MIN'] },
-  // ‚ïê‚ïê‚ïê GR√öA (simplificado) ‚ïê‚ïê‚ïê
+  // ═══ GRÚA (simplificado) ═══
   { id:'A_Cables_Gancho_Grua',     num:22, label:'Cables, gancho y seguro',                    type:'bim',  showFor:['GRU'] },
   { id:'A_Estabilizadores',        num:23, label:'Estabilizadores / outriggers',               type:'bim',  showFor:['GRU'] },
-  // ‚ïê‚ïê‚ïê MINICARGADOR ‚ïê‚ïê‚ïê
+  // ═══ MINICARGADOR ═══
   { id:'A_Estado_Bucket_MIN',      num:24, label:'Estado del bucket / accesorio',              type:'bim',  showFor:['MIN'] },
-  { id:'A_Neumaticos',             num:25, label:'Estado de neum√°ticos / cadenas',             type:'bim',  showFor:['GRU','MIN'] },
-  // ‚ïê‚ïê‚ïê GENERADOR EL√âCTRICO ‚ïê‚ïê‚ïê
+  { id:'A_Neumaticos',             num:25, label:'Estado de neumáticos / cadenas',             type:'bim',  showFor:['GRU','MIN'] },
+  // ═══ GENERADOR ELÉCTRICO ═══
   { id:'A_Voltaje_Salida',         num:26, label:'Voltaje de salida estable',                  type:'sino', invertSino:true, showFor:['GEN'] },
-  { id:'A_Conexiones_Cables',      num:27, label:'Conexiones y cables el√©ctricos',             type:'bim',  showFor:['GEN'] },
+  { id:'A_Conexiones_Cables',      num:27, label:'Conexiones y cables eléctricos',             type:'bim',  showFor:['GEN'] },
   { id:'A_Tablero_Control',        num:28, label:'Tablero de control funcional',               type:'sino', invertSino:true, showFor:['GEN'] },
 ];
 
 const CL_B = [
-  { id:'B_Aceite_Hidraulico',      num:3,  label:'Nivel de aceite hidr√°ulico',  type:'bim'  },
-  { id:'B_Fuga_Hidraulico',        num:5,  label:'Fuga de hidr√°ulico',          type:'sino', badVal:'SI' },
+  { id:'B_Aceite_Hidraulico',      num:3,  label:'Nivel de aceite hidráulico',  type:'bim'  },
+  { id:'B_Fuga_Hidraulico',        num:5,  label:'Fuga de hidráulico',          type:'sino', badVal:'SI' },
   { id:'B_Fuga_Lechada',           num:6,  label:'Fuga de lechada',             type:'sino', badVal:'SI' },
   { id:'B_Limpieza_Bomba',         num:7,  label:'Limpieza de bomba',           type:'sino', invertSino:true },
   { id:'B_Limpieza_Agitador',      num:8,  label:'Limpieza de agitador',        type:'sino', invertSino:true },
@@ -639,18 +639,18 @@ const CL_B = [
   { id:'B_Estado_Motor_Turbo',     num:11, label:'Estado de motor turbo',       type:'bim'  },
   { id:'B_Estado_Motor_Bomba',     num:12, label:'Estado de motor de bomba',    type:'bim'  },
   { id:'B_Estado_Cuenta_Litros',   num:13, label:'Estado de cuenta litros',     type:'bim'  },
-  { id:'B_Estado_Panel_Electrico', num:14, label:'Estado de panel el√©ctrico',   type:'bim'  },
+  { id:'B_Estado_Panel_Electrico', num:14, label:'Estado de panel eléctrico',   type:'bim'  },
 ];
 
 const APP = {
   currentStep: 1, totalSteps: 5,
-  tipo: '',              // tipo real de la m√°quina (PIL, PER, EXC, GRU, MIN, COM, INY, OTR)
-  categoriaSeleccionada: '', // categor√≠a del bot√≥n (PIL, COM, INY, OTR)
+  tipo: '',              // tipo real de la máquina (PIL, PER, EXC, GRU, MIN, COM, INY, OTR)
+  categoriaSeleccionada: '', // categoría del botón (PIL, COM, INY, OTR)
   maquinas: [],
   checklistValues: {}, draftTimer: null,
 };
 
-const DIAS = ['Domingo','Lunes','Martes','Mi√©rcoles','Jueves','Viernes','S√°bado'];
+const DIAS = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
 
 document.addEventListener('DOMContentLoaded', () => {
   initPWA(); buildStepNav(); buildTipoGrid();
@@ -661,7 +661,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function initPWA() {
   const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" fill="#E65100" rx="80"/><text x="256" y="370" text-anchor="middle" fill="white" font-family="Arial Black,sans-serif" font-size="320" font-weight="900">G</text></svg>`;
   const iconUrl = 'data:image/svg+xml;base64,' + btoa(iconSvg);
-  const manifest = { name:'Bit√°cora Digital ‚Äî Geot√©cnica Soluciones', short_name:'Bit√°cora GEO', theme_color:'#E65100', background_color:'#F5F0EB', display:'standalone', orientation:'portrait', start_url:'./', icons:[{src:iconUrl,sizes:'512x512',type:'image/svg+xml',purpose:'any maskable'}] };
+  const manifest = { name:'Bitácora Digital — Geotécnica Soluciones', short_name:'Bitácora GEO', theme_color:'#E65100', background_color:'#F5F0EB', display:'standalone', orientation:'portrait', start_url:'./', icons:[{src:iconUrl,sizes:'512x512',type:'image/svg+xml',purpose:'any maskable'}] };
   const blob = new Blob([JSON.stringify(manifest)], {type:'application/manifest+json'});
   document.getElementById('pwa-manifest').href = URL.createObjectURL(blob);
   if ('serviceWorker' in navigator) {
@@ -682,7 +682,7 @@ function updateStepNav() {
     const b=document.getElementById(`bubble-${i}`), l=document.getElementById(`slabel-${i}`);
     b.className='step-bubble'+(i<APP.currentStep?' done':i===APP.currentStep?' active':'');
     l.className='step-label'+(i===APP.currentStep?' active':'');
-    b.textContent = i<APP.currentStep?'‚úì':i;
+    b.textContent = i<APP.currentStep?'✓':i;
   }
   const fill = document.getElementById('stepProgressFill');
   if (fill) fill.style.width = (APP.currentStep / APP.totalSteps * 100) + '%';
@@ -708,7 +708,7 @@ function buildTipoGrid() {
 function selectTipo(code, btn) {
   APP.categoriaSeleccionada = code;
   const cat = TIPOS_EQUIPO.find(t => t.codigo === code);
-  // Si la categor√≠a solo tiene 1 tipo real, lo asignamos directo
+  // Si la categoría solo tiene 1 tipo real, lo asignamos directo
   APP.tipo = (cat && cat.incluye.length === 1) ? cat.incluye[0] : '';
   document.querySelectorAll('.tipo-btn').forEach(b=>b.classList.remove('selected'));
   btn.classList.add('selected');
@@ -721,7 +721,7 @@ function filterMaquinasByCategoria(catCode) {
   const tiposIncluidos = cat ? cat.incluye : [catCode];
   const sel = document.getElementById('sel_equipo');
   const filtered = APP.maquinas.filter(m => tiposIncluidos.includes(m.tipo));
-  sel.innerHTML='<option value="">‚Äî Seleccionar equipo ‚Äî</option>'+filtered.map(m=>`<option value="${escHtml(m.nombre)}">${escHtml(m.nombre)}</option>`).join('');
+  sel.innerHTML='<option value="">— Seleccionar equipo —</option>'+filtered.map(m=>`<option value="${escHtml(m.nombre)}">${escHtml(m.nombre)}</option>`).join('');
 }
 
 // Cuando se selecciona un equipo, obtener su tipo real para checklist
@@ -743,17 +743,17 @@ async function fetchUltimoHorometro(equipo) {
     const json = await res.json();
     if (json.status === 'ok' && json.data && json.data.horometro > 0) {
       const inp = document.getElementById('f_horo_ini');
-      // Solo auto-llenar si el campo est√° vac√≠o
+      // Solo auto-llenar si el campo está vacío
       if (!inp.value) {
         inp.value = json.data.horometro;
         inp.classList.add('auto-filled');
         calcHoras();
-        showToast(`Hor√≥metro inicial: ${json.data.horometro} (√∫ltimo registrado)`);
-        // Quitar el estilo despu√©s de que el usuario interact√∫e
+        showToast(`Horómetro inicial: ${json.data.horometro} (último registrado)`);
+        // Quitar el estilo después de que el usuario interactúe
         inp.addEventListener('input', () => inp.classList.remove('auto-filled'), { once: true });
       }
     }
-  } catch(_) { /* sin conexi√≥n, no pasa nada */ }
+  } catch(_) { /* sin conexión, no pasa nada */ }
 }
 
 function setDefaultDate() {
@@ -776,7 +776,7 @@ function getWeekNumber(date) {
 
 function refreshProductionView() {
   const isINY = APP.tipo==='INY', isPIL = APP.tipo==='PIL' || APP.tipo==='PER';
-  // MIN, EXC, GRU, COM, OTR solo tienen hor√≥metro (sin ML ni bolsas)
+  // MIN, EXC, GRU, COM, OTR solo tienen horómetro (sin ML ni bolsas)
   document.getElementById('prod-a').classList.toggle('hidden',isINY);
   document.getElementById('prod-b').classList.toggle('hidden',!isINY);
   document.getElementById('ml_field').classList.toggle('hidden',!isPIL);
@@ -794,10 +794,10 @@ const CL_A_SECTIONS = [
   { beforeId: 'A_Fugas_Aceite_Motor',    label: 'Fugas' },
   { beforeId: 'A_Limpieza_General',      label: 'Mantenimiento' },
   { beforeId: 'A_Estado_Orugas',         label: 'Tren de Rodaje' },
-  { beforeId: 'A_Estado_Cucharon',       label: 'Inspecci√≥n Espec√≠fica' },
-  { beforeId: 'A_Cables_Gancho_Grua',    label: 'Inspecci√≥n Espec√≠fica' },
-  { beforeId: 'A_Estado_Bucket_MIN',     label: 'Inspecci√≥n Espec√≠fica' },
-  { beforeId: 'A_Voltaje_Salida',        label: 'Sistema El√©ctrico' },
+  { beforeId: 'A_Estado_Cucharon',       label: 'Inspección Específica' },
+  { beforeId: 'A_Cables_Gancho_Grua',    label: 'Inspección Específica' },
+  { beforeId: 'A_Estado_Bucket_MIN',     label: 'Inspección Específica' },
+  { beforeId: 'A_Voltaje_Salida',        label: 'Sistema Eléctrico' },
 ];
 const CL_B_SECTIONS = [
   { beforeId: 'B_Aceite_Hidraulico', label: 'Niveles' },
@@ -811,11 +811,11 @@ function buildChecklist() {
   body.innerHTML=''; APP.checklistValues={};
   const items = APP.tipo==='INY' ? CL_B : CL_A.filter(it=>it.showFor.includes(APP.tipo));
   const sections = APP.tipo==='INY' ? CL_B_SECTIONS : CL_A_SECTIONS;
-  // Renumerar din√°micamente seg√∫n √≠tems visibles
+  // Renumerar dinámicamente según ítems visibles
   let numCounter = 0;
   items.forEach(item => {
     numCounter++;
-    // Insertar separador de secci√≥n si corresponde (solo si el √≠tem es visible)
+    // Insertar separador de sección si corresponde (solo si el ítem es visible)
     const sec = sections.find(s => s.beforeId === item.id);
     if (sec) {
       const sep = document.createElement('div');
@@ -883,7 +883,7 @@ function validateStep(n) {
   }
   if (n===3) {
     if (APP.tipo!=='INY') {
-      if (!document.getElementById('f_horo_ini').value||!document.getElementById('f_horo_fin').value) { msg='Ingresa los hor√≥metros'; ok=false; }
+      if (!document.getElementById('f_horo_ini').value||!document.getElementById('f_horo_fin').value) { msg='Ingresa los horómetros'; ok=false; }
       else if ((APP.tipo==='PIL'||APP.tipo==='PER')&&!document.getElementById('f_ml').value) { msg='Ingresa los metros lineales perforados'; ok=false; }
     }
   }
@@ -891,7 +891,7 @@ function validateStep(n) {
     const items = APP.tipo==='INY'?CL_B:CL_A.filter(it=>it.showFor.includes(APP.tipo));
     for (const item of items) {
       if (!APP.checklistValues[item.id]) {
-        msg=`Completa el √≠tem ${item.num}: ${item.label}`; ok=false;
+        msg=`Completa el ítem ${item.num}: ${item.label}`; ok=false;
         document.getElementById(`ci-${item.id}`)?.scrollIntoView({behavior:'smooth',block:'center'}); break;
       }
     }
@@ -949,7 +949,7 @@ async function submitForm() {
     showLoading(false);
     document.getElementById('submitBtn').disabled=false;
     savePending(payload);
-    showToast('Sin conexi√≥n ‚Äî guardado para reenv√≠o',true);
+    showToast('Sin conexión — guardado para reenvío',true);
   }
 }
 
@@ -1013,7 +1013,7 @@ async function retrySendPending() {
     } catch(_){ remaining.push(item); }
   }
   localStorage.setItem(PENDING_KEY,JSON.stringify(remaining));
-  if(remaining.length<pending.length) showToast(`${pending.length-remaining.length} bit√°cora(s) pendiente(s) enviadas ‚úÖ`);
+  if(remaining.length<pending.length) showToast(`${pending.length-remaining.length} bitácora(s) pendiente(s) enviadas ✅`);
 }
 
 window.addEventListener('online',retrySendPending);
@@ -1041,19 +1041,19 @@ async function loadMaquinas() {
   if(APP.categoriaSeleccionada) filterMaquinasByCategoria(APP.categoriaSeleccionada);
 }
 
-// ‚îÄ‚îÄ RECEIPT (comprobante) ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
+// ── RECEIPT (comprobante) ──────────────────────
 let LAST_RECEIPT = '';
 
 function buildReceiptData(payload) {
   const lines = [];
-  lines.push(`üìã BIT√ÅCORA DIGITAL ‚Äî COMPROBANTE`);
-  lines.push(`‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ`);
+  lines.push(`📋 BITÁCORA DIGITAL — COMPROBANTE`);
+  lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━`);
   lines.push(`Equipo: ${payload.Nombre_Equipo}`);
   lines.push(`Tipo: ${payload.Tipo_Equipo}`);
   lines.push(`Operador: ${payload.Operador}`);
   lines.push(`Fecha: ${payload.Fecha} (${payload.Dia})`);
   lines.push(`Proyecto: ${payload.Proyecto}`);
-  if (payload.Horometro_Inicio) lines.push(`Hor√≥metro: ${payload.Horometro_Inicio} ‚Üí ${payload.Horometro_Fin} (${payload.Horas_Dia} hrs)`);
+  if (payload.Horometro_Inicio) lines.push(`Horómetro: ${payload.Horometro_Inicio} → ${payload.Horometro_Fin} (${payload.Horas_Dia} hrs)`);
   if (parseFloat(payload.ML_Perforados)) lines.push(`ML Perforados: ${payload.ML_Perforados}`);
   if (parseFloat(payload.Bolsas_Concreto)) lines.push(`Bolsas Concreto: ${payload.Bolsas_Concreto}`);
 
@@ -1066,15 +1066,15 @@ function buildReceiptData(payload) {
     const norm = normalizeBIMLocal(val, mode);
     if (norm === 'M') malos.push(it.label);
   });
-  lines.push(`‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ`);
+  lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━`);
   if (malos.length) {
-    lines.push(`‚ö†Ô∏è Items en MALO (${malos.length}):`);
-    malos.forEach(m => lines.push(`  ‚Ä¢ ${m}`));
+    lines.push(`⚠️ Items en MALO (${malos.length}):`);
+    malos.forEach(m => lines.push(`  • ${m}`));
   } else {
-    lines.push(`‚úÖ Todos los items en buen estado`);
+    lines.push(`✅ Todos los items en buen estado`);
   }
-  if (payload.Observaciones) { lines.push(`‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ`); lines.push(`Obs: ${payload.Observaciones}`); }
-  lines.push(`‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ`);
+  if (payload.Observaciones) { lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━`); lines.push(`Obs: ${payload.Observaciones}`); }
+  lines.push(`━━━━━━━━━━━━━━━━━━━━━━━━━━`);
   lines.push(`Enviada: ${new Date().toLocaleString('es-HN')}`);
   return { text: lines.join('\n'), malos };
 }
@@ -1092,7 +1092,7 @@ function normalizeBIMLocal(val, mode) {
 function showReceipt(payload) {
   const { text, malos } = buildReceiptData(payload);
   LAST_RECEIPT = text;
-  document.getElementById('receipt-subtitle').textContent = `${payload.Nombre_Equipo} ‚Äî ${payload.Fecha}`;
+  document.getElementById('receipt-subtitle').textContent = `${payload.Nombre_Equipo} — ${payload.Fecha}`;
   const body = document.getElementById('receipt-body');
   let html = '';
   const rows = [
@@ -1102,17 +1102,17 @@ function showReceipt(payload) {
     ['Fecha', `${payload.Fecha} (${payload.Dia})`],
     ['Proyecto', payload.Proyecto],
   ];
-  if (payload.Horometro_Inicio) rows.push(['Hor√≥metro', `${payload.Horometro_Inicio} ‚Üí ${payload.Horometro_Fin}`]);
+  if (payload.Horometro_Inicio) rows.push(['Horómetro', `${payload.Horometro_Inicio} → ${payload.Horometro_Fin}`]);
   if (payload.Horas_Dia) rows.push(['Horas', payload.Horas_Dia]);
   if (parseFloat(payload.ML_Perforados)) rows.push(['ML Perforados', payload.ML_Perforados]);
   if (parseFloat(payload.Bolsas_Concreto)) rows.push(['Bolsas Concreto', payload.Bolsas_Concreto]);
   rows.forEach(([l,v]) => { html += `<div class="receipt-row"><span class="receipt-label">${l}</span><span class="receipt-value">${escHtml(v)}</span></div>`; });
   html += '<div class="receipt-checklist">';
   if (malos.length) {
-    html += `<div style="margin:8px 0 4px;font-weight:700;color:var(--red)">‚ö†Ô∏è Items en MALO (${malos.length}):</div>`;
+    html += `<div style="margin:8px 0 4px;font-weight:700;color:var(--red)">⚠️ Items en MALO (${malos.length}):</div>`;
     malos.forEach(m => { html += `<span class="malo-tag">${escHtml(m)}</span> `; });
   } else {
-    html += '<div class="ok-tag" style="margin:8px 0;font-size:0.85rem">‚úÖ Todos los items en buen estado</div>';
+    html += '<div class="ok-tag" style="margin:8px 0;font-size:0.85rem">✅ Todos los items en buen estado</div>';
   }
   html += '</div>';
   if (payload.Observaciones) html += `<div class="receipt-row"><span class="receipt-label">Observaciones</span><span class="receipt-value">${escHtml(payload.Observaciones)}</span></div>`;
@@ -1122,25 +1122,25 @@ function showReceipt(payload) {
 
 function closeReceipt() {
   document.getElementById('receiptModal').classList.remove('show');
-  if (confirm('¬øLlenar una nueva bit√°cora?')) resetForm();
+  if (confirm('¿Llenar una nueva bitácora?')) resetForm();
 }
 
 function copyReceipt() {
   navigator.clipboard.writeText(LAST_RECEIPT).then(() => {
-    showToast('Comprobante copiado al portapapeles üìã');
+    showToast('Comprobante copiado al portapapeles 📋');
   }).catch(() => {
     // Fallback
     const ta = document.createElement('textarea'); ta.value = LAST_RECEIPT;
     document.body.appendChild(ta); ta.select(); document.execCommand('copy');
     document.body.removeChild(ta);
-    showToast('Comprobante copiado al portapapeles üìã');
+    showToast('Comprobante copiado al portapapeles 📋');
   });
 }
 
 async function shareReceipt() {
   if (navigator.share) {
     try {
-      await navigator.share({ title: 'Bit√°cora Digital ‚Äî Comprobante', text: LAST_RECEIPT });
+      await navigator.share({ title: 'Bitácora Digital — Comprobante', text: LAST_RECEIPT });
     } catch(_) {}
   } else {
     // Fallback: abrir WhatsApp
