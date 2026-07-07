@@ -914,9 +914,22 @@ async function submitForm() {
   const ml     = (APP.tipo==='PIL'||APP.tipo==='PER')?(parseFloat(document.getElementById('f_ml').value)||0):0;
   const bolsas = APP.tipo==='INY'?(parseInt(document.getElementById('f_bolsas').value)||0):0;
   const semana = getWeekNumber(fecha_d);
+  const equipoNombre = document.getElementById('sel_equipo').value;
+
+  let prevHoras = 0, prevML = 0, prevBolsas = 0;
+  try {
+    const wtUrl = `${SCRIPT_URL}?action=getWeeklyTotals&equipo=${encodeURIComponent(equipoNombre)}&semana=${semana}&anio=${fecha_d.getFullYear()}&fecha=${fecha}`;
+    const wtRes = await fetch(wtUrl);
+    const wtJson = await wtRes.json();
+    if (wtJson.status === 'ok' && wtJson.data) {
+      prevHoras  = wtJson.data.horas  || 0;
+      prevML     = wtJson.data.ml     || 0;
+      prevBolsas = wtJson.data.bolsas || 0;
+    }
+  } catch(_) {}
 
   const payload = {
-    Nombre_Equipo: document.getElementById('sel_equipo').value,
+    Nombre_Equipo: equipoNombre,
     Tipo_Equipo:   APP.tipo,
     Operador:      document.getElementById('f_operador').value.trim(),
     Semana:        semana,
@@ -928,6 +941,9 @@ async function submitForm() {
     Horas_Dia:        horasDia,
     ML_Perforados:    ml,
     Bolsas_Concreto:  bolsas,
+    Horas_Semana:     Math.round((prevHoras + horasDia) * 100) / 100,
+    ML_Semana:        Math.round((prevML + ml) * 100) / 100,
+    Bolsas_Semana:    prevBolsas + bolsas,
     Observaciones:    document.getElementById('f_obs').value.trim(),
     Firma_Operador:     f_firma_op,
     Firma_Ing_Proyecto: f_firma_ing,
