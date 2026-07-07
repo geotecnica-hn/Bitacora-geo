@@ -171,9 +171,6 @@
 <!-- ══ KPIs ══ -->
 <div class="kpi-grid" id="kpi-grid"></div>
 
-<!-- ══ OVERVIEW POR TIPO (Opción B) ══ -->
-<div id="sec-overview" class="sec-hidden"></div>
-
 <!-- ══ RANKING + GRÁFICO (PIL) ══ -->
 <div class="grid-2" id="sec-ranking">
   <div class="card" style="margin-bottom:0">
@@ -212,6 +209,9 @@
     </table>
   </div>
 </div>
+
+<!-- ══ OTROS EQUIPOS (INY, COM, OTR) ══ -->
+<div id="sec-otros-equipos"></div>
 
 <!-- ══ CHECKLIST POR EQUIPO ══ -->
 <div class="card">
@@ -391,19 +391,11 @@ function applyFilters() {
 
   const activeTipo = getActiveTipo();
   renderKPIs(activeTipo);
-
-  if (activeTipo === '') {
-    document.getElementById('sec-overview').classList.remove('sec-hidden');
-    document.getElementById('sec-ranking').classList.add('sec-hidden');
-    renderOverview();
-  } else {
-    document.getElementById('sec-overview').classList.add('sec-hidden');
-    document.getElementById('sec-ranking').classList.remove('sec-hidden');
-    renderRanking(activeTipo);
-  }
+  renderRanking(activeTipo);
   renderCharts(activeTipo);
   renderTabla(activeTipo);
   renderChecklist();
+  renderOtrosEquipos(activeTipo);
 }
 
 // ══════════════════════════════════════════════════════════
@@ -441,18 +433,19 @@ function renderKPIs(tipo) {
 }
 
 // ══════════════════════════════════════════════════════════
-//  OVERVIEW — secciones paralelas por tipo (Opción B)
+//  OTROS EQUIPOS — secciones para INY, COM, OTR debajo del contenido principal
 // ══════════════════════════════════════════════════════════
-function renderOverview() {
-  const container = document.getElementById('sec-overview');
+function renderOtrosEquipos(activeTipo) {
+  const container = document.getElementById('sec-otros-equipos');
+  if (activeTipo !== '') { container.innerHTML = ''; return; }
+
   const categories = [
-    { key:'PIL_PER', label:'Piloteadoras / Perforadoras', tag:'PIL/PER', types:['PIL','PER'], color:'#ea580c', tagBg:'#431407', tagColor:'#fb923c', metric:'ml' },
     { key:'INY', label:'Plantas de Inyección', tag:'INY', types:['INY'], color:'#3b82f6', tagBg:'#172554', tagColor:'#60a5fa', metric:'bolsas' },
     { key:'COM', label:'Compresores', tag:'COM', types:['COM'], color:'#22d3ee', tagBg:'#083344', tagColor:'#22d3ee', metric:'horas' },
     { key:'OTR', label:'Otros Equipos', tag:'OTR/EXC/GRU', types:['OTR','EXC','GRU','MIN','GEN'], color:'#a78bfa', tagBg:'#2e1065', tagColor:'#a78bfa', metric:'horas' },
   ];
   const numCls = ['gold','silver','bronze'];
-  let html = '';
+  let html = '<div style="height:20px"></div>';
 
   categories.forEach(cat => {
     const rows = FILTERED.filter(r => cat.types.includes(getTipoEquipo(r)));
@@ -460,17 +453,11 @@ function renderOverview() {
 
     const byMaq = agruparPorEquipo(rows);
     const totalHoras = rows.reduce((s,r) => s + (parseFloat(r.Horas_Dia)||0), 0);
-    const totalML = rows.reduce((s,r) => s + (parseFloat(r.ML_Perforados)||0), 0);
     const totalBolsas = rows.reduce((s,r) => s + (parseInt(r.Bolsas_Concreto)||0), 0);
     const equiposCount = Object.keys(byMaq).length;
 
     let rankData;
-    if (cat.metric === 'ml') {
-      rankData = Object.entries(byMaq)
-        .filter(([,d]) => d.ml > 0 || d.horas > 0)
-        .map(([maq,d]) => ({ maq, val: d.horas>0?d.ml/d.horas:0, label: (d.horas>0?d.ml/d.horas:0).toFixed(2), unit:'ML/hr', op:d.operador, proy:d.proyecto }))
-        .sort((a,b) => b.val - a.val);
-    } else if (cat.metric === 'bolsas') {
+    if (cat.metric === 'bolsas') {
       rankData = Object.entries(byMaq)
         .map(([maq,d]) => ({ maq, val:d.bolsas, label:String(d.bolsas), unit:'bolsas', op:d.operador, proy:d.proyecto }))
         .sort((a,b) => b.val - a.val);
@@ -481,15 +468,12 @@ function renderOverview() {
     }
 
     let stats = `Horas: <b style="color:#60a5fa">${totalHoras.toFixed(1)}</b>`;
-    if (cat.metric === 'ml') {
-      const mlhr = totalHoras > 0 ? totalML / totalHoras : 0;
-      stats += ` &middot; ML: <b style="color:#4ade80">${totalML.toFixed(1)}</b> &middot; ML/Hr: <b style="color:#fcd34d">${mlhr.toFixed(2)}</b>`;
-    } else if (cat.metric === 'bolsas') {
+    if (cat.metric === 'bolsas') {
       const bhr = totalHoras > 0 ? totalBolsas / totalHoras : 0;
       stats += ` &middot; Bolsas: <b style="color:#4ade80">${totalBolsas}</b> &middot; Bolsas/Hr: <b style="color:#fcd34d">${bhr.toFixed(1)}</b>`;
     } else {
       const avgH = rows.length > 0 ? totalHoras / rows.length : 0;
-      stats += ` &middot; Hrs/d&iacute;a: <b style="color:#fcd34d">${avgH.toFixed(1)}</b>`;
+      stats += ` &middot; Hrs/d&iacute;a prom: <b style="color:#fcd34d">${avgH.toFixed(1)}</b>`;
     }
 
     html += `
@@ -516,7 +500,7 @@ function renderOverview() {
     </div>`;
   });
 
-  container.innerHTML = html || '<div class="empty">Sin datos</div>';
+  container.innerHTML = html;
 }
 
 // ══════════════════════════════════════════════════════════
