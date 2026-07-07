@@ -104,6 +104,18 @@
   .note { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 10px 16px; font-size: 11px; color: #64748b; margin-top: 14px; }
   .note b { color: #94a3b8; }
   .sec-hidden { display: none !important; }
+
+  /* ── Overview sections (Opción B) ── */
+  .overview-section { background: #1a1f2e; border: 1px solid #2d3748; border-radius: 12px; padding: 16px; margin-bottom: 12px; border-left: 4px solid; }
+  .overview-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+  .overview-tag { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 5px; white-space: nowrap; }
+  .overview-cards { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+  .overview-cards::-webkit-scrollbar { height: 4px; }
+  .overview-cards::-webkit-scrollbar-track { background: #0f172a; border-radius: 2px; }
+  .overview-cards::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
+  .overview-card { background: #0f172a; border: 1px solid #1e293b; border-radius: 8px; padding: 10px 14px; min-width: 155px; flex-shrink: 0; transition: border-color 0.2s; }
+  .overview-card:hover { border-color: #475569; }
+  @media(max-width:600px){ .overview-header { flex-direction: column; align-items: flex-start; } }
 </style>
 </head>
 <body>
@@ -158,6 +170,9 @@
 
 <!-- ══ KPIs ══ -->
 <div class="kpi-grid" id="kpi-grid"></div>
+
+<!-- ══ OVERVIEW POR TIPO (Opción B) ══ -->
+<div id="sec-overview" class="sec-hidden"></div>
 
 <!-- ══ RANKING + GRÁFICO (PIL) ══ -->
 <div class="grid-2" id="sec-ranking">
@@ -376,7 +391,16 @@ function applyFilters() {
 
   const activeTipo = getActiveTipo();
   renderKPIs(activeTipo);
-  renderRanking(activeTipo);
+
+  if (activeTipo === '') {
+    document.getElementById('sec-overview').classList.remove('sec-hidden');
+    document.getElementById('sec-ranking').classList.add('sec-hidden');
+    renderOverview();
+  } else {
+    document.getElementById('sec-overview').classList.add('sec-hidden');
+    document.getElementById('sec-ranking').classList.remove('sec-hidden');
+    renderRanking(activeTipo);
+  }
   renderCharts(activeTipo);
   renderTabla(activeTipo);
   renderChecklist();
@@ -414,6 +438,85 @@ function renderKPIs(tipo) {
   kpis += `<div class="kpi"><div class="kpi-label">Ítems en MALO</div><div class="kpi-val kpi-red">${malos}</div><div class="kpi-sub">requieren atención</div></div>`;
 
   document.getElementById('kpi-grid').innerHTML = kpis;
+}
+
+// ══════════════════════════════════════════════════════════
+//  OVERVIEW — secciones paralelas por tipo (Opción B)
+// ══════════════════════════════════════════════════════════
+function renderOverview() {
+  const container = document.getElementById('sec-overview');
+  const categories = [
+    { key:'PIL_PER', label:'Piloteadoras / Perforadoras', tag:'PIL/PER', types:['PIL','PER'], color:'#ea580c', tagBg:'#431407', tagColor:'#fb923c', metric:'ml' },
+    { key:'INY', label:'Plantas de Inyección', tag:'INY', types:['INY'], color:'#3b82f6', tagBg:'#172554', tagColor:'#60a5fa', metric:'bolsas' },
+    { key:'COM', label:'Compresores', tag:'COM', types:['COM'], color:'#22d3ee', tagBg:'#083344', tagColor:'#22d3ee', metric:'horas' },
+    { key:'OTR', label:'Otros Equipos', tag:'OTR/EXC/GRU', types:['OTR','EXC','GRU','MIN','GEN'], color:'#a78bfa', tagBg:'#2e1065', tagColor:'#a78bfa', metric:'horas' },
+  ];
+  const numCls = ['gold','silver','bronze'];
+  let html = '';
+
+  categories.forEach(cat => {
+    const rows = FILTERED.filter(r => cat.types.includes(getTipoEquipo(r)));
+    if (!rows.length) return;
+
+    const byMaq = agruparPorEquipo(rows);
+    const totalHoras = rows.reduce((s,r) => s + (parseFloat(r.Horas_Dia)||0), 0);
+    const totalML = rows.reduce((s,r) => s + (parseFloat(r.ML_Perforados)||0), 0);
+    const totalBolsas = rows.reduce((s,r) => s + (parseInt(r.Bolsas_Concreto)||0), 0);
+    const equiposCount = Object.keys(byMaq).length;
+
+    let rankData;
+    if (cat.metric === 'ml') {
+      rankData = Object.entries(byMaq)
+        .filter(([,d]) => d.ml > 0 || d.horas > 0)
+        .map(([maq,d]) => ({ maq, val: d.horas>0?d.ml/d.horas:0, label: (d.horas>0?d.ml/d.horas:0).toFixed(2), unit:'ML/hr', op:d.operador, proy:d.proyecto }))
+        .sort((a,b) => b.val - a.val);
+    } else if (cat.metric === 'bolsas') {
+      rankData = Object.entries(byMaq)
+        .map(([maq,d]) => ({ maq, val:d.bolsas, label:String(d.bolsas), unit:'bolsas', op:d.operador, proy:d.proyecto }))
+        .sort((a,b) => b.val - a.val);
+    } else {
+      rankData = Object.entries(byMaq)
+        .map(([maq,d]) => ({ maq, val:d.horas, label:d.horas.toFixed(1), unit:'hrs', op:d.operador, proy:d.proyecto }))
+        .sort((a,b) => b.val - a.val);
+    }
+
+    let stats = `Horas: <b style="color:#60a5fa">${totalHoras.toFixed(1)}</b>`;
+    if (cat.metric === 'ml') {
+      const mlhr = totalHoras > 0 ? totalML / totalHoras : 0;
+      stats += ` &middot; ML: <b style="color:#4ade80">${totalML.toFixed(1)}</b> &middot; ML/Hr: <b style="color:#fcd34d">${mlhr.toFixed(2)}</b>`;
+    } else if (cat.metric === 'bolsas') {
+      const bhr = totalHoras > 0 ? totalBolsas / totalHoras : 0;
+      stats += ` &middot; Bolsas: <b style="color:#4ade80">${totalBolsas}</b> &middot; Bolsas/Hr: <b style="color:#fcd34d">${bhr.toFixed(1)}</b>`;
+    } else {
+      const avgH = rows.length > 0 ? totalHoras / rows.length : 0;
+      stats += ` &middot; Hrs/d&iacute;a: <b style="color:#fcd34d">${avgH.toFixed(1)}</b>`;
+    }
+
+    html += `
+    <div class="overview-section" style="border-left-color:${cat.color}">
+      <div class="overview-header">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="overview-tag" style="background:${cat.tagBg};color:${cat.tagColor}">${cat.tag}</span>
+          <span style="font-size:14px;font-weight:700;color:#fff">${cat.label}</span>
+          <span style="font-size:11px;color:#475569">${equiposCount} equipo${equiposCount!==1?'s':''}</span>
+        </div>
+        <div style="font-size:12px;color:#64748b">${stats}</div>
+      </div>
+      <div class="overview-cards">
+        ${rankData.length ? rankData.slice(0,8).map((d,i) => `
+          <div class="overview-card">
+            <div style="display:flex;align-items:center;gap:6px">
+              <span style="font-size:14px;font-weight:800" class="${i<3?'rank-num '+numCls[i]:'rank-num'}">#${i+1}</span>
+              <span style="font-size:12px;font-weight:700;color:#f1f5f9;white-space:nowrap">${esc(d.maq)}</span>
+            </div>
+            <div style="font-size:18px;font-weight:800;color:${cat.color};margin-top:4px">${d.label} <span style="font-size:10px;color:#64748b">${d.unit}</span></div>
+            <div style="font-size:10px;color:#475569;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px">${esc(d.op)} &middot; ${esc(d.proy)}</div>
+          </div>`).join('') : '<div class="empty" style="padding:12px">Sin registros</div>'}
+      </div>
+    </div>`;
+  });
+
+  container.innerHTML = html || '<div class="empty">Sin datos</div>';
 }
 
 // ══════════════════════════════════════════════════════════
