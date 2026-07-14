@@ -743,24 +743,19 @@ async function fetchUltimoHorometro(equipo) {
     const res = await fetch(`${SCRIPT_URL}?action=getUltimoHorometro&equipo=${encodeURIComponent(equipo)}`);
     const json = await res.json();
     if (json.status === 'ok' && json.data && json.data.horometro > 0) {
-      // Siempre poner el último horómetro registrado y bloquear el campo
+      // Siempre poner el último horómetro registrado (editable por si necesitan corregir)
       inp.value = json.data.horometro;
-      inp.readOnly = true;
       inp.classList.add('auto-filled');
       calcHoras();
-      showToast(`Horómetro inicial: ${json.data.horometro} (automático 🔒)`);
+      showToast(`Horómetro inicial: ${json.data.horometro} (último registrado)`);
+      inp.addEventListener('input', () => inp.classList.remove('auto-filled'), { once: true });
     } else {
-      // Equipo sin historial: campo libre para el primer registro
+      // Equipo sin historial: campo vacío para el primer registro
       inp.value = '';
-      inp.readOnly = false;
       inp.classList.remove('auto-filled');
       calcHoras();
     }
-  } catch(_) {
-    // Sin conexión: dejar editable para no bloquear el registro
-    inp.readOnly = false;
-    inp.classList.remove('auto-filled');
-  }
+  } catch(_) { /* sin conexión, no pasa nada */ }
 }
 
 function setDefaultDate() {
