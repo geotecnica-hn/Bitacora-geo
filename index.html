@@ -901,9 +901,16 @@ function validateStep(n) {
 }
 
 async function submitForm() {
+  if (APP.enviando) return;   // Evita doble envío por doble tap
   const f_firma_op  = document.getElementById('f_firma_op').value.trim();
   const f_firma_ing = document.getElementById('f_firma_ing').value.trim();
   if (!f_firma_op||!f_firma_ing) { showToast('Completa los campos de firma',true); return; }
+
+  // Bloquear de inmediato, ANTES de consultar totales semanales
+  APP.enviando = true;
+  showLoading(true);
+  document.getElementById('submitBtn').disabled = true;
+
   const fecha   = document.getElementById('f_fecha').value;
   const fecha_d = fecha?new Date(fecha+'T12:00:00'):new Date();
   const ini = parseFloat(document.getElementById('f_horo_ini').value)||0;
@@ -952,8 +959,6 @@ async function submitForm() {
   const items = APP.tipo==='INY'?CL_B:CL_A.filter(it=>it.showFor.includes(APP.tipo));
   items.forEach(it=>{ payload[it.id]=APP.checklistValues[it.id]||''; });
 
-  showLoading(true);
-  document.getElementById('submitBtn').disabled=true;
   try {
     const res  = await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain'},redirect:'follow',body:JSON.stringify(payload)});
     const data = await res.json();
@@ -966,6 +971,8 @@ async function submitForm() {
     document.getElementById('submitBtn').disabled=false;
     savePending(payload);
     showToast('Sin conexión — guardado para reenvío',true);
+  } finally {
+    APP.enviando = false;
   }
 }
 
