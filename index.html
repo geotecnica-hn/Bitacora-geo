@@ -738,22 +738,29 @@ function onEquipoSelect() {
 }
 
 async function fetchUltimoHorometro(equipo) {
+  const inp = document.getElementById('f_horo_ini');
   try {
     const res = await fetch(`${SCRIPT_URL}?action=getUltimoHorometro&equipo=${encodeURIComponent(equipo)}`);
     const json = await res.json();
     if (json.status === 'ok' && json.data && json.data.horometro > 0) {
-      const inp = document.getElementById('f_horo_ini');
-      // Solo auto-llenar si el campo está vacío
-      if (!inp.value) {
-        inp.value = json.data.horometro;
-        inp.classList.add('auto-filled');
-        calcHoras();
-        showToast(`Horómetro inicial: ${json.data.horometro} (último registrado)`);
-        // Quitar el estilo después de que el usuario interactúe
-        inp.addEventListener('input', () => inp.classList.remove('auto-filled'), { once: true });
-      }
+      // Siempre poner el último horómetro registrado y bloquear el campo
+      inp.value = json.data.horometro;
+      inp.readOnly = true;
+      inp.classList.add('auto-filled');
+      calcHoras();
+      showToast(`Horómetro inicial: ${json.data.horometro} (automático 🔒)`);
+    } else {
+      // Equipo sin historial: campo libre para el primer registro
+      inp.value = '';
+      inp.readOnly = false;
+      inp.classList.remove('auto-filled');
+      calcHoras();
     }
-  } catch(_) { /* sin conexión, no pasa nada */ }
+  } catch(_) {
+    // Sin conexión: dejar editable para no bloquear el registro
+    inp.readOnly = false;
+    inp.classList.remove('auto-filled');
+  }
 }
 
 function setDefaultDate() {
