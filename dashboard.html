@@ -105,6 +105,10 @@
   .note b { color: #94a3b8; }
   .sec-hidden { display: none !important; }
 
+  .btn-alertas { background: #431418; color: #fca5a5; border: 1px solid #7f1d1d; padding: 9px 16px; border-radius: 9px; font-size: 13px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 7px; transition: all 0.2s; }
+  .btn-alertas:hover { background: #7f1d1d; color: #fee2e2; }
+  .btn-alertas span:not(:empty) { background: #ef4444; color: #fff; font-size: 11px; font-weight: 800; padding: 1px 7px; border-radius: 10px; }
+
   /* ── Overview sections (Opción B) ── */
   .overview-section { background: #1a1f2e; border: 1px solid #2d3748; border-radius: 12px; padding: 16px; margin-bottom: 12px; border-left: 4px solid; }
   .overview-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
@@ -129,6 +133,7 @@
     </div>
   </div>
   <div class="header-right">
+    <a href="alertas.html" class="btn-alertas">⚠️ Centro de Alertas<span id="alertas-count"></span></a>
     <div>
       <div class="semana-badge" id="semana-badge">📅 Cargando...</div>
       <div class="last-update" id="last-update"></div>
@@ -249,6 +254,7 @@ const CHECKLIST_COLS = [
   // ═══ Mantenimiento ═══
   { id: 'A_Limpieza_General',        label: 'Limpieza general',        mode: 'sino_inv' },
   { id: 'A_Cables_Acero_Ganchos',    label: 'Cables y ganchos',        mode: 'bim' },
+  { id: 'A_Ruidos_Extranos',         label: 'Ruidos extraños',         mode: 'sino' },
   { id: 'A_Ruidos_Extraños',         label: 'Ruidos extraños',         mode: 'sino' },
   { id: 'A_Engrase',                 label: 'Engrase',                 mode: 'sino_inv' },
   // ═══ Específicos ═══
@@ -396,6 +402,14 @@ function applyFilters() {
   renderTabla(activeTipo);
   renderChecklist();
   renderOtrosEquipos(activeTipo);
+  actualizarBadgeAlertas();
+}
+
+// Muestra en el botón del header cuántos ítems en MALO hay en la vista actual
+function actualizarBadgeAlertas() {
+  const malos = FILTERED.reduce((s,r) => s + CHECKLIST_COLS.filter(c => normalizeBIM(r[c.id], c.mode) === 'M').length, 0);
+  const el = document.getElementById('alertas-count');
+  if (el) el.textContent = malos > 0 ? malos : '';
 }
 
 // ══════════════════════════════════════════════════════════
