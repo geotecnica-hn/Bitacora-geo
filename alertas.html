@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centro de Alertas — Geotécnica</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0f1117; color: #e2e8f0; font-family: 'Segoe UI', sans-serif; padding: 24px; min-height: 100vh; }
+
+  .header { background: linear-gradient(135deg, #1a1f2e, #1e2538); border: 1px solid #2d3748; border-radius: 14px; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .header-icon { border-radius: 10px; width: 48px; height: 48px; flex-shrink: 0; overflow: hidden; }
+  .header-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+  .header-title h1 { font-size: 20px; font-weight: 700; color: #fff; }
+  .header-title p  { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+  .header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .btn-link { background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+  .btn-link:hover { background: #334155; color: #e2e8f0; }
+  .last-update { font-size: 11px; color: #475569; margin-top: 4px; }
+
+  .filters { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: flex-end; }
+  .filter-group { display: flex; flex-direction: column; gap: 4px; }
+  .filter-group label { font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  select, input[type=text] { background: #1a1f2e; border: 1px solid #2d3748; color: #e2e8f0; padding: 8px 12px; border-radius: 8px; font-size: 13px; min-width: 150px; }
+  select { cursor: pointer; }
+  select:focus, input[type=text]:focus { outline: none; border-color: #ef4444; }
+  .btn-refresh { background: #E65100; color: #fff; border: none; padding: 8px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; gap: 6px; }
+  .btn-refresh:hover { background: #F57C00; }
+  .btn-refresh.loading { opacity: 0.6; pointer-events: none; }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-bottom: 20px; }
+  .kpi { background: #1a1f2e; border: 1px solid #2d3748; border-radius: 14px; padding: 18px 20px; }
+  .kpi.crit { border-color: #7f1d1d; background: linear-gradient(135deg, #1a1f2e, #241618); }
+  .kpi-label { font-size: 11px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .kpi-val { font-size: 32px; font-weight: 800; line-height: 1; }
+  .kpi-sub { font-size: 11px; color: #64748b; margin-top: 6px; }
+  .kpi-red { color: #f87171; } .kpi-amber { color: #fcd34d; } .kpi-blue { color: #60a5fa; } .kpi-white { color: #f1f5f9; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  @media(max-width:900px){ .grid-2{ grid-template-columns:1fr; } }
+
+  .card { background: #1a1f2e; border: 1px solid #2d3748; border-radius: 14px; padding: 20px; margin-bottom: 20px; }
+  .card-title { font-size: 13px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+
+  /* Ranking equipos / problemas */
+  .rank-row { display: flex; align-items: center; gap: 12px; background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 10px 14px; margin-bottom: 8px; position: relative; overflow: hidden; cursor: pointer; transition: border-color 0.2s; }
+  .rank-row:hover { border-color: #475569; }
+  .rank-row .bar { position: absolute; left: 0; top: 0; bottom: 0; background: #ef4444; opacity: 0.13; border-radius: 10px 0 0 10px; }
+  .rank-name { flex: 1; font-size: 13px; font-weight: 700; color: #f1f5f9; position: relative; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rank-meta { font-size: 11px; color: #64748b; font-weight: 400; margin-top: 2px; }
+  .rank-count { font-size: 18px; font-weight: 800; color: #f87171; position: relative; white-space: nowrap; }
+  .rank-unit { font-size: 10px; color: #64748b; }
+
+  /* Reportes */
+  .report { background: #0f172a; border: 1px solid #1e293b; border-left: 4px solid #ef4444; border-radius: 12px; padding: 16px 18px; margin-bottom: 12px; }
+  .report.warn { border-left-color: #f59e0b; }
+  .report.info { border-left-color: #3b82f6; }
+  .report-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .report-equipo { font-size: 15px; font-weight: 700; color: #f1f5f9; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .tipo-tag { font-size: 10px; font-weight: 600; color: #94a3b8; background: #1e293b; padding: 2px 8px; border-radius: 6px; }
+  .report-meta { font-size: 11px; color: #64748b; margin-top: 3px; }
+  .report-fecha { font-size: 12px; color: #94a3b8; font-weight: 600; white-space: nowrap; }
+  .report-dia { font-size: 10px; color: #475569; text-align: right; }
+
+  .items-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .item-chip { font-size: 11px; padding: 4px 10px; border-radius: 7px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; }
+  .chip-m { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid #7f1d1d; }
+  .chip-i { background: rgba(245,158,11,0.13); color: #fcd34d; border: 1px solid #78350f; }
+  .chip-val { opacity: 0.75; font-weight: 400; }
+
+  .obs-box { background: #131c2e; border: 1px solid #1e293b; border-radius: 8px; padding: 10px 14px; margin-top: 8px; }
+  .obs-label { font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
+  .obs-text { font-size: 13px; color: #cbd5e1; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
+
+  .sol-box { background: rgba(34,197,94,0.07); border: 1px solid #14532d; border-radius: 8px; padding: 10px 14px; margin-top: 8px; }
+  .sol-label { font-size: 10px; color: #4ade80; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 5px; }
+  .sol-text { font-size: 13px; color: #bbf7d0; line-height: 1.55; white-space: pre-wrap; }
+
+  .empty { text-align: center; padding: 40px; color: #475569; font-size: 14px; }
+  .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid #1e293b; border-top-color: #ea580c; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 8px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .note { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 10px 16px; font-size: 11px; color: #64748b; margin-top: 14px; }
+  .note b { color: #94a3b8; }
+
+  .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
+  .count-badge { font-size: 12px; color: #64748b; }
+  .count-badge b { color: #f1f5f9; }
+  .btn-more { background: #1e293b; color: #94a3b8; border: 1px solid #334155; padding: 10px 24px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: block; margin: 4px auto 0; transition: all 0.2s; }
+  .btn-more:hover { background: #334155; color: #e2e8f0; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-icon"><img src="logo.png" alt="Geotécnica"></div>
+    <div class="header-title">
+      <h1>⚠️ Centro de Alertas</h1>
+      <p>Reportes de fallas y observaciones — Geotécnica Soluciones</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <div>
+      <a href="dashboard.html" class="btn-link">← Volver al Dashboard</a>
+      <div class="last-update" id="last-update"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FILTROS ══ -->
+<div class="filters">
+  <div class="filter-group">
+    <label>Semana</label>
+    <select id="fil-semana" onchange="applyFilters()"><option value="">Todas</option></select>
+  </div>
+  <div class="filter-group">
+    <label>Equipo</label>
+    <select id="fil-equipo" onchange="applyFilters()"><option value="">Todos</option></select>
+  </div>
+  <div class="filter-group">
+    <label>Tipo</label>
+    <select id="fil-tipo" onchange="applyFilters()">
+      <option value="">Todos</option>
+      <option value="PIL">Piloteadora</option>
+      <option value="PER">Perforadora</option>
+      <option value="COM">Compresor</option>
+      <option value="INY">Planta Inyección</option>
+      <option value="EXC">Excavadora</option>
+      <option value="GRU">Grúa</option>
+      <option value="OTR">Otro</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <label>Mostrar</label>
+    <select id="fil-sev" onchange="applyFilters()">
+      <option value="todo">Fallas + Observaciones</option>
+      <option value="critico">Solo fallas graves (MALO)</option>
+      <option value="obs">Solo observaciones escritas</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <label>Buscar texto</label>
+    <input type="text" id="fil-texto" placeholder="ej: batería, fuga..." oninput="applyFilters()">
+  </div>
+  <div class="filter-group">
+    <label>&nbsp;</label>
+    <button class="btn-refresh" id="btnRefresh" onclick="loadData()"><span id="refresh-icon">⟳</span> Actualizar</button>
+  </div>
+</div>
+
+<!-- ══ KPIs ══ -->
+<div class="kpi-grid" id="kpi-grid"></div>
+
+<!-- ══ RANKINGS ══ -->
+<div class="grid-2">
+  <div class="card" style="margin-bottom:0">
+    <div class="card-title"><span class="dot" style="background:#ef4444"></span> Equipos con más fallas</div>
+    <div id="rank-equipos"><div class="empty">Cargando...</div></div>
+  </div>
+  <div class="card" style="margin-bottom:0">
+    <div class="card-title"><span class="dot" style="background:#f59e0b"></span> Fallas más frecuentes</div>
+    <div id="rank-items"><div class="empty">Cargando...</div></div>
+  </div>
+</div>
+
+<!-- ══ LISTA DE REPORTES ══ -->
+<div class="card">
+  <div class="list-header">
+    <div class="card-title" style="margin-bottom:0"><span class="dot" style="background:#ea580c"></span> Reportes (más reciente primero)</div>
+    <div class="count-badge" id="count-badge"></div>
+  </div>
+  <div id="reportes"><div class="empty">Cargando...</div></div>
+  <button class="btn-more" id="btn-more" style="display:none" onclick="mostrarMas()">Ver más reportes</button>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxYxKG8sxlRGQJrbZxGVeXhpu8YRrbgeHPYuqM_4FLtUOy5Ng2Hffts7hTm5B7iFmYi/exec';
+const REFRESH_INTERVAL = 60000;
+const PAGE_SIZE = 25;
+
+// ── Definición de ítems del checklist con su modo de interpretación ──
+const CHECKLIST_COLS = [
+  { id: 'A_Combustible',             label: 'Combustible',             mode: 'fuel' },
+  { id: 'A_Aceite_Motor',            label: 'Aceite motor',            mode: 'bim' },
+  { id: 'A_Aceite_Hidraulico',       label: 'Aceite hidráulico',       mode: 'bim' },
+  { id: 'A_Reservorio_Compresores',  label: 'Reservorio compresor',    mode: 'bim' },
+  { id: 'A_Aceite_Bombas_MR',        label: 'Aceite bombas MR',        mode: 'bim' },
+  { id: 'A_Coolant_Agua',            label: 'Coolant / agua',          mode: 'bim' },
+  { id: 'A_Aceite_Mesa_Rotacion',    label: 'Aceite mesa rotación',    mode: 'bim' },
+  { id: 'A_Filtro_Sep_Combustible',  label: 'Filtro sep. combustible', mode: 'bim' },
+  { id: 'A_Filtro_Aire_Motor',       label: 'Filtro aire motor',       mode: 'bim' },
+  { id: 'A_Filtro_Aire_Compresor',   label: 'Filtro aire compresor',   mode: 'bim' },
+  { id: 'A_Baterias',                label: 'Baterías',                mode: 'bim' },
+  { id: 'A_Fugas_Aceite_Motor',      label: 'Fuga aceite motor',       mode: 'sino' },
+  { id: 'A_Fugas_Mangueras',         label: 'Fuga mangueras',          mode: 'sino' },
+  { id: 'A_Limpieza_General',        label: 'Limpieza general',        mode: 'sino_inv' },
+  { id: 'A_Cables_Acero_Ganchos',    label: 'Cables y ganchos',        mode: 'bim' },
+  { id: 'A_Ruidos_Extranos',         label: 'Ruidos extraños',         mode: 'sino' },
+  { id: 'A_Ruidos_Extraños',         label: 'Ruidos extraños',         mode: 'sino' },
+  { id: 'A_Engrase',                 label: 'Engrase',                 mode: 'sino_inv' },
+  { id: 'A_Estado_Orugas',           label: 'Orugas / tren rodaje',    mode: 'bim' },
+  { id: 'A_Estado_Cucharon',         label: 'Cucharón',                mode: 'bim' },
+  { id: 'A_Pines_Bocinas',           label: 'Pines y bocinas',         mode: 'bim' },
+  { id: 'A_Cables_Gancho_Grua',      label: 'Cables, gancho y seguro', mode: 'bim' },
+  { id: 'A_Estabilizadores',         label: 'Estabilizadores',         mode: 'bim' },
+  { id: 'A_Estado_Bucket_MIN',       label: 'Bucket / accesorio',      mode: 'bim' },
+  { id: 'A_Neumaticos',              label: 'Neumáticos / cadenas',    mode: 'bim' },
+  { id: 'A_Voltaje_Salida',          label: 'Voltaje de salida',       mode: 'sino_inv' },
+  { id: 'A_Conexiones_Cables',       label: 'Conexiones eléctricas',   mode: 'bim' },
+  { id: 'A_Tablero_Control',         label: 'Tablero de control',      mode: 'sino_inv' },
+  { id: 'B_Aceite_Hidraulico',       label: 'Aceite hidráulico',       mode: 'bim' },
+  { id: 'B_Fuga_Hidraulico',         label: 'Fuga hidráulico',         mode: 'sino' },
+  { id: 'B_Fuga_Lechada',            label: 'Fuga lechada',            mode: 'sino' },
+  { id: 'B_Limpieza_Bomba',          label: 'Limpieza bomba',          mode: 'sino_inv' },
+  { id: 'B_Limpieza_Agitador',       label: 'Limpieza agitador',       mode: 'sino_inv' },
+  { id: 'B_Limpieza_Turbo',          label: 'Limpieza turbo',          mode: 'sino_inv' },
+  { id: 'B_Estado_Motor_Agitador',   label: 'Motor agitador',          mode: 'bim' },
+  { id: 'B_Estado_Motor_Turbo',      label: 'Motor turbo',             mode: 'bim' },
+  { id: 'B_Estado_Motor_Bomba',      label: 'Motor bomba',             mode: 'bim' },
+  { id: 'B_Estado_Cuenta_Litros',    label: 'Cuenta litros',           mode: 'bim' },
+  { id: 'B_Estado_Panel_Electrico',  label: 'Panel eléctrico',         mode: 'bim' },
+];
+
+// Normaliza cualquier valor de checklist a B / I / M
+function normalizeBIM(rawVal, mode) {
+  if (!rawVal) return '';
+  const v = rawVal.toString().toUpperCase().trim();
+  if (mode === 'bim') return v;
+  if (mode === 'fuel') {
+    if (v === 'FULL' || v === 'F' || v === '3/4') return 'B';
+    if (v === '1/2') return 'I';
+    if (v === '1/4' || v === 'RESERVA' || v === 'R') return 'M';
+    return v;
+  }
+  if (mode === 'sino')     { if (v === 'SI') return 'M'; if (v === 'NO') return 'B'; return v; }
+  if (mode === 'sino_inv') { if (v === 'SI') return 'B'; if (v === 'NO') return 'M'; return v; }
+  return v;
+}
+
+// Limpia el ruido "undefined" que a veces trae el campo de observaciones
+function limpiarObs(raw) {
+  if (!raw) return '';
+  return String(raw)
+    .split('|')
+    .map(s => s.trim())
+    .filter(s => s && !/undefined\s*$/i.test(s) && s.toLowerCase() !== 'undefined')
+    .join(' | ')
+    .trim();
+}
+
+let ALL_DATA = [], REPORTES = [], FILTRADOS = [], mostrados = PAGE_SIZE;
+
+document.addEventListener('DOMContentLoaded', () => { loadData(); setInterval(loadData, REFRESH_INTERVAL); });
+
+async function loadData() {
+  const btn = document.getElementById('btnRefresh');
+  const icon = document.getElementById('refresh-icon');
+  btn.classList.add('loading'); icon.innerHTML = '<span class="loading-spinner"></span>';
+  try {
+    const res = await fetch(`${SCRIPT_URL}?action=getDashboardData`);
+    const json = await res.json();
+    if (json.status === 'ok' && Array.isArray(json.data)) {
+      ALL_DATA = json.data;
+      construirReportes();
+      poblarFiltros();
+      applyFilters();
+      document.getElementById('last-update').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-HN');
+    }
+  } catch (e) {
+    document.getElementById('last-update').textContent = 'Sin conexión — mostrando últimos datos';
+  } finally { btn.classList.remove('loading'); icon.textContent = '⟳'; }
+}
+
+// Convierte cada bitácora en un "reporte" solo si tiene algo malo o alguna observación
+function construirReportes() {
+  REPORTES = [];
+  ALL_DATA.forEach(r => {
+    const malos = [], intermedios = [];
+    const vistos = new Set();
+    CHECKLIST_COLS.forEach(col => {
+      if (!(col.id in r)) return;
+      if (vistos.has(col.label)) return;
+      const n = normalizeBIM(r[col.id], col.mode);
+      if (n === 'M') { malos.push({ label: col.label, val: r[col.id] }); vistos.add(col.label); }
+      else if (n === 'I') { intermedios.push({ label: col.label, val: r[col.id] }); vistos.add(col.label); }
+    });
+    const obs = limpiarObs(r['Observaciones']);
+    const sol = (r['Solución a reporte'] || '').trim();
+    if (!malos.length && !intermedios.length && !obs) return;   // nada que reportar
+
+    REPORTES.push({
+      equipo: r.Nombre_Equipo || '—',
+      tipo:   r.Tipo_Equipo   || '',
+      operador: r.Operador || '—',
+      proyecto: r.Proyecto || '—',
+      fecha:  r.Fecha || '',
+      dia:    r.Dia || '',
+      semana: r.Semana || '',
+      malos, intermedios, obs, sol,
+      severidad: malos.length ? 'crit' : (intermedios.length ? 'warn' : 'info')
+    });
+  });
+  REPORTES.sort((a,b) => String(b.fecha).localeCompare(String(a.fecha)));
+}
+
+function poblarFiltros() {
+  const semanas = [...new Set(ALL_DATA.map(r => r.Semana).filter(Boolean))].sort((a,b) => b-a);
+  const equipos = [...new Set(REPORTES.map(r => r.equipo).filter(Boolean))].sort();
+  const selS = document.getElementById('fil-semana'), selE = document.getElementById('fil-equipo');
+  const vS = selS.value, vE = selE.value;
+  selS.innerHTML = '<option value="">Todas</option>' + semanas.map(s => `<option value="${esc(s)}">Semana ${esc(s)}</option>`).join('');
+  selE.innerHTML = '<option value="">Todos</option>' + equipos.map(e => `<option value="${esc(e)}">${esc(e)}</option>`).join('');
+  selS.value = vS; selE.value = vE;
+}
+
+function applyFilters() {
+  const semana = document.getElementById('fil-semana').value;
+  const equipo = document.getElementById('fil-equipo').value;
+  const tipo   = document.getElementById('fil-tipo').value;
+  const sev    = document.getElementById('fil-sev').value;
+  const texto  = document.getElementById('fil-texto').value.trim().toLowerCase();
+
+  FILTRADOS = REPORTES.filter(r => {
+    if (semana && String(r.semana) !== String(semana)) return false;
+    if (equipo && r.equipo !== equipo) return false;
+    if (tipo   && r.tipo   !== tipo)   return false;
+    if (sev === 'critico' && !r.malos.length) return false;
+    if (sev === 'obs'     && !r.obs)          return false;
+    if (texto) {
+      const blob = (r.equipo + ' ' + r.operador + ' ' + r.proyecto + ' ' + r.obs + ' ' +
+                    r.malos.map(m=>m.label).join(' ') + ' ' + r.intermedios.map(m=>m.label).join(' ')).toLowerCase();
+      if (!blob.includes(texto)) return false;
+    }
+    return true;
+  });
+
+  mostrados = PAGE_SIZE;
+  renderKPIs();
+  renderRankings();
+  renderReportes();
+}
+
+function renderKPIs() {
+  const nCrit = FILTRADOS.reduce((s,r) => s + r.malos.length, 0);
+  const nWarn = FILTRADOS.reduce((s,r) => s + r.intermedios.length, 0);
+  const nObs  = FILTRADOS.filter(r => r.obs).length;
+  const nEq   = new Set(FILTRADOS.map(r => r.equipo)).size;
+
+  document.getElementById('kpi-grid').innerHTML = `
+    <div class="kpi crit"><div class="kpi-label">Fallas graves</div><div class="kpi-val kpi-red">${nCrit}</div><div class="kpi-sub">ítems en MALO</div></div>
+    <div class="kpi"><div class="kpi-label">Advertencias</div><div class="kpi-val kpi-amber">${nWarn}</div><div class="kpi-sub">ítems intermedios</div></div>
+    <div class="kpi"><div class="kpi-label">Comentarios</div><div class="kpi-val kpi-blue">${nObs}</div><div class="kpi-sub">observaciones escritas</div></div>
+    <div class="kpi"><div class="kpi-label">Equipos afectados</div><div class="kpi-val kpi-white">${nEq}</div><div class="kpi-sub">con algo reportado</div></div>
+    <div class="kpi"><div class="kpi-label">Reportes</div><div class="kpi-val kpi-white">${FILTRADOS.length}</div><div class="kpi-sub">bitácoras con hallazgos</div></div>`;
+}
+
+function renderRankings() {
+  // Equipos con más fallas
+  const porEquipo = {};
+  FILTRADOS.forEach(r => {
+    if (!porEquipo[r.equipo]) porEquipo[r.equipo] = { m:0, i:0, obs:0, tipo:r.tipo };
+    porEquipo[r.equipo].m   += r.malos.length;
+    porEquipo[r.equipo].i   += r.intermedios.length;
+    porEquipo[r.equipo].obs += r.obs ? 1 : 0;
+  });
+  const eqArr = Object.entries(porEquipo).map(([k,v]) => ({ nombre:k, ...v })).sort((a,b) => (b.m - a.m) || (b.i - a.i));
+  const maxEq = eqArr.length ? Math.max(1, eqArr[0].m) : 1;
+  document.getElementById('rank-equipos').innerHTML = eqArr.length
+    ? eqArr.slice(0,8).map(e => `
+      <div class="rank-row" onclick="filtrarPorEquipo('${escAttr(e.nombre)}')">
+        <div class="bar" style="width:${Math.round(e.m/maxEq*100)}%"></div>
+        <div class="rank-name">${esc(e.nombre)} <span class="tipo-tag">${esc(e.tipo||'—')}</span>
+          <div class="rank-meta">${e.i} advertencia${e.i!==1?'s':''} · ${e.obs} comentario${e.obs!==1?'s':''}</div>
+        </div>
+        <div style="text-align:right"><div class="rank-count">${e.m}</div><div class="rank-unit">fallas</div></div>
+      </div>`).join('')
+    : '<div class="empty">Sin fallas registradas 🎉</div>';
+
+  // Fallas más frecuentes
+  const porItem = {};
+  FILTRADOS.forEach(r => r.malos.forEach(m => {
+    if (!porItem[m.label]) porItem[m.label] = { n:0, equipos:new Set() };
+    porItem[m.label].n++; porItem[m.label].equipos.add(r.equipo);
+  }));
+  const itArr = Object.entries(porItem).map(([k,v]) => ({ label:k, n:v.n, eq:v.equipos.size })).sort((a,b) => b.n - a.n);
+  const maxIt = itArr.length ? Math.max(1, itArr[0].n) : 1;
+  document.getElementById('rank-items').innerHTML = itArr.length
+    ? itArr.slice(0,8).map(i => `
+      <div class="rank-row" onclick="buscarTexto('${escAttr(i.label)}')">
+        <div class="bar" style="width:${Math.round(i.n/maxIt*100)}%;background:#f59e0b"></div>
+        <div class="rank-name">${esc(i.label)}
+          <div class="rank-meta">en ${i.eq} equipo${i.eq!==1?'s':''}</div>
+        </div>
+        <div style="text-align:right"><div class="rank-count" style="color:#fcd34d">${i.n}</div><div class="rank-unit">veces</div></div>
+      </div>`).join('')
+    : '<div class="empty">Sin fallas registradas 🎉</div>';
+}
+
+function renderReportes() {
+  const cont = document.getElementById('reportes');
+  const badge = document.getElementById('count-badge');
+  const btnMore = document.getElementById('btn-more');
+
+  badge.innerHTML = `<b>${FILTRADOS.length}</b> reporte${FILTRADOS.length!==1?'s':''}`;
+
+  if (!FILTRADOS.length) {
+    cont.innerHTML = '<div class="empty">✅ No hay reportes con los filtros seleccionados</div>';
+    btnMore.style.display = 'none';
+    return;
+  }
+
+  const slice = FILTRADOS.slice(0, mostrados);
+  cont.innerHTML = slice.map(r => `
+    <div class="report ${r.severidad}">
+      <div class="report-head">
+        <div>
+          <div class="report-equipo">${esc(r.equipo)} <span class="tipo-tag">${esc(r.tipo||'—')}</span></div>
+          <div class="report-meta">${esc(r.operador)} · ${esc(r.proyecto)}${r.semana?' · Semana '+esc(r.semana):''}</div>
+        </div>
+        <div>
+          <div class="report-fecha">${esc(r.fecha||'—')}</div>
+          <div class="report-dia">${esc(r.dia||'')}</div>
+        </div>
+      </div>
+      ${(r.malos.length || r.intermedios.length) ? `<div class="items-list">
+        ${r.malos.map(m => `<span class="item-chip chip-m">🔴 ${esc(m.label)}<span class="chip-val">${esc(m.val)}</span></span>`).join('')}
+        ${r.intermedios.map(m => `<span class="item-chip chip-i">🟡 ${esc(m.label)}<span class="chip-val">${esc(m.val)}</span></span>`).join('')}
+      </div>` : ''}
+      ${r.obs ? `<div class="obs-box"><div class="obs-label">💬 Comentario del operador</div><div class="obs-text">${esc(r.obs)}</div></div>` : ''}
+      ${r.sol ? `<div class="sol-box"><div class="sol-label">✅ Solución registrada</div><div class="sol-text">${esc(r.sol)}</div></div>` : ''}
+    </div>`).join('');
+
+  if (FILTRADOS.length > mostrados) {
+    btnMore.style.display = 'block';
+    btnMore.textContent = `Ver más reportes (${FILTRADOS.length - mostrados} restantes)`;
+  } else {
+    btnMore.style.display = 'none';
+  }
+}
+
+function mostrarMas() { mostrados += PAGE_SIZE; renderReportes(); }
+
+function filtrarPorEquipo(nombre) {
+  document.getElementById('fil-equipo').value = nombre;
+  applyFilters();
+  document.getElementById('reportes').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function buscarTexto(t) {
+  document.getElementById('fil-texto').value = t;
+  applyFilters();
+  document.getElementById('reportes').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function esc(str) { return String(str==null?'':str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escAttr(str) { return esc(str).replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+</script>
+</body>
+</html>
