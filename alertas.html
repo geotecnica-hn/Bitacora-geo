@@ -84,6 +84,11 @@
   .eq-problemas { display: flex; flex-direction: column; gap: 4px; }
   .eq-prob { font-size: 11px; color: #cbd5e1; display: flex; align-items: center; gap: 6px; }
   .eq-prob .pd { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+  .eq-coment { background: #101826; border: 1px solid #1e293b; border-left: 3px solid #3b82f6; border-radius: 8px; padding: 9px 11px; margin-top: 11px; }
+  .eq-coment.vacio { border-left-color: #334155; background: #0e1420; }
+  .eq-coment-lbl { font-size: 9.5px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 5px; }
+  .eq-coment-txt { font-size: 11.5px; color: #cbd5e1; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; white-space: pre-wrap; word-break: break-word; }
+
   .eq-fecha { font-size: 10px; color: #475569; margin-top: 10px; padding-top: 9px; border-top: 1px solid #1e293b; display: flex; justify-content: space-between; }
 
   /* ── Modal detalle ── */
@@ -197,6 +202,14 @@
       <option value="EXC">Excavadora</option>
       <option value="GRU">Grúa</option>
       <option value="OTR">Otro</option>
+    </select>
+  </div>
+  <div class="filter-group">
+    <label>Mostrar</label>
+    <select id="fil-que" onchange="applyFilters()">
+      <option value="">Todo</option>
+      <option value="coment">Solo con comentario del operador</option>
+      <option value="fallas">Solo con fallas</option>
     </select>
   </div>
   <div class="filter-group">
@@ -420,8 +433,13 @@ function construir() {
       blob: (nombre + ' ' + textoHist.join(' ')).toLowerCase()
     };
   });
+  // Orden: primero por gravedad, luego los que tienen comentario del operador, luego por nº de fallas
   const ordenNivel = { crit:0, aten:1, vigi:2, ok:3 };
-  EQUIPOS.sort((a,b) => (ordenNivel[a.nivel]-ordenNivel[b.nivel]) || (b.nM-a.nM) || a.nombre.localeCompare(b.nombre));
+  EQUIPOS.sort((a,b) =>
+    (ordenNivel[a.nivel]-ordenNivel[b.nivel]) ||
+    ((b.obs?1:0)-(a.obs?1:0)) ||
+    (b.nM-a.nM) ||
+    a.nombre.localeCompare(b.nombre));
 }
 
 function poblarFiltros() {
@@ -434,11 +452,14 @@ function poblarFiltros() {
 function applyFilters() {
   const semana = document.getElementById('fil-semana').value;
   const tipo   = document.getElementById('fil-tipo').value;
+  const que    = document.getElementById('fil-que').value;
   const texto  = document.getElementById('fil-texto').value.trim().toLowerCase();
 
   FILTRADOS = REPORTES.filter(r => {
     if (semana && String(r.semana)!==String(semana)) return false;
     if (tipo   && r.tipo!==tipo) return false;
+    if (que==='coment' && !r.obs) return false;
+    if (que==='fallas' && !r.malos.length) return false;
     if (texto) {
       const blob = (r.equipo+' '+r.operador+' '+r.proyecto+' '+r.obs+' '+
                     r.malos.map(m=>m.label).join(' ')+' '+r.inter.map(m=>m.label).join(' ')).toLowerCase();
@@ -450,6 +471,8 @@ function applyFilters() {
   EQ_FILTRADOS = EQUIPOS.filter(e => {
     if (tipo && e.tipo!==tipo) return false;
     if (filtroNivel && e.nivel!==filtroNivel) return false;
+    if (que==='coment' && !e.obs && !e.totObs) return false;
+    if (que==='fallas' && !e.nM) return false;
     if (texto && !e.blob.includes(texto)) return false;   // busca en todo el historial del equipo
     return true;
   });
@@ -508,6 +531,15 @@ function renderEquipos() {
       || '<div class="eq-prob" style="color:#4ade80"><span class="pd" style="background:#22c55e"></span>Sin fallas reportadas</div>';
     const extra = e.problemas.length>3 ? `<div class="eq-prob" style="color:#64748b">+${e.problemas.length-3} más…</div>` : '';
     const spark = e.hist.map(h => `<div class="spark-bar sb-${h}"></div>`).join('');
+    // Lo que escribió el operador en su última bitácora
+    const coment = e.obs ? `
+      <div class="eq-coment">
+        <div class="eq-coment-lbl">💬 ${esc(e.operador)} escribió:</div>
+        <div class="eq-coment-txt">${esc(e.obs)}</div>
+      </div>` : (e.totObs ? `
+      <div class="eq-coment vacio">
+        <div class="eq-coment-lbl">💬 ${e.totObs} comentario${e.totObs!==1?'s':''} en bitácoras anteriores</div>
+      </div>` : '');
     return `
     <div class="eq-card ${e.nivel}" onclick="abrirEquipo('${escAttr(e.nombre)}')">
       <div class="eq-top">
@@ -525,6 +557,7 @@ function renderEquipos() {
       <div class="spark-lbl">Últimas ${e.hist.length} bitácoras</div>
       <div class="spark">${spark}</div>
       <div class="eq-problemas">${chips}${extra}</div>
+      ${coment}
       <div class="eq-fecha"><span>${esc(e.fecha||'—')}</span><span>${esc(e.operador)}</span></div>
     </div>`;
   }).join('');
