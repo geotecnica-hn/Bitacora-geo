@@ -147,6 +147,61 @@
   .aviso { background: #17212f; border: 1px solid #1e3a5f; border-left: 3px solid #3b82f6; border-radius: 9px; padding: 11px 15px; font-size: 12px; color: #94a3b8; margin-bottom: 14px; line-height: 1.5; }
   .aviso b { color: #cbd5e1; }
 
+  /* ── Pendientes ── */
+  .pend-resumen { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 16px; }
+  @media(max-width:620px){ .pend-resumen { grid-template-columns: 1fr; } }
+  .pend-res-card { background: #161b28; border: 1px solid #2d3748; border-radius: 12px; padding: 14px 16px; }
+  .pend-row { background: #161b28; border: 1px solid #2d3748; border-left: 4px solid #ef4444; border-radius: 11px; padding: 13px 16px; margin-bottom: 9px; display: flex; align-items: center; gap: 16px; cursor: pointer; transition: border-color .2s; flex-wrap: wrap; }
+  .pend-row:hover { border-color: #475569; }
+  .pend-main { flex: 1; min-width: 170px; }
+  .pend-item { font-size: 14px; font-weight: 700; color: #f1f5f9; }
+  .pend-eq { font-size: 11px; color: #64748b; margin-top: 3px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .pend-racha { text-align: center; flex-shrink: 0; }
+  .pend-racha-n { font-size: 21px; font-weight: 800; line-height: 1; }
+  .pend-racha-l { font-size: 9px; color: #475569; margin-top: 3px; line-height: 1.25; }
+  .pend-fechas { font-size: 11px; color: #94a3b8; min-width: 175px; line-height: 1.5; }
+  .pend-fechas b { color: #cbd5e1; }
+  .pend-tag { font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 7px; border: 1px solid; text-transform: uppercase; letter-spacing: .04em; flex-shrink: 0; }
+  .cerrados-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(230px,1fr)); gap: 9px; }
+  .cerrado-chip { background: #0f1a14; border: 1px solid #14532d; border-radius: 9px; padding: 9px 12px; display: flex; gap: 9px; align-items: flex-start; }
+
+  /* ── Hoja de revisión semanal ── */
+  .hoja { background: #161b28; border: 1px solid #2d3748; border-radius: 14px; padding: 26px 28px; }
+  .hoja-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; padding-bottom: 18px; border-bottom: 2px solid #2d3748; margin-bottom: 22px; flex-wrap: wrap; }
+  .hoja-head h2 { font-size: 21px; color: #fff; font-weight: 700; }
+  .hoja-sub { font-size: 12px; color: #64748b; margin-top: 5px; }
+  .hoja-nums { display: flex; gap: 20px; font-size: 12px; color: #94a3b8; }
+  .hoja-nums span { font-size: 20px; font-weight: 800; display: block; }
+  .hoja-sec { margin-bottom: 26px; }
+  .hoja-sec h3 { font-size: 14px; color: #e2e8f0; font-weight: 700; margin-bottom: 12px; }
+  .hoja-tabla-wrap { overflow-x: auto; }
+  .hoja-tabla { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 460px; }
+  .hoja-tabla th { text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: .05em; color: #64748b; padding: 8px 10px; border-bottom: 1px solid #2d3748; font-weight: 700; }
+  .hoja-tabla td { padding: 9px 10px; border-bottom: 1px solid #1a2233; color: #cbd5e1; vertical-align: top; }
+  .col-accion { min-width: 165px; border-left: 1px dashed #334155 !important; }
+  .hoja-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .hoja-chip { background: #241618; border: 1px solid #7f1d1d; color: #fca5a5; font-size: 12px; padding: 6px 13px; border-radius: 8px; }
+  .hoja-obs { background: #101826; border-left: 3px solid #3b82f6; border-radius: 7px; padding: 11px 14px; margin-bottom: 9px; }
+  .hoja-obs-txt { font-size: 12.5px; color: #cbd5e1; line-height: 1.55; white-space: pre-wrap; }
+  .hoja-obs-pie { font-size: 10.5px; color: #64748b; margin-top: 7px; }
+
+  @media print {
+    body { background: #fff !important; color: #000 !important; padding: 0; }
+    .header, .semaforo, .tabs, .filters, .no-print, .panel:not(#p-semanal) { display: none !important; }
+    #p-semanal { display: block !important; }
+    .hoja { background: #fff !important; border: none; padding: 0; }
+    .hoja-head { border-bottom-color: #000; }
+    .hoja-head h2, .hoja-sec h3 { color: #000 !important; }
+    .hoja-sub, .hoja-nums, .hoja-obs-pie { color: #444 !important; }
+    .hoja-tabla td, .hoja-obs-txt { color: #000 !important; }
+    .hoja-tabla th { color: #333 !important; border-bottom-color: #000; }
+    .hoja-tabla td { border-bottom-color: #ccc; }
+    .hoja-obs { background: #f4f4f4 !important; border-left-color: #666; }
+    .hoja-chip { background: #fff !important; border-color: #900; color: #900 !important; }
+    .col-accion { border-left-color: #999 !important; }
+    .hoja-sec { page-break-inside: avoid; }
+  }
+
   .empty { text-align: center; padding: 46px 20px; color: #475569; font-size: 14px; }
   .empty .big { font-size: 40px; display: block; margin-bottom: 12px; }
   .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid #1e293b; border-top-color: #ea580c; border-radius: 50%; animation: spin .8s linear infinite; vertical-align: middle; margin-right: 8px; }
@@ -180,6 +235,8 @@
 <!-- ══ TABS ══ -->
 <div class="tabs">
   <button class="tab active" data-panel="p-flota" onclick="cambiarTab(this)">🚦 Estado de la flota</button>
+  <button class="tab" data-panel="p-pend" onclick="cambiarTab(this)">⏳ Pendientes <span class="badge" id="bd-pend"></span></button>
+  <button class="tab" data-panel="p-semanal" onclick="cambiarTab(this)">📅 Revisión semanal</button>
   <button class="tab" data-panel="p-reportes" onclick="cambiarTab(this)">📋 Reportes <span class="badge" id="bd-rep"></span></button>
   <button class="tab" data-panel="p-coment"  onclick="cambiarTab(this)">💬 Comentarios <span class="badge" id="bd-com"></span></button>
   <button class="tab" data-panel="p-analisis" onclick="cambiarTab(this)">📊 Análisis</button>
@@ -233,6 +290,30 @@
     <span><i style="background:#22c55e"></i> Sin novedad</span>
     <span style="margin-left:auto">Las barritas muestran las últimas 10 bitácoras del equipo</span>
   </div>
+</div>
+
+<!-- ══ PANEL: PENDIENTES ══ -->
+<div class="panel" id="p-pend">
+  <div class="aviso" style="display:block">
+    ℹ️ Un problema se cierra <b>solo</b> cuando el operador deja de marcarlo como malo — no hace falta que avise.
+    Aquí está únicamente lo que <b>sigue fallando</b> en la última bitácora de cada equipo.
+  </div>
+  <div id="pend-resumen" class="pend-resumen"></div>
+  <div id="pendientes"></div>
+  <div class="card" style="margin-top:18px">
+    <div class="card-title"><span class="dot" style="background:#22c55e"></span> Se cerraron solos <span id="cerrados-n" style="color:#4ade80"></span></div>
+    <div style="font-size:11px;color:#64748b;margin:-10px 0 14px">Fallas que se dejaron de reportar — ya no requieren acción</div>
+    <div id="cerrados"></div>
+  </div>
+</div>
+
+<!-- ══ PANEL: REVISIÓN SEMANAL ══ -->
+<div class="panel" id="p-semanal">
+  <div class="no-print" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px">
+    <div style="font-size:12px;color:#64748b">Resumen para repasar en reunión. Se puede imprimir o guardar como PDF.</div>
+    <button class="btn-refresh" onclick="window.print()">🖨️ Imprimir / PDF</button>
+  </div>
+  <div id="semanal"></div>
 </div>
 
 <!-- ══ PANEL: REPORTES ══ -->
@@ -360,6 +441,7 @@ function nivelDe(nM, nI) {
 const NIVEL_TXT = { crit:'Crítico', aten:'Atención', vigi:'Vigilar', ok:'Sin novedad' };
 
 let ALL_DATA=[], REPORTES=[], EQUIPOS=[], FILTRADOS=[], EQ_FILTRADOS=[];
+let PENDIENTES=[], CERRADOS=[], PEND_FILTRADOS=[];
 let mostrados=PAGE_SIZE, mostradosCom=PAGE_SIZE, filtroNivel='';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -440,6 +522,77 @@ function construir() {
     ((b.obs?1:0)-(a.obs?1:0)) ||
     (b.nM-a.nM) ||
     a.nombre.localeCompare(b.nombre));
+
+  construirPendientes(porEq);
+}
+
+// ══════════════════════════════════════════════════════════
+//  SEGUIMIENTO — qué sigue fallando hoy y desde cuándo
+//  Un problema se considera CERRADO cuando el operador deja
+//  de marcarlo como malo, sin necesidad de que lo reporte.
+// ══════════════════════════════════════════════════════════
+function construirPendientes(porEq) {
+  PENDIENTES = []; CERRADOS = [];
+
+  Object.entries(porEq).forEach(([equipo, rows]) => {
+    rows.sort((a,b) => String(a.Fecha).localeCompare(String(b.Fecha)));
+    const tipo = rows[rows.length-1].Tipo_Equipo || '';
+
+    // Historial de cada ítem del checklist para este equipo
+    const porItem = {};
+    rows.forEach(r => {
+      const vistos = new Set();
+      CHECKLIST_COLS.forEach(col => {
+        if (!(col.id in r) || vistos.has(col.label)) return;
+        const n = normalizeBIM(r[col.id], col.mode);
+        if (n!=='M' && n!=='I' && n!=='B') return;
+        vistos.add(col.label);
+        (porItem[col.label] = porItem[col.label] || []).push({ fecha:r.Fecha||'', estado:n, operador:r.Operador||'', proyecto:r.Proyecto||'' });
+      });
+    });
+
+    Object.entries(porItem).forEach(([label, lecturas]) => {
+      if (!lecturas.length) return;
+      const ultima = lecturas[lecturas.length-1];
+      const tuvoMalo = lecturas.some(l => l.estado==='M');
+
+      if (ultima.estado === 'M') {
+        // Racha actual: cuántas bitácoras seguidas lleva en malo
+        let seguidas = 0;
+        for (let i=lecturas.length-1; i>=0 && lecturas[i].estado==='M'; i--) seguidas++;
+        const desde = lecturas[lecturas.length - seguidas].fecha;
+        PENDIENTES.push({
+          equipo, tipo, item: label, seguidas, desde,
+          ultimaFecha: ultima.fecha, operador: ultima.operador, proyecto: ultima.proyecto,
+          dias: diasEntre(desde, ultima.fecha),
+          antiguedad: seguidas>=10 ? 'cronico' : (seguidas>=3 ? 'persistente' : 'nuevo')
+        });
+      } else if (tuvoMalo) {
+        // Estuvo malo y ya no: se cerró solo
+        let ultMalo = '';
+        for (let i=lecturas.length-1; i>=0; i--) if (lecturas[i].estado==='M') { ultMalo = lecturas[i].fecha; break; }
+        CERRADOS.push({ equipo, tipo, item: label, ultimoMalo: ultMalo, cerradoEn: ultima.fecha });
+      }
+    });
+  });
+
+  const ordenAnt = { cronico:0, persistente:1, nuevo:2 };
+  PENDIENTES.sort((a,b) => (ordenAnt[a.antiguedad]-ordenAnt[b.antiguedad]) || (b.seguidas-a.seguidas) || a.equipo.localeCompare(b.equipo));
+  CERRADOS.sort((a,b) => String(b.cerradoEn).localeCompare(String(a.cerradoEn)));
+}
+
+function diasEntre(f1, f2) {
+  if (!f1 || !f2) return 0;
+  const a = new Date(f1+'T12:00:00'), b = new Date(f2+'T12:00:00');
+  if (isNaN(a) || isNaN(b)) return 0;
+  return Math.max(0, Math.round((b-a)/86400000));
+}
+
+function diasDesdeHoy(f) {
+  if (!f) return 0;
+  const d = new Date(f+'T12:00:00');
+  if (isNaN(d)) return 0;
+  return Math.max(0, Math.round((new Date() - d)/86400000));
 }
 
 function poblarFiltros() {
@@ -478,7 +631,8 @@ function applyFilters() {
   });
 
   mostrados = PAGE_SIZE; mostradosCom = PAGE_SIZE;
-  renderSemaforo(); renderEquipos(); renderReportes(); renderComentarios(); renderAnalisis();
+  renderSemaforo(); renderEquipos(); renderPendientes(); renderSemanal();
+  renderReportes(); renderComentarios(); renderAnalisis();
 }
 
 function renderSemaforo() {
@@ -561,6 +715,149 @@ function renderEquipos() {
       <div class="eq-fecha"><span>${esc(e.fecha||'—')}</span><span>${esc(e.operador)}</span></div>
     </div>`;
   }).join('');
+}
+
+const ANT_TXT = {
+  cronico:    { lbl:'Crónico',     col:'#ef4444', desc:'10 o más bitácoras seguidas' },
+  persistente:{ lbl:'Persistente', col:'#f97316', desc:'3 a 9 bitácoras seguidas' },
+  nuevo:      { lbl:'Reciente',    col:'#eab308', desc:'1 o 2 bitácoras' },
+};
+
+function renderPendientes() {
+  const tipo  = document.getElementById('fil-tipo').value;
+  const texto = document.getElementById('fil-texto').value.trim().toLowerCase();
+  PEND_FILTRADOS = PENDIENTES.filter(p => {
+    if (tipo && p.tipo!==tipo) return false;
+    if (texto && !(p.equipo+' '+p.item+' '+p.operador+' '+p.proyecto).toLowerCase().includes(texto)) return false;
+    return true;
+  });
+  document.getElementById('bd-pend').textContent = PEND_FILTRADOS.length;
+
+  // Resumen por antigüedad
+  const c = { cronico:0, persistente:0, nuevo:0 };
+  PEND_FILTRADOS.forEach(p => c[p.antiguedad]++);
+  document.getElementById('pend-resumen').innerHTML = ['cronico','persistente','nuevo'].map(k => `
+    <div class="pend-res-card" style="border-color:${ANT_TXT[k].col}44">
+      <div style="font-size:26px;font-weight:800;color:${ANT_TXT[k].col}">${c[k]}</div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:${ANT_TXT[k].col};margin-top:5px">${ANT_TXT[k].lbl}</div>
+      <div style="font-size:10px;color:#64748b;margin-top:2px">${ANT_TXT[k].desc}</div>
+    </div>`).join('');
+
+  const cont = document.getElementById('pendientes');
+  if (!PEND_FILTRADOS.length) {
+    cont.innerHTML = '<div class="empty"><span class="big">🎉</span>No hay nada pendiente con estos filtros</div>';
+  } else {
+    cont.innerHTML = PEND_FILTRADOS.map(p => {
+      const a = ANT_TXT[p.antiguedad];
+      const dh = diasDesdeHoy(p.ultimaFecha);
+      return `
+      <div class="pend-row" onclick="abrirEquipo('${escAttr(p.equipo)}')" style="border-left-color:${a.col}">
+        <div class="pend-main">
+          <div class="pend-item">${esc(p.item)}</div>
+          <div class="pend-eq">${esc(p.equipo)} <span class="eq-tipo">${esc(p.tipo||'—')}</span> · ${esc(p.operador)}</div>
+        </div>
+        <div class="pend-racha">
+          <div class="pend-racha-n" style="color:${a.col}">${p.seguidas}×</div>
+          <div class="pend-racha-l">bitácoras<br>seguidas</div>
+        </div>
+        <div class="pend-fechas">
+          <div><b>Desde:</b> ${esc(p.desde)}</div>
+          <div style="color:#475569">Último reporte: ${esc(p.ultimaFecha)}${dh>0?` · hace ${dh} d`:''}</div>
+        </div>
+        <span class="pend-tag" style="background:${a.col}22;color:${a.col};border-color:${a.col}55">${a.lbl}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // Cerrados solos
+  const cerrFilt = CERRADOS.filter(x => !tipo || x.tipo===tipo);
+  document.getElementById('cerrados-n').textContent = cerrFilt.length ? `(${cerrFilt.length})` : '';
+  document.getElementById('cerrados').innerHTML = cerrFilt.length
+    ? `<div class="cerrados-grid">` + cerrFilt.slice(0,24).map(x => `
+        <div class="cerrado-chip">
+          <span style="color:#4ade80">✓</span>
+          <div>
+            <div style="font-size:12px;color:#cbd5e1;font-weight:600">${esc(x.item)}</div>
+            <div style="font-size:10px;color:#64748b">${esc(x.equipo)} · dejó de reportarse el ${esc(x.cerradoEn)}</div>
+          </div>
+        </div>`).join('') + `</div>`
+      + (cerrFilt.length>24 ? `<div style="font-size:11px;color:#475569;margin-top:10px">y ${cerrFilt.length-24} más…</div>` : '')
+    : '<div class="empty" style="padding:22px">Todavía no se ha cerrado ninguna</div>';
+}
+
+function renderSemanal() {
+  const cont = document.getElementById('semanal');
+  const hoy = new Date().toLocaleDateString('es-HN', { day:'2-digit', month:'long', year:'numeric' });
+  const cronicos = PENDIENTES.filter(p => p.antiguedad==='cronico');
+  const persist  = PENDIENTES.filter(p => p.antiguedad==='persistente');
+  const criticos = EQUIPOS.filter(e => e.nivel==='crit');
+
+  // Comentarios de las 2 semanas más recientes
+  const semanas = [...new Set(REPORTES.map(r=>r.semana).filter(Boolean))].map(Number).sort((a,b)=>b-a);
+  const ultimas2 = semanas.slice(0,2);
+  const comentRecientes = REPORTES.filter(r => r.obs && ultimas2.includes(Number(r.semana))).slice(0,14);
+
+  const filaPend = p => `
+    <tr>
+      <td><b>${esc(p.equipo)}</b><div style="font-size:10px;color:#64748b">${esc(p.tipo||'')}</div></td>
+      <td>${esc(p.item)}</td>
+      <td style="text-align:center;font-weight:800;color:${ANT_TXT[p.antiguedad].col}">${p.seguidas}×</td>
+      <td style="font-size:11px">${esc(p.desde)}</td>
+      <td class="col-accion"></td>
+    </tr>`;
+
+  cont.innerHTML = `
+  <div class="hoja">
+    <div class="hoja-head">
+      <div>
+        <h2>Revisión semanal de flota</h2>
+        <div class="hoja-sub">Geotécnica Soluciones · generado el ${hoy}</div>
+      </div>
+      <div class="hoja-nums">
+        <div><span style="color:#ef4444">${cronicos.length}</span> crónicos</div>
+        <div><span style="color:#f97316">${persist.length}</span> persistentes</div>
+        <div><span style="color:#4ade80">${CERRADOS.length}</span> cerrados solos</div>
+      </div>
+    </div>
+
+    ${cronicos.length ? `
+    <div class="hoja-sec">
+      <h3>🔴 Requieren decisión — llevan 10 o más bitácoras seguidas</h3>
+      <div class="hoja-tabla-wrap"><table class="hoja-tabla">
+        <thead><tr><th>Equipo</th><th>Falla</th><th style="text-align:center">Racha</th><th>Desde</th><th class="col-accion">Acción acordada</th></tr></thead>
+        <tbody>${cronicos.map(filaPend).join('')}</tbody>
+      </table></div>
+    </div>` : ''}
+
+    ${persist.length ? `
+    <div class="hoja-sec">
+      <h3>🟠 Vigilar — se repiten hace varias bitácoras</h3>
+      <div class="hoja-tabla-wrap"><table class="hoja-tabla">
+        <thead><tr><th>Equipo</th><th>Falla</th><th style="text-align:center">Racha</th><th>Desde</th><th class="col-accion">Acción acordada</th></tr></thead>
+        <tbody>${persist.map(filaPend).join('')}</tbody>
+      </table></div>
+    </div>` : ''}
+
+    ${criticos.length ? `
+    <div class="hoja-sec">
+      <h3>⚠️ Equipos en estado crítico hoy</h3>
+      <div class="hoja-chips">
+        ${criticos.map(e => `<span class="hoja-chip">${esc(e.nombre)} <b>${e.nM} fallas</b></span>`).join('')}
+      </div>
+    </div>` : ''}
+
+    ${comentRecientes.length ? `
+    <div class="hoja-sec">
+      <h3>💬 Lo que reportaron los operadores (semanas ${ultimas2.join(' y ')})</h3>
+      ${comentRecientes.map(r => `
+        <div class="hoja-obs">
+          <div class="hoja-obs-txt">${esc(r.obs)}</div>
+          <div class="hoja-obs-pie">${esc(r.equipo)} · ${esc(r.operador)} · ${esc(r.fecha)}</div>
+        </div>`).join('')}
+    </div>` : ''}
+
+    ${!cronicos.length && !persist.length ? '<div class="empty"><span class="big">🎉</span>Sin pendientes crónicos ni persistentes</div>' : ''}
+  </div>`;
 }
 
 function renderReportes() {
