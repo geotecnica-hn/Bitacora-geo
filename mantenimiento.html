@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centro de Mantenimientos — Geotécnica</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#0f1117; color:#e2e8f0; font-family:'Segoe UI',sans-serif; padding:24px; min-height:100vh; }
+
+  .header { background:linear-gradient(135deg,#1a1f2e,#1e2538); border:1px solid #2d3748; border-radius:14px; padding:18px 24px; display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:12px; }
+  .header-left { display:flex; align-items:center; gap:14px; }
+  .header-icon { border-radius:10px; width:48px; height:48px; flex-shrink:0; overflow:hidden; }
+  .header-icon img { width:100%; height:100%; object-fit:cover; border-radius:10px; }
+  .header-title h1 { font-size:20px; font-weight:700; color:#fff; }
+  .header-title p { font-size:12px; color:#94a3b8; margin-top:2px; }
+  .btn-link { background:#1e293b; color:#94a3b8; border:1px solid #334155; padding:8px 14px; border-radius:8px; font-size:13px; font-weight:600; text-decoration:none; transition:all .2s; display:inline-flex; align-items:center; gap:6px; }
+  .btn-link:hover { background:#334155; color:#e2e8f0; }
+  .last-update { font-size:11px; color:#475569; margin-top:5px; text-align:right; }
+
+  .semaforo { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:18px; }
+  @media(max-width:700px){ .semaforo{ grid-template-columns:repeat(2,1fr); } }
+  .sem-card { border-radius:14px; padding:16px 18px; border:1px solid; cursor:pointer; transition:transform .15s; }
+  .sem-card:hover { transform:translateY(-2px); }
+  .sem-card.active { box-shadow:0 0 0 2px currentColor; }
+  .sem-card .n { font-size:34px; font-weight:800; line-height:1; }
+  .sem-card .lbl { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-top:8px; }
+  .sem-card .sub { font-size:11px; color:#64748b; margin-top:3px; }
+  .sem-venc { background:linear-gradient(135deg,#1f1315,#2a1518); border-color:#7f1d1d; color:#f87171; }
+  .sem-urg  { background:linear-gradient(135deg,#1f1811,#2a1e12); border-color:#7c2d12; color:#fb923c; }
+  .sem-prox { background:linear-gradient(135deg,#1e1c11,#282412); border-color:#713f12; color:#facc15; }
+  .sem-ok   { background:linear-gradient(135deg,#111f16,#12281a); border-color:#14532d; color:#4ade80; }
+
+  .tabs { display:flex; gap:6px; margin-bottom:18px; border-bottom:1px solid #1e293b; flex-wrap:wrap; }
+  .tab { background:none; border:none; color:#64748b; padding:11px 18px; font-size:13px; font-weight:600; cursor:pointer; border-bottom:2px solid transparent; transition:all .2s; display:flex; align-items:center; gap:7px; font-family:inherit; }
+  .tab:hover { color:#94a3b8; }
+  .tab.active { color:#fb923c; border-bottom-color:#ea580c; }
+  .tab .badge { background:#334155; color:#cbd5e1; font-size:10px; font-weight:800; padding:1px 7px; border-radius:9px; }
+  .tab.active .badge { background:#7c2d12; color:#fdba74; }
+  .panel { display:none; } .panel.active { display:block; }
+
+  .filters { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:flex-end; }
+  .filter-group { display:flex; flex-direction:column; gap:4px; }
+  .filter-group label { font-size:10px; color:#64748b; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
+  select, input[type=text], input[type=number], input[type=date], textarea { background:#1a1f2e; border:1px solid #2d3748; color:#e2e8f0; padding:9px 12px; border-radius:8px; font-size:13px; min-width:150px; font-family:inherit; }
+  select { cursor:pointer; }
+  select:focus, input:focus, textarea:focus { outline:none; border-color:#ea580c; }
+  textarea { width:100%; resize:vertical; min-height:70px; }
+  .btn { background:#E65100; color:#fff; border:none; padding:9px 18px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-family:inherit; }
+  .btn:hover { background:#F57C00; }
+  .btn:disabled { opacity:.5; cursor:not-allowed; }
+  .btn-sec { background:#1e293b; border:1px solid #334155; color:#94a3b8; }
+  .btn-sec:hover { background:#334155; color:#e2e8f0; }
+
+  .card { background:#161b28; border:1px solid #2d3748; border-radius:14px; padding:20px; margin-bottom:16px; }
+  .card-title { font-size:13px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.06em; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+  .dot { width:8px; height:8px; border-radius:50%; display:inline-block; flex-shrink:0; }
+
+  /* Tarjeta de equipo */
+  .eq-card { background:#161b28; border:1px solid #2d3748; border-left:4px solid; border-radius:13px; margin-bottom:12px; overflow:hidden; }
+  .eq-card.VENCIDO{border-left-color:#ef4444} .eq-card.URGENTE{border-left-color:#f97316}
+  .eq-card.PROXIMO{border-left-color:#eab308} .eq-card.OK{border-left-color:#22c55e}
+  .eq-card.SIN_HOROMETRO{border-left-color:#475569}
+  .eq-head { padding:15px 18px; display:flex; justify-content:space-between; align-items:center; gap:14px; cursor:pointer; flex-wrap:wrap; transition:background .2s; }
+  .eq-head:hover { background:rgba(255,255,255,.02); }
+  .eq-nom { font-size:16px; font-weight:700; color:#f1f5f9; display:flex; align-items:center; gap:9px; flex-wrap:wrap; }
+  .eq-tipo { font-size:9px; font-weight:700; color:#94a3b8; background:#1e293b; padding:2px 7px; border-radius:5px; }
+  .eq-meta { font-size:11px; color:#64748b; margin-top:4px; }
+  .eq-right { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .eq-horo { text-align:right; }
+  .eq-horo-n { font-size:19px; font-weight:800; color:#60a5fa; line-height:1; }
+  .eq-horo-l { font-size:9px; color:#475569; margin-top:3px; }
+  .cuentas { display:flex; gap:6px; flex-wrap:wrap; }
+  .cnt { font-size:10px; font-weight:700; padding:3px 9px; border-radius:7px; border:1px solid; }
+  .cnt-v{background:rgba(239,68,68,.15);color:#fca5a5;border-color:#7f1d1d}
+  .cnt-u{background:rgba(249,115,22,.13);color:#fdba74;border-color:#7c2d12}
+  .cnt-p{background:rgba(234,179,8,.12);color:#fde047;border-color:#713f12}
+  .cnt-o{background:rgba(34,197,94,.12);color:#86efac;border-color:#14532d}
+  .cnt-s{background:#1e293b;color:#94a3b8;border-color:#334155}
+  .flecha { color:#475569; font-size:13px; transition:transform .2s; }
+  .flecha.open { transform:rotate(90deg); }
+  .eq-body { display:none; padding:0 18px 18px; }
+  .eq-body.open { display:block; }
+
+  /* Tarea con barra de avance */
+  .tarea { display:flex; align-items:center; gap:14px; padding:10px 13px; background:#0f172a; border:1px solid #1e293b; border-radius:9px; margin-bottom:7px; flex-wrap:wrap; }
+  .tarea-info { flex:1; min-width:190px; }
+  .tarea-nom { font-size:13px; font-weight:600; color:#e2e8f0; }
+  .tarea-sis { font-size:10px; color:#475569; text-transform:uppercase; letter-spacing:.04em; margin-top:2px; }
+  .tarea-cons { font-size:10.5px; color:#64748b; margin-top:3px; }
+  .tarea-barra { flex:1.4; min-width:150px; }
+  .barra-top { display:flex; justify-content:space-between; font-size:10px; color:#64748b; margin-bottom:4px; }
+  .barra-track { height:7px; background:#1e293b; border-radius:4px; overflow:hidden; }
+  .barra-fill { height:100%; border-radius:4px; transition:width .4s; }
+  .tarea-est { font-size:10px; font-weight:700; padding:4px 10px; border-radius:7px; border:1px solid; white-space:nowrap; text-transform:uppercase; letter-spacing:.04em; }
+  .int-tag { font-size:9.5px; font-weight:700; color:#93c5fd; background:#172554; border:1px solid #1e3a8a; padding:2px 7px; border-radius:5px; white-space:nowrap; }
+
+  /* Registro */
+  .form-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; margin-bottom:18px; }
+  .form-g { display:flex; flex-direction:column; gap:5px; }
+  .form-g label { font-size:11px; color:#94a3b8; font-weight:600; }
+  .form-g input, .form-g select { width:100%; }
+  .req { color:#f87171; }
+  .chk-row { display:flex; align-items:center; gap:13px; padding:11px 14px; background:#0f172a; border:1px solid #1e293b; border-radius:9px; margin-bottom:7px; cursor:pointer; transition:border-color .2s; flex-wrap:wrap; }
+  .chk-row:hover { border-color:#475569; }
+  .chk-row.sel { background:#131f18; border-color:#166534; }
+  .chk-row input[type=checkbox] { width:19px; height:19px; accent-color:#22c55e; cursor:pointer; flex-shrink:0; min-width:auto; }
+  .chk-info { flex:1; min-width:180px; }
+  .chk-costo { width:110px; min-width:110px; }
+  .grupo-int { margin-bottom:20px; }
+  .grupo-int-h { display:flex; align-items:center; gap:10px; margin-bottom:10px; padding-bottom:7px; border-bottom:1px solid #1e293b; flex-wrap:wrap; }
+  .grupo-int-t { font-size:14px; font-weight:700; color:#f1f5f9; }
+  .grupo-int-n { font-size:11px; color:#64748b; }
+
+  /* Historial */
+  .serv { background:#161b28; border:1px solid #2d3748; border-radius:12px; padding:16px 18px; margin-bottom:12px; }
+  .serv-head { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; flex-wrap:wrap; margin-bottom:12px; }
+  .serv-eq { font-size:15px; font-weight:700; color:#f1f5f9; }
+  .serv-meta { font-size:11px; color:#64748b; margin-top:3px; }
+  .serv-fecha { font-size:12px; color:#94a3b8; font-weight:600; text-align:right; white-space:nowrap; }
+  .serv-tareas { display:flex; flex-wrap:wrap; gap:6px; }
+  .st-chip { font-size:11px; background:rgba(34,197,94,.1); color:#86efac; border:1px solid #166534; padding:4px 10px; border-radius:7px; }
+  .st-chip small { opacity:.7; }
+
+  .empty { text-align:center; padding:46px 20px; color:#475569; font-size:14px; }
+  .empty .big { font-size:40px; display:block; margin-bottom:12px; }
+  .spinner { display:inline-block; width:20px; height:20px; border:3px solid #1e293b; border-top-color:#ea580c; border-radius:50%; animation:spin .8s linear infinite; vertical-align:middle; margin-right:8px; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .aviso { background:#17212f; border:1px solid #1e3a5f; border-left:3px solid #3b82f6; border-radius:9px; padding:11px 15px; font-size:12px; color:#94a3b8; margin-bottom:14px; line-height:1.55; }
+  .aviso b { color:#cbd5e1; }
+  .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:#1e293b; border:1px solid #334155; color:#e2e8f0; padding:13px 24px; border-radius:10px; font-size:13px; z-index:200; box-shadow:0 8px 24px rgba(0,0,0,.5); max-width:90vw; }
+  .toast.err { background:#3b1416; border-color:#7f1d1d; color:#fecaca; }
+  .toast.ok { background:#122d1c; border-color:#166534; color:#bbf7d0; }
+  .leyenda { font-size:11px; color:#475569; display:flex; gap:16px; flex-wrap:wrap; margin-top:14px; padding-top:13px; border-top:1px solid #1e293b; }
+  .leyenda span { display:inline-flex; align-items:center; gap:5px; }
+  .leyenda i { width:9px; height:9px; border-radius:2px; display:inline-block; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-icon"><img src="logo.png" alt="Geotécnica"></div>
+    <div class="header-title">
+      <h1>🔧 Centro de Mantenimientos</h1>
+      <p>Control por intervalos — solo se cambia lo que cumplió su ciclo</p>
+    </div>
+  </div>
+  <div>
+    <a href="dashboard.html" class="btn-link">← Volver al Dashboard</a>
+    <div class="last-update" id="last-update"></div>
+  </div>
+</div>
+
+<div class="semaforo" id="semaforo"></div>
+
+<div class="tabs">
+  <button class="tab active" data-panel="p-toca" onclick="cambiarTab(this)">📋 Qué toca <span class="badge" id="bd-toca"></span></button>
+  <button class="tab" data-panel="p-reg" onclick="cambiarTab(this)">✅ Registrar mantenimiento</button>
+  <button class="tab" data-panel="p-hist" onclick="cambiarTab(this)">📚 Historial <span class="badge" id="bd-hist"></span></button>
+  <button class="tab" data-panel="p-plan" onclick="cambiarTab(this)">⚙️ Plan por intervalos</button>
+</div>
+
+<!-- ═══ QUÉ TOCA ═══ -->
+<div class="panel active" id="p-toca">
+  <div class="aviso">
+    💡 Cada tarea se calcula con <b>su propio intervalo</b>. Si el filtro de aceite es de 250 h y el de aire de 500 h,
+    a las 250 h solo se cambia el de aceite — el de aire va a la mitad de su ciclo y todavía sirve.
+  </div>
+  <div class="filters">
+    <div class="filter-group">
+      <label>Tipo de equipo</label>
+      <select id="fil-tipo" onchange="render()">
+        <option value="">Todos</option>
+        <option value="PIL">Piloteadora</option><option value="PER">Perforadora</option>
+        <option value="COM">Compresor</option><option value="INY">Planta Inyección</option>
+        <option value="EXC">Excavadora</option><option value="GRU">Grúa</option><option value="OTR">Otro</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Mostrar</label>
+      <select id="fil-que" onchange="render()">
+        <option value="pend">Solo lo que toca (vencido/urgente/próximo)</option>
+        <option value="todo">Todas las tareas</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Buscar</label>
+      <input type="text" id="fil-texto" placeholder="equipo, filtro..." oninput="render()">
+    </div>
+    <div class="filter-group">
+      <label>&nbsp;</label>
+      <button class="btn" id="btnRef" onclick="loadData()"><span id="ref-icon">⟳</span> Actualizar</button>
+    </div>
+  </div>
+  <div id="equipos"><div class="empty"><span class="spinner"></span>Cargando...</div></div>
+  <div class="leyenda">
+    <span><i style="background:#ef4444"></i> Vencido — ya pasó el intervalo</span>
+    <span><i style="background:#f97316"></i> Urgente — queda menos del 10%</span>
+    <span><i style="background:#eab308"></i> Próximo — queda menos del 25%</span>
+    <span><i style="background:#22c55e"></i> OK</span>
+    <span><i style="background:#475569"></i> Sin registro previo</span>
+  </div>
+</div>
+
+<!-- ═══ REGISTRAR ═══ -->
+<div class="panel" id="p-reg">
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:#22c55e"></span> Registrar un mantenimiento realizado</div>
+    <div class="form-grid">
+      <div class="form-g">
+        <label>Equipo <span class="req">*</span></label>
+        <select id="r-equipo" onchange="onEquipoReg()"><option value="">Seleccionar…</option></select>
+      </div>
+      <div class="form-g">
+        <label>Fecha <span class="req">*</span></label>
+        <input type="date" id="r-fecha">
+      </div>
+      <div class="form-g">
+        <label>Horómetro <span class="req">*</span></label>
+        <input type="number" id="r-horo" step="0.1" min="0" placeholder="0.0">
+      </div>
+      <div class="form-g">
+        <label>Responsable <span class="req">*</span></label>
+        <input type="text" id="r-resp" placeholder="Nombre del mecánico">
+      </div>
+    </div>
+    <div id="r-tareas"><div class="empty">Seleccioná un equipo para ver sus tareas</div></div>
+    <div class="form-g" style="margin-top:16px">
+      <label>Observaciones</label>
+      <textarea id="r-obs" placeholder="Notas del servicio, repuestos pendientes, etc."></textarea>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:16px;flex-wrap:wrap">
+      <div id="r-resumen" style="font-size:12px;color:#64748b"></div>
+      <button class="btn" id="r-btn" onclick="guardarMant()" disabled>Guardar mantenimiento</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ HISTORIAL ═══ -->
+<div class="panel" id="p-hist">
+  <div class="filters">
+    <div class="filter-group">
+      <label>Equipo</label>
+      <select id="h-equipo" onchange="renderHist()"><option value="">Todos</option></select>
+    </div>
+  </div>
+  <div id="historial"><div class="empty">Cargando...</div></div>
+</div>
+
+<!-- ═══ PLAN ═══ -->
+<div class="panel" id="p-plan">
+  <div class="aviso">
+    ⚙️ Esto es el catálogo que define cada cuántas horas toca cada tarea. Se edita en la hoja
+    <b>PLAN_MANT</b> del Google Sheet. Una fila que diga <b>TIPO:PIL</b> aplica a todas las piloteadoras;
+    una que diga el nombre del equipo (ej. <b>SR-90</b>) manda sobre la del tipo.
+  </div>
+  <div id="plan"><div class="empty">Cargando...</div></div>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxYxKG8sxlRGQJrbZxGVeXhpu8YRrbgeHPYuqM_4FLtUOy5Ng2Hffts7hTm5B7iFmYi/exec';
+
+const EST = {
+  VENCIDO:      { lbl:'Vencido',      col:'#ef4444', cls:'cnt-v' },
+  URGENTE:      { lbl:'Urgente',      col:'#f97316', cls:'cnt-u' },
+  PROXIMO:      { lbl:'Próximo',      col:'#eab308', cls:'cnt-p' },
+  OK:           { lbl:'OK',           col:'#22c55e', cls:'cnt-o' },
+  SIN_REGISTRO: { lbl:'Sin registro', col:'#64748b', cls:'cnt-s' },
+  SIN_HOROMETRO:{ lbl:'Sin horómetro',col:'#475569', cls:'cnt-s' },
+};
+
+let ESTADO = [], HIST = [], PLAN = [], filtroNivel = '', abiertos = {};
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('r-fecha').value = new Date().toISOString().split('T')[0];
+  loadData();
+});
+
+async function loadData() {
+  const btn = document.getElementById('btnRef'), ic = document.getElementById('ref-icon');
+  btn.classList.add('loading'); ic.innerHTML = '<span class="spinner"></span>';
+  try {
+    const [e, h, p] = await Promise.all([
+      fetch(`${SCRIPT_URL}?action=getEstadoMant`).then(r=>r.json()),
+      fetch(`${SCRIPT_URL}?action=getMantenimientos`).then(r=>r.json()),
+      fetch(`${SCRIPT_URL}?action=getPlanMant`).then(r=>r.json())
+    ]);
+    if (e.status==='ok') ESTADO = e.data || [];
+    if (h.status==='ok') HIST = h.data || [];
+    if (p.status==='ok') PLAN = p.data || [];
+    poblarSelects();
+    render(); renderHist(); renderPlan();
+    document.getElementById('last-update').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-HN');
+  } catch(err) {
+    document.getElementById('last-update').textContent = 'Sin conexión';
+    toast('No se pudo conectar con el servidor', true);
+  } finally { btn.classList.remove('loading'); ic.textContent = '⟳'; }
+}
+
+function poblarSelects() {
+  const eqs = ESTADO.map(e=>e.equipo).sort();
+  const sr = document.getElementById('r-equipo'), sh = document.getElementById('h-equipo');
+  const vr = sr.value, vh = sh.value;
+  sr.innerHTML = '<option value="">Seleccionar…</option>' + eqs.map(e=>`<option value="${esc(e)}">${esc(e)}</option>`).join('');
+  sh.innerHTML = '<option value="">Todos</option>' + eqs.map(e=>`<option value="${esc(e)}">${esc(e)}</option>`).join('');
+  sr.value = vr; sh.value = vh;
+}
+
+function filtrados() {
+  const tipo = document.getElementById('fil-tipo').value;
+  const txt  = document.getElementById('fil-texto').value.trim().toLowerCase();
+  return ESTADO.filter(e => {
+    if (tipo && e.tipo !== tipo) return false;
+    if (filtroNivel && e.nivel !== filtroNivel) return false;
+    if (txt) {
+      const blob = (e.equipo+' '+e.tipo+' '+e.tareas.map(t=>t.tarea+' '+t.consumible+' '+t.parte).join(' ')).toLowerCase();
+      if (!blob.includes(txt)) return false;
+    }
+    return true;
+  });
+}
+
+function render() {
+  const tipo = document.getElementById('fil-tipo').value;
+  const base = ESTADO.filter(e => !tipo || e.tipo===tipo);
+  const c = { VENCIDO:0, URGENTE:0, PROXIMO:0, OK:0 };
+  base.forEach(e => { if (c[e.nivel]!=null) c[e.nivel]++; });
+  const defs = [
+    { k:'VENCIDO', cls:'sem-venc', lbl:'Vencidos',  sub:'ya pasaron el ciclo' },
+    { k:'URGENTE', cls:'sem-urg',  lbl:'Urgentes',  sub:'queda menos del 10%' },
+    { k:'PROXIMO', cls:'sem-prox', lbl:'Próximos',  sub:'queda menos del 25%' },
+    { k:'OK',      cls:'sem-ok',   lbl:'Al día',    sub:'sin pendientes' },
+  ];
+  document.getElementById('semaforo').innerHTML = defs.map(d=>`
+    <div class="sem-card ${d.cls} ${filtroNivel===d.k?'active':''}" onclick="toggleNivel('${d.k}')">
+      <div class="n">${c[d.k]}</div><div class="lbl">${d.lbl}</div><div class="sub">${d.sub}</div>
+    </div>`).join('');
+
+  const soloPend = document.getElementById('fil-que').value === 'pend';
+  const lista = filtrados();
+  document.getElementById('bd-toca').textContent = lista.reduce((s,e)=>s+e.cuenta.VENCIDO+e.cuenta.URGENTE,0);
+
+  const cont = document.getElementById('equipos');
+  if (!lista.length) { cont.innerHTML = '<div class="empty"><span class="big">🔍</span>Ningún equipo coincide</div>'; return; }
+
+  cont.innerHTML = lista.map(e => {
+    let tareas = e.tareas.slice();
+    if (soloPend) tareas = tareas.filter(t => ['VENCIDO','URGENTE','PROXIMO','SIN_REGISTRO'].includes(t.estado));
+    const ord = { VENCIDO:0, URGENTE:1, PROXIMO:2, SIN_REGISTRO:3, OK:4, SIN_HOROMETRO:5 };
+    tareas.sort((a,b)=> (ord[a.estado]-ord[b.estado]) || (a.intervalo-b.intervalo));
+    const abierto = abiertos[e.equipo] || (e.nivel==='VENCIDO');
+    const cn = [];
+    if (e.cuenta.VENCIDO) cn.push(`<span class="cnt cnt-v">${e.cuenta.VENCIDO} vencido${e.cuenta.VENCIDO>1?'s':''}</span>`);
+    if (e.cuenta.URGENTE) cn.push(`<span class="cnt cnt-u">${e.cuenta.URGENTE} urgente${e.cuenta.URGENTE>1?'s':''}</span>`);
+    if (e.cuenta.PROXIMO) cn.push(`<span class="cnt cnt-p">${e.cuenta.PROXIMO} próximo${e.cuenta.PROXIMO>1?'s':''}</span>`);
+    if (e.cuenta.OK) cn.push(`<span class="cnt cnt-o">${e.cuenta.OK} al día</span>`);
+    if (e.cuenta.SIN_REGISTRO) cn.push(`<span class="cnt cnt-s">${e.cuenta.SIN_REGISTRO} sin registro</span>`);
+
+    return `
+    <div class="eq-card ${e.nivel}">
+      <div class="eq-head" onclick="toggleEq('${escAttr(e.equipo)}')">
+        <div>
+          <div class="eq-nom">${esc(e.equipo)} <span class="eq-tipo">${esc(e.tipo||'—')}</span></div>
+          <div class="eq-meta">${e.ultimoServicio ? `Último servicio: ${esc(e.ultimoServicio.fecha)} · ${e.ultimoServicio.horometro} h` : 'Sin mantenimientos registrados'}${e.totalServicios ? ` · ${e.totalServicios} en total` : ''}</div>
+        </div>
+        <div class="eq-right">
+          <div class="cuentas">${cn.join('')}</div>
+          <div class="eq-horo">
+            <div class="eq-horo-n">${e.horometroActual!=null ? e.horometroActual : '—'}</div>
+            <div class="eq-horo-l">HORÓMETRO</div>
+          </div>
+          <span class="flecha ${abierto?'open':''}" id="fl-${cssId(e.equipo)}">▶</span>
+        </div>
+      </div>
+      <div class="eq-body ${abierto?'open':''}" id="bd-${cssId(e.equipo)}">
+        ${tareas.length ? tareas.map(t=>filaTarea(t)).join('') : '<div class="empty" style="padding:20px">Nada pendiente en este equipo 🎉</div>'}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filaTarea(t) {
+  const E = EST[t.estado] || EST.OK;
+  const avance = t.avance!=null ? t.avance : 0;
+  const barraCol = t.estado==='VENCIDO' ? '#ef4444' : t.estado==='URGENTE' ? '#f97316' : t.estado==='PROXIMO' ? '#eab308' : '#22c55e';
+  let detalle;
+  if (t.estado==='SIN_REGISTRO')       detalle = '<div style="font-size:10.5px;color:#64748b">Nunca se ha registrado — al hacerlo empieza a contar</div>';
+  else if (t.estado==='SIN_HOROMETRO') detalle = '<div style="font-size:10.5px;color:#64748b">El equipo no tiene horómetro en las bitácoras</div>';
+  else detalle = `
+    <div class="barra-top">
+      <span>${t.horasDesde} h de ${t.intervalo} h</span>
+      <span style="color:${barraCol};font-weight:700">${t.horasRestantes<=0 ? `vencido por ${Math.abs(t.horasRestantes)} h` : `faltan ${t.horasRestantes} h`}</span>
+    </div>
+    <div class="barra-track"><div class="barra-fill" style="width:${avance}%;background:${barraCol}"></div></div>`;
+
+  return `
+  <div class="tarea">
+    <div class="tarea-info">
+      <div class="tarea-nom">${esc(t.tarea)}</div>
+      <div class="tarea-sis">${esc(t.sistema||'')}</div>
+      ${t.consumible ? `<div class="tarea-cons">${esc(t.consumible)}${t.cantidad ? ` · ${t.cantidad} ${esc(t.unidad||'')}` : ''}${t.parte ? ` · Parte ${esc(t.parte)}` : ''}</div>` : ''}
+    </div>
+    <span class="int-tag">cada ${t.intervalo} h</span>
+    <div class="tarea-barra">${detalle}</div>
+    <span class="tarea-est" style="background:${E.col}22;color:${E.col};border-color:${E.col}55">${E.lbl}</span>
+  </div>`;
+}
+
+function toggleEq(eq) {
+  abiertos[eq] = !(abiertos[eq] ?? (ESTADO.find(e=>e.equipo===eq)?.nivel==='VENCIDO'));
+  const b = document.getElementById('bd-'+cssId(eq)), f = document.getElementById('fl-'+cssId(eq));
+  if (b) b.classList.toggle('open'); if (f) f.classList.toggle('open');
+}
+function toggleNivel(k) { filtroNivel = (filtroNivel===k)?'':k; render(); }
+
+// ═══ REGISTRO ═══
+function onEquipoReg() {
+  const eq = document.getElementById('r-equipo').value;
+  const cont = document.getElementById('r-tareas');
+  const btn = document.getElementById('r-btn');
+  if (!eq) { cont.innerHTML = '<div class="empty">Seleccioná un equipo para ver sus tareas</div>'; btn.disabled = true; actualizarResumen(); return; }
+  const e = ESTADO.find(x=>x.equipo===eq);
+  if (!e) { cont.innerHTML = '<div class="empty">Equipo sin plan de mantenimiento</div>'; btn.disabled = true; return; }
+
+  if (e.horometroActual!=null) document.getElementById('r-horo').value = e.horometroActual;
+
+  // Agrupar por intervalo para que se vea qué ciclo se está cubriendo
+  const grupos = {};
+  e.tareas.forEach(t => { (grupos[t.intervalo] = grupos[t.intervalo] || []).push(t); });
+  const orden = Object.keys(grupos).map(Number).sort((a,b)=>a-b);
+
+  cont.innerHTML = `
+    <div class="aviso" style="margin-bottom:16px">
+      ✔️ Vienen premarcadas las tareas <b>vencidas y urgentes</b>. Desmarcá lo que no se hizo y marcá lo extra.
+      Así queda el registro exacto de qué se cambió.
+    </div>` + orden.map(intv => {
+    const ts = grupos[intv];
+    const pend = ts.filter(t=>['VENCIDO','URGENTE'].includes(t.estado)).length;
+    return `
+    <div class="grupo-int">
+      <div class="grupo-int-h">
+        <span class="int-tag" style="font-size:11px;padding:3px 10px">Ciclo de ${intv} h</span>
+        <span class="grupo-int-n">${ts.length} tarea${ts.length>1?'s':''}${pend ? ` · ${pend} pendiente${pend>1?'s':''}` : ''}</span>
+      </div>
+      ${ts.map((t,i) => {
+        const idx = e.tareas.indexOf(t);
+        const pre = ['VENCIDO','URGENTE'].includes(t.estado);
+        const E = EST[t.estado] || EST.OK;
+        return `
+        <label class="chk-row ${pre?'sel':''}" for="ck-${idx}">
+          <input type="checkbox" id="ck-${idx}" data-idx="${idx}" ${pre?'checked':''} onchange="onChk(this)">
+          <div class="chk-info">
+            <div class="tarea-nom">${esc(t.tarea)}</div>
+            <div class="tarea-cons">${esc(t.sistema||'')}${t.consumible ? ` · ${esc(t.consumible)}` : ''}${t.cantidad ? ` · ${t.cantidad} ${esc(t.unidad||'')}` : ''}${t.parte ? ` · ${esc(t.parte)}` : ''}</div>
+          </div>
+          <span class="tarea-est" style="background:${E.col}22;color:${E.col};border-color:${E.col}55">${E.lbl}</span>
+          <input type="number" class="chk-costo" id="cost-${idx}" placeholder="Costo Lps" step="0.01" min="0" onclick="event.stopPropagation()">
+        </label>`;
+      }).join('')}
+    </div>`;
+  }).join('');
+
+  btn.disabled = false;
+  actualizarResumen();
+}
+
+function onChk(el) {
+  el.closest('.chk-row').classList.toggle('sel', el.checked);
+  actualizarResumen();
+}
+
+function actualizarResumen() {
+  const marcadas = document.querySelectorAll('#r-tareas input[type=checkbox]:checked').length;
+  const total = document.querySelectorAll('#r-tareas input[type=checkbox]').length;
+  const el = document.getElementById('r-resumen');
+  el.textContent = total ? `${marcadas} de ${total} tareas marcadas` : '';
+  document.getElementById('r-btn').disabled = !marcadas;
+}
+
+async function guardarMant() {
+  const eq = document.getElementById('r-equipo').value;
+  const fecha = document.getElementById('r-fecha').value;
+  const horo = parseFloat(document.getElementById('r-horo').value);
+  const resp = document.getElementById('r-resp').value.trim();
+  if (!eq || !fecha || !resp) { toast('Completá equipo, fecha y responsable', true); return; }
+  if (isNaN(horo) || horo <= 0) { toast('Ingresá el horómetro', true); return; }
+
+  const e = ESTADO.find(x=>x.equipo===eq);
+  const tareas = [];
+  document.querySelectorAll('#r-tareas input[type=checkbox]:checked').forEach(ck => {
+    const t = e.tareas[parseInt(ck.dataset.idx)];
+    if (!t) return;
+    const costo = parseFloat(document.getElementById('cost-'+ck.dataset.idx)?.value) || 0;
+    tareas.push({ sistema:t.sistema, tarea:t.tarea, intervalo:t.intervalo,
+                  consumible:t.consumible, cantidad:t.cantidad, parte:t.parte, costo });
+  });
+  if (!tareas.length) { toast('Marcá al menos una tarea', true); return; }
+
+  const intervalos = [...new Set(tareas.map(t=>t.intervalo))].sort((a,b)=>a-b);
+  const btn = document.getElementById('r-btn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Guardando…';
+
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method:'POST', headers:{'Content-Type':'text/plain'}, redirect:'follow',
+      body: JSON.stringify({
+        accion:'saveMantenimiento', Equipo:eq, Fecha:fecha, Horometro:horo,
+        Responsable:resp, TipoServicio:'Preventivo ' + intervalos.join('/') + ' h',
+        Observaciones: document.getElementById('r-obs').value.trim(), Tareas: tareas
+      })
+    });
+    const d = await res.json();
+    if (d.status === 'success') {
+      toast(`✅ ${d.message} — ${tareas.length} tareas`, false, true);
+      document.getElementById('r-obs').value = '';
+      document.getElementById('r-resp').value = '';
+      await loadData();
+      onEquipoReg();
+    } else throw new Error(d.message || 'Error al guardar');
+  } catch(err) {
+    toast('No se pudo guardar: ' + err.message, true);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Guardar mantenimiento';
+    actualizarResumen();
+  }
+}
+
+// ═══ HISTORIAL ═══
+function renderHist() {
+  const eq = document.getElementById('h-equipo').value;
+  const lista = HIST.filter(s => !eq || s.equipo===eq);
+  document.getElementById('bd-hist').textContent = HIST.length;
+  const cont = document.getElementById('historial');
+  if (!lista.length) {
+    cont.innerHTML = '<div class="empty"><span class="big">📚</span>Todavía no hay mantenimientos registrados</div>';
+    return;
+  }
+  cont.innerHTML = lista.map(s => `
+    <div class="serv">
+      <div class="serv-head">
+        <div>
+          <div class="serv-eq">${esc(s.equipo)}</div>
+          <div class="serv-meta">${esc(s.responsable||'—')}${s.tipoServicio ? ` · ${esc(s.tipoServicio)}` : ''} · ${s.horometro} h</div>
+        </div>
+        <div class="serv-fecha">${esc(s.fecha)}${s.costo ? `<div style="font-size:11px;color:#4ade80;margin-top:3px">L. ${s.costo.toLocaleString('es-HN')}</div>` : ''}</div>
+      </div>
+      <div class="serv-tareas">
+        ${s.tareas.map(t=>`<span class="st-chip">${esc(t.tarea)} <small>(${t.intervalo}h)</small></span>`).join('')}
+      </div>
+      ${s.observaciones ? `<div style="margin-top:11px;font-size:12.5px;color:#94a3b8;line-height:1.55;white-space:pre-wrap">${esc(s.observaciones)}</div>` : ''}
+    </div>`).join('');
+}
+
+// ═══ PLAN ═══
+function renderPlan() {
+  const cont = document.getElementById('plan');
+  if (!PLAN.length) { cont.innerHTML = '<div class="empty">Sin plan cargado</div>'; return; }
+  const porEq = {};
+  PLAN.forEach(p => { (porEq[p.equipo] = porEq[p.equipo] || []).push(p); });
+  cont.innerHTML = Object.keys(porEq).sort().map(eq => {
+    const ts = porEq[eq];
+    const porInt = {};
+    ts.forEach(t => { (porInt[t.intervalo] = porInt[t.intervalo] || []).push(t); });
+    const ints = Object.keys(porInt).map(Number).sort((a,b)=>a-b);
+    return `
+    <div class="card">
+      <div class="card-title">
+        <span class="dot" style="background:${eq.startsWith('TIPO:')?'#3b82f6':'#ea580c'}"></span>
+        ${eq.startsWith('TIPO:') ? 'Plan base · '+esc(eq.slice(5)) : esc(eq)+' (específico)'}
+        <span style="margin-left:auto;font-size:11px;color:#475569;text-transform:none;letter-spacing:0">${ts.length} tareas</span>
+      </div>
+      ${ints.map(i => `
+        <div style="margin-bottom:14px">
+          <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px">
+            <span class="int-tag">cada ${i} h</span>
+            <span style="font-size:11px;color:#64748b">${porInt[i].length} tarea${porInt[i].length>1?'s':''}</span>
+          </div>
+          ${porInt[i].map(t=>`
+            <div style="font-size:12.5px;color:#cbd5e1;padding:5px 0 5px 14px;border-left:2px solid #1e293b">
+              ${esc(t.tarea)}
+              ${t.consumible ? `<span style="color:#64748b;font-size:11px"> — ${esc(t.consumible)}${t.cantidad?` (${t.cantidad} ${esc(t.unidad||'')})`:''}${t.parte?` · ${esc(t.parte)}`:''}</span>` : ''}
+            </div>`).join('')}
+        </div>`).join('')}
+    </div>`;
+  }).join('');
+}
+
+function cambiarTab(btn) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(btn.dataset.panel).classList.add('active');
+}
+
+function toast(msg, err, ok) {
+  const d = document.createElement('div');
+  d.className = 'toast' + (err?' err':'') + (ok?' ok':'');
+  d.textContent = msg;
+  document.body.appendChild(d);
+  setTimeout(()=>d.remove(), 4200);
+}
+
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escAttr(s){ return esc(s).replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+function cssId(s){ return String(s).replace(/[^a-zA-Z0-9]/g,'_'); }
+</script>
+</body>
+</html>
