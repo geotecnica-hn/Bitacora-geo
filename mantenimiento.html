@@ -272,6 +272,25 @@ const EST = {
 
 let ESTADO = [], HIST = [], PLAN = [], filtroNivel = '', abiertos = {};
 
+// El nivel se deriva del desglose de tareas: si ninguna es evaluable todavía,
+// el equipo no puede darse por "al día".
+function nivelReal(e) {
+  const c = e.cuenta || {};
+  if (e.horometroActual == null) return 'SIN_HOROMETRO';
+  if (c.VENCIDO) return 'VENCIDO';
+  if (c.URGENTE) return 'URGENTE';
+  if (c.PROXIMO) return 'PROXIMO';
+  if ((c.VENCIDO||0)+(c.URGENTE||0)+(c.PROXIMO||0)+(c.OK||0) > 0) return 'OK';
+  return 'SIN_REGISTRO';
+}
+function normalizarNiveles() {
+  ESTADO.forEach(e => { e.nivel = nivelReal(e); });
+  const orden = { VENCIDO:0, URGENTE:1, PROXIMO:2, SIN_REGISTRO:3, OK:4, SIN_HOROMETRO:5 };
+  ESTADO.sort((a,b) => (orden[a.nivel]-orden[b.nivel]) ||
+                       ((b.cuenta.VENCIDO||0)-(a.cuenta.VENCIDO||0)) ||
+                       a.equipo.localeCompare(b.equipo));
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('r-fecha').value = new Date().toISOString().split('T')[0];
   loadData();
@@ -286,7 +305,7 @@ async function loadData() {
       fetch(`${SCRIPT_URL}?action=getMantenimientos`).then(r=>r.json()),
       fetch(`${SCRIPT_URL}?action=getPlanMant`).then(r=>r.json())
     ]);
-    if (e.status==='ok') ESTADO = e.data || [];
+    if (e.status==='ok') { ESTADO = e.data || []; normalizarNiveles(); }
     if (h.status==='ok') HIST = h.data || [];
     if (p.status==='ok') PLAN = p.data || [];
     poblarSelects();
@@ -324,7 +343,7 @@ function filtrados() {
 function render() {
   const tipo = document.getElementById('fil-tipo').value;
   const base = ESTADO.filter(e => !tipo || e.tipo===tipo);
-  const c = { VENCIDO:0, URGENTE:0, PROXIMO:0, OK:0 };
+  const c = { VENCIDO:0, URGENTE:0, PROXIMO:0, OK:0, SIN_REGISTRO:0, SIN_HOROMETRO:0 };
   base.forEach(e => { if (c[e.nivel]!=null) c[e.nivel]++; });
   const defs = [
     { k:'VENCIDO', cls:'sem-venc', lbl:'Vencidos',  sub:'ya pasaron el ciclo' },
