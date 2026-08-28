@@ -142,6 +142,22 @@
   .t-toca b { color:#f1f5f9; }
   .t-neg { color:#f87171; font-weight:700; }
 
+  /* Último mantenimiento del equipo */
+  .ultimo-serv { background:#131f18; border:1px solid #166534; border-left:3px solid #22c55e; border-radius:10px; padding:14px 16px; margin-bottom:16px; }
+  .ultimo-serv.vacio { background:#17212f; border-color:#1e3a5f; border-left-color:#3b82f6; color:#94a3b8; font-size:12.5px; }
+  .ultimo-head { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; font-size:12.5px; font-weight:700; color:#86efac; margin-bottom:10px; }
+  .ultimo-fecha { font-size:11px; color:#64748b; font-weight:400; }
+  .ultimo-lbl { font-size:10px; color:#64748b; text-transform:uppercase; font-weight:700; letter-spacing:.05em; margin-bottom:6px; }
+  .ultimo-chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .ult-chip { font-size:11px; background:rgba(34,197,94,.1); color:#bbf7d0; border:1px solid #166534; padding:4px 10px; border-radius:7px; }
+  .ult-chip small { opacity:.6; margin-left:3px; }
+  .ultimo-obs { margin-top:10px; padding-top:10px; border-top:1px solid #14532d; font-size:12px; color:#cbd5e1; line-height:1.5; white-space:pre-wrap; }
+  .ultimo-obs b { color:#86efac; font-size:10.5px; text-transform:uppercase; letter-spacing:.04em; }
+
+  .serv-desc { margin-top:12px; background:#0f1720; border:1px solid #1e293b; border-radius:8px; padding:11px 14px; }
+  .serv-desc-lbl { font-size:10px; color:#64748b; text-transform:uppercase; font-weight:700; letter-spacing:.05em; margin-bottom:6px; }
+  .serv-desc-txt { font-size:12.5px; color:#cbd5e1; line-height:1.6; white-space:pre-wrap; word-break:break-word; }
+
   .empty { text-align:center; padding:46px 20px; color:#475569; font-size:14px; }
   .empty .big { font-size:40px; display:block; margin-bottom:12px; }
   .spinner { display:inline-block; width:20px; height:20px; border:3px solid #1e293b; border-top-color:#ea580c; border-radius:50%; animation:spin .8s linear infinite; vertical-align:middle; margin-right:8px; }
@@ -298,10 +314,11 @@
         <input type="text" id="r-resp" placeholder="Nombre del mecánico">
       </div>
     </div>
-    <div id="r-tareas"><div class="empty">Seleccioná un equipo para ver sus tareas</div></div>
+    <div id="r-ultimo"></div>
+  <div id="r-tareas"><div class="empty">Seleccioná un equipo para ver sus tareas</div></div>
     <div class="form-g" style="margin-top:16px">
-      <label>Observaciones</label>
-      <textarea id="r-obs" placeholder="Notas del servicio, repuestos pendientes, etc."></textarea>
+      <label>¿Qué se cambió? — escribilo con tus palabras</label>
+      <textarea id="r-obs" placeholder="Ej: se cambió filtro diesel, filtro de aceite y aceite de motor. El filtro de aire quedó, todavía sirve.&#10;&#10;Sirve para que en el próximo mantenimiento se sepa qué ya se cambió y qué no."></textarea>
     </div>
     <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;margin-top:16px;flex-wrap:wrap">
       <div id="r-resumen" style="font-size:12px;color:#64748b"></div>
@@ -626,11 +643,38 @@ function onEquipoReg() {
   const eq = document.getElementById('r-equipo').value;
   const cont = document.getElementById('r-tareas');
   const btn = document.getElementById('r-btn');
-  if (!eq) { cont.innerHTML = '<div class="empty">Seleccioná un equipo para ver sus tareas</div>'; btn.disabled = true; actualizarResumen(); return; }
+  if (!eq) {
+    cont.innerHTML = '<div class="empty">Seleccioná un equipo para ver sus tareas</div>';
+    document.getElementById('r-ultimo').innerHTML = '';
+    btn.disabled = true; actualizarResumen(); return;
+  }
   const e = ESTADO.find(x=>x.equipo===eq);
   if (!e) { cont.innerHTML = '<div class="empty">Equipo sin plan de mantenimiento</div>'; btn.disabled = true; return; }
 
   if (e.horometroActual!=null) document.getElementById('r-horo').value = e.horometroActual;
+
+  // Qué se cambió la vez pasada — para no repetir lo que todavía sirve
+  const previos = HIST.filter(s => s.equipo === eq);
+  const cajaUlt = document.getElementById('r-ultimo');
+  if (previos.length) {
+    const u = previos[0];
+    const dif = (e.horometroActual != null)
+      ? Math.round((e.horometroActual - u.horometro) * 10) / 10 : null;
+    cajaUlt.innerHTML = `
+      <div class="ultimo-serv">
+        <div class="ultimo-head">
+          <span>🕐 Último mantenimiento de ${esc(eq)}</span>
+          <span class="ultimo-fecha">${esc(u.fecha)} · ${u.horometro} h${dif!==null?` · hace ${dif} h`:''}</span>
+        </div>
+        <div class="ultimo-lbl">Se cambió:</div>
+        <div class="ultimo-chips">
+          ${u.tareas.map(t=>`<span class="ult-chip">${esc(t.tarea)} <small>${t.intervalo}h</small></span>`).join('')}
+        </div>
+        ${u.observaciones ? `<div class="ultimo-obs"><b>Nota del mecánico:</b> ${esc(u.observaciones)}</div>` : ''}
+      </div>`;
+  } else {
+    cajaUlt.innerHTML = `<div class="ultimo-serv vacio">🕐 Este equipo no tiene mantenimientos registrados todavía. Este será el primero.</div>`;
+  }
 
   // Agrupar por intervalo para que se vea qué ciclo se está cubriendo
   const grupos = {};
@@ -753,7 +797,7 @@ function renderHist() {
       <div class="serv-tareas">
         ${s.tareas.map(t=>`<span class="st-chip">${esc(t.tarea)} <small>(${t.intervalo}h)</small></span>`).join('')}
       </div>
-      ${s.observaciones ? `<div style="margin-top:11px;font-size:12.5px;color:#94a3b8;line-height:1.55;white-space:pre-wrap">${esc(s.observaciones)}</div>` : ''}
+      ${s.observaciones ? `<div class="serv-desc"><div class="serv-desc-lbl">📝 Lo que se cambió</div><div class="serv-desc-txt">${esc(s.observaciones)}</div></div>` : ''}
     </div>`).join('');
 }
 
