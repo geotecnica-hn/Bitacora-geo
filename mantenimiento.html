@@ -121,6 +121,27 @@
   .st-chip { font-size:11px; background:rgba(34,197,94,.1); color:#86efac; border:1px solid #166534; padding:4px 10px; border-radius:7px; }
   .st-chip small { opacity:.7; }
 
+  /* Tabla general */
+  .tabla-wrap { overflow-x:auto; background:#161b28; border:1px solid #2d3748; border-radius:14px; }
+  .tabla-gen { width:100%; border-collapse:collapse; font-size:12.5px; min-width:1080px; }
+  .tabla-gen th { background:#0f172a; color:#64748b; font-weight:700; font-size:9.5px; text-transform:uppercase;
+                  letter-spacing:.05em; padding:11px 12px; text-align:left; border-bottom:1px solid #1e293b; white-space:nowrap; }
+  .tabla-gen th.num { text-align:right; }
+  .tabla-gen td { padding:11px 12px; border-bottom:1px solid #1a2233; color:#cbd5e1; white-space:nowrap; }
+  .tabla-gen td.num { text-align:right; font-variant-numeric:tabular-nums; }
+  .tabla-gen tr:last-child td { border-bottom:none; }
+  .tabla-gen tbody tr { cursor:pointer; transition:background .15s; }
+  .tabla-gen tbody tr:hover td { background:rgba(255,255,255,.035); }
+  .t-tipo { font-size:9.5px; font-weight:700; color:#94a3b8; }
+  .t-eq { font-weight:700; color:#f1f5f9; }
+  .t-horo { font-weight:700; color:#60a5fa; }
+  .t-dim { color:#475569; }
+  .t-est { font-size:10px; font-weight:700; padding:3px 9px; border-radius:6px; border:1px solid;
+           text-transform:uppercase; letter-spacing:.04em; display:inline-block; }
+  .t-toca { font-size:11px; }
+  .t-toca b { color:#f1f5f9; }
+  .t-neg { color:#f87171; font-weight:700; }
+
   .empty { text-align:center; padding:46px 20px; color:#475569; font-size:14px; }
   .empty .big { font-size:40px; display:block; margin-bottom:12px; }
   .spinner { display:inline-block; width:20px; height:20px; border:3px solid #1e293b; border-top-color:#ea580c; border-radius:50%; animation:spin .8s linear infinite; vertical-align:middle; margin-right:8px; }
@@ -155,14 +176,66 @@
 <div class="semaforo" id="semaforo"></div>
 
 <div class="tabs">
-  <button class="tab active" data-panel="p-toca" onclick="cambiarTab(this)">📋 Qué toca <span class="badge" id="bd-toca"></span></button>
+  <button class="tab active" data-panel="p-tabla" onclick="cambiarTab(this)">📋 Tabla general</button>
+  <button class="tab" data-panel="p-toca" onclick="cambiarTab(this)">🔍 Detalle por filtro <span class="badge" id="bd-toca"></span></button>
   <button class="tab" data-panel="p-reg" onclick="cambiarTab(this)">✅ Registrar mantenimiento</button>
   <button class="tab" data-panel="p-hist" onclick="cambiarTab(this)">📚 Historial <span class="badge" id="bd-hist"></span></button>
   <button class="tab" data-panel="p-plan" onclick="cambiarTab(this)">⚙️ Plan por intervalos</button>
 </div>
 
+<!-- ═══ TABLA GENERAL (misma vista del dashboard de mantenimiento) ═══ -->
+<div class="panel active" id="p-tabla">
+  <div class="aviso">
+    📋 Una fila por equipo, como en tu dashboard. La diferencia: <b>Próximo mant.</b> y <b>Horas faltantes</b>
+    salen de la tarea que vence primero, no de un 250 h fijo. Tocá cualquier fila para ver qué filtro toca.
+  </div>
+  <div class="filters">
+    <div class="filter-group">
+      <label>Tipo de equipo</label>
+      <select id="t-tipo" onchange="renderTabla()">
+        <option value="">Todos</option>
+        <option value="PIL">Piloteadora</option><option value="PER">Perforadora</option>
+        <option value="COM">Compresor</option><option value="INY">Planta Inyección</option>
+        <option value="EXC">Excavadora</option><option value="GRU">Grúa</option><option value="OTR">Otro</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Mostrar</label>
+      <select id="t-est" onchange="renderTabla()">
+        <option value="">Todos los equipos</option>
+        <option value="act">Solo los que tienen horómetro</option>
+        <option value="pend">Solo los que necesitan atención</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Buscar</label>
+      <input type="text" id="t-txt" placeholder="equipo, proyecto, operador..." oninput="renderTabla()">
+    </div>
+  </div>
+  <div class="tabla-wrap">
+    <table class="tabla-gen">
+      <thead>
+        <tr>
+          <th>Tipo</th><th>Equipo</th><th>Proyecto actual</th><th>Operador actual</th>
+          <th class="num">Horómetro</th><th>Último mant.</th><th class="num">Hor. últ. mant.</th>
+          <th class="num">Hrs transc.</th><th class="num">Próximo mant.</th><th class="num">Hrs faltantes</th>
+          <th>Estado</th><th>Qué toca</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-body"><tr><td colspan="12" class="empty">Cargando...</td></tr></tbody>
+    </table>
+  </div>
+  <div class="leyenda">
+    <span><i style="background:#ef4444"></i> Vencido</span>
+    <span><i style="background:#f97316"></i> Urgente — queda menos del 10% del ciclo</span>
+    <span><i style="background:#eab308"></i> Próximo — queda menos del 25%</span>
+    <span><i style="background:#22c55e"></i> OK</span>
+    <span><i style="background:#475569"></i> Sin horómetro o sin registro</span>
+  </div>
+</div>
+
 <!-- ═══ QUÉ TOCA ═══ -->
-<div class="panel active" id="p-toca">
+<div class="panel" id="p-toca">
   <div class="aviso">
     💡 Cada tarea se calcula con <b>su propio intervalo</b>. Si el filtro de aceite es de 250 h y el de aire de 500 h,
     a las 250 h solo se cambia el de aceite — el de aire va a la mitad de su ciclo y todavía sirve.
@@ -270,7 +343,29 @@ const EST = {
   SIN_HOROMETRO:{ lbl:'Sin horómetro',col:'#475569', cls:'cnt-s' },
 };
 
-let ESTADO = [], HIST = [], PLAN = [], filtroNivel = '', abiertos = {};
+let ESTADO = [], HIST = [], PLAN = [], USO = {}, filtroNivel = '', abiertos = {};
+
+const TIPO_NOMBRE = { PIL:'PILOTEADORA', PER:'PERFORADORA', COM:'COMPRESOR',
+                      INY:'PLANTA INYECCIÓN', EXC:'COMPLEMENTARIO', GRU:'COMPLEMENTARIO', OTR:'COMPLEMENTARIO' };
+
+// Proyecto y operador de la última bitácora de cada equipo
+function construirUso(rows) {
+  USO = {};
+  rows.forEach(r => {
+    const eq = r.Nombre_Equipo; if (!eq) return;
+    const f = String(r.Fecha || '');
+    if (!USO[eq] || f >= USO[eq].fecha) {
+      USO[eq] = { fecha:f, proyecto:(r.Proyecto||'').trim(), operador:(r.Operador||'').trim() };
+    }
+  });
+}
+
+// La tarea que vence primero define el próximo mantenimiento del equipo
+function proximaTarea(e) {
+  const evaluables = e.tareas.filter(t => t.horasRestantes !== null && t.horasRestantes !== undefined);
+  if (!evaluables.length) return null;
+  return evaluables.reduce((a,b) => (b.horasRestantes < a.horasRestantes ? b : a));
+}
 
 // El nivel se deriva del desglose de tareas: si ninguna es evaluable todavía,
 // el equipo no puede darse por "al día".
@@ -307,16 +402,18 @@ async function loadData() {
   const btn = document.getElementById('btnRef'), ic = document.getElementById('ref-icon');
   btn.classList.add('loading'); ic.innerHTML = '<span class="spinner"></span>';
   try {
-    const [e, h, p] = await Promise.all([
+    const [e, h, p, b] = await Promise.all([
       fetch(`${SCRIPT_URL}?action=getEstadoMant`).then(r=>r.json()),
       fetch(`${SCRIPT_URL}?action=getMantenimientos`).then(r=>r.json()),
-      fetch(`${SCRIPT_URL}?action=getPlanMant`).then(r=>r.json())
+      fetch(`${SCRIPT_URL}?action=getPlanMant`).then(r=>r.json()),
+      fetch(`${SCRIPT_URL}?action=getDashboardData`).then(r=>r.json())
     ]);
     if (e.status==='ok') { ESTADO = e.data || []; normalizarNiveles(); }
     if (h.status==='ok') HIST = h.data || [];
     if (p.status==='ok') PLAN = p.data || [];
+    if (b.status==='ok') construirUso(b.data || []);
     poblarSelects();
-    render(); renderHist(); renderPlan();
+    renderTabla(); render(); renderHist(); renderPlan();
     document.getElementById('last-update').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-HN');
   } catch(err) {
     document.getElementById('last-update').textContent = 'Sin conexión';
@@ -331,6 +428,90 @@ function poblarSelects() {
   sr.innerHTML = '<option value="">Seleccionar…</option>' + eqs.map(e=>`<option value="${esc(e)}">${esc(e)}</option>`).join('');
   sh.innerHTML = '<option value="">Todos</option>' + eqs.map(e=>`<option value="${esc(e)}">${esc(e)}</option>`).join('');
   sr.value = vr; sh.value = vh;
+}
+
+// ═══ TABLA GENERAL — una fila por equipo, como el dashboard de mantenimiento ═══
+function renderTabla() {
+  const tipo = document.getElementById('t-tipo').value;
+  const modo = document.getElementById('t-est').value;
+  const txt  = document.getElementById('t-txt').value.trim().toLowerCase();
+
+  let lista = ESTADO.filter(e => {
+    if (tipo && e.tipo !== tipo) return false;
+    if (modo === 'act'  && e.horometroActual == null) return false;
+    if (modo === 'pend' && !['VENCIDO','URGENTE','PROXIMO'].includes(e.nivel)) return false;
+    if (txt) {
+      const u = USO[e.equipo] || {};
+      const blob = (e.equipo+' '+(u.proyecto||'')+' '+(u.operador||'')+' '+(TIPO_NOMBRE[e.tipo]||'')).toLowerCase();
+      if (!blob.includes(txt)) return false;
+    }
+    return true;
+  });
+
+  const tbody = document.getElementById('tabla-body');
+  if (!lista.length) { tbody.innerHTML = '<tr><td colspan="12" class="empty">Ningún equipo coincide</td></tr>'; return; }
+
+  tbody.innerHTML = lista.map(e => {
+    const u = USO[e.equipo] || {};
+    const E = EST[e.nivel] || EST.OK;
+    const ult = e.ultimoServicio;
+    const prox = proximaTarea(e);
+
+    const transc = (ult && e.horometroActual != null)
+      ? Math.round((e.horometroActual - ult.horometro) * 10) / 10 : null;
+    const proxHor = (prox && e.horometroActual != null)
+      ? Math.round((e.horometroActual + prox.horasRestantes) * 10) / 10 : null;
+    const falt = prox ? prox.horasRestantes : null;
+
+    // Resumen de lo que toca, por ciclo
+    let toca;
+    const pend = e.tareas.filter(t => ['VENCIDO','URGENTE'].includes(t.estado));
+    if (pend.length) {
+      const ciclos = [...new Set(pend.map(t => t.intervalo))].sort((a,b)=>a-b);
+      toca = `<b>${pend.length}</b> ítem${pend.length>1?'s':''} · ciclo ${ciclos.join(' y ')} h`;
+    } else if (e.nivel === 'PROXIMO') {
+      const px = e.tareas.filter(t => t.estado==='PROXIMO');
+      toca = `<span class="t-dim">${px.length} por vencer</span>`;
+    } else if (e.nivel === 'SIN_HOROMETRO') {
+      toca = '<span class="t-dim">sin horómetro</span>';
+    } else if (e.nivel === 'SIN_REGISTRO') {
+      toca = '<span class="t-dim">nunca registrado</span>';
+    } else {
+      toca = '<span class="t-dim">al día</span>';
+    }
+
+    const nd = v => (v === null || v === undefined) ? '<span class="t-dim">—</span>' : v;
+    const faltHtml = falt === null ? '<span class="t-dim">—</span>'
+                   : (falt <= 0 ? `<span class="t-neg">${falt}</span>` : falt);
+
+    return `
+    <tr onclick="verEquipo('${escAttr(e.equipo)}')">
+      <td class="t-tipo">${esc(TIPO_NOMBRE[e.tipo] || e.tipo || '—')}</td>
+      <td class="t-eq">${esc(e.equipo)}</td>
+      <td>${u.proyecto ? esc(u.proyecto) : '<span class="t-dim">—</span>'}</td>
+      <td>${u.operador ? esc(u.operador) : '<span class="t-dim">—</span>'}</td>
+      <td class="num t-horo">${e.horometroActual != null ? e.horometroActual : '<span class="t-dim">—</span>'}</td>
+      <td>${ult ? esc(ult.fecha) : '<span class="t-dim">—</span>'}</td>
+      <td class="num">${ult ? ult.horometro : '<span class="t-dim">—</span>'}</td>
+      <td class="num">${nd(transc)}</td>
+      <td class="num">${nd(proxHor)}</td>
+      <td class="num">${faltHtml}</td>
+      <td><span class="t-est" style="background:${E.col}22;color:${E.col};border-color:${E.col}55">${E.lbl}</span></td>
+      <td class="t-toca">${toca}</td>
+    </tr>`;
+  }).join('');
+}
+
+// Al tocar una fila, saltar al detalle de ese equipo
+function verEquipo(eq) {
+  cambiarTab(document.querySelector('.tab[data-panel="p-toca"]'));
+  document.getElementById('fil-tipo').value = '';
+  document.getElementById('fil-que').value = 'todo';
+  document.getElementById('fil-texto').value = eq;
+  filtroNivel = '';
+  abiertos[eq] = true;
+  render();
+  window.scrollTo({ top:0, behavior:'smooth' });
 }
 
 function filtrados() {
