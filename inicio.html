@@ -148,6 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('hoy').textContent =
     new Date().toLocaleDateString('es-HN', { weekday:'long', day:'numeric', month:'long' });
   cargar();
+  setInterval(cargar, 60000);
 });
 
 async function cargar() {
