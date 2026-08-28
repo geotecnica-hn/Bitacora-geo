@@ -106,7 +106,6 @@
   .chk-row.sel { background:#131f18; border-color:#166534; }
   .chk-row input[type=checkbox] { width:19px; height:19px; accent-color:#22c55e; cursor:pointer; flex-shrink:0; min-width:auto; }
   .chk-info { flex:1; min-width:180px; }
-  .chk-costo { width:110px; min-width:110px; }
   .grupo-int { margin-bottom:20px; }
   .grupo-int-h { display:flex; align-items:center; gap:10px; margin-bottom:10px; padding-bottom:7px; border-bottom:1px solid #1e293b; flex-wrap:wrap; }
   .grupo-int-t { font-size:14px; font-weight:700; color:#f1f5f9; }
@@ -475,7 +474,6 @@ function onEquipoReg() {
             <div class="tarea-cons">${esc(t.sistema||'')}${t.consumible ? ` · ${esc(t.consumible)}` : ''}${t.cantidad ? ` · ${t.cantidad} ${esc(t.unidad||'')}` : ''}${t.parte ? ` · ${esc(t.parte)}` : ''}</div>
           </div>
           <span class="tarea-est" style="background:${E.col}22;color:${E.col};border-color:${E.col}55">${E.lbl}</span>
-          <input type="number" class="chk-costo" id="cost-${idx}" placeholder="Costo Lps" step="0.01" min="0" onclick="event.stopPropagation()">
         </label>`;
       }).join('')}
     </div>`;
@@ -511,9 +509,8 @@ async function guardarMant() {
   document.querySelectorAll('#r-tareas input[type=checkbox]:checked').forEach(ck => {
     const t = e.tareas[parseInt(ck.dataset.idx)];
     if (!t) return;
-    const costo = parseFloat(document.getElementById('cost-'+ck.dataset.idx)?.value) || 0;
     tareas.push({ sistema:t.sistema, tarea:t.tarea, intervalo:t.intervalo,
-                  consumible:t.consumible, cantidad:t.cantidad, parte:t.parte, costo });
+                  consumible:t.consumible, cantidad:t.cantidad, parte:t.parte, costo:0 });
   });
   if (!tareas.length) { toast('Marcá al menos una tarea', true); return; }
 
@@ -563,7 +560,7 @@ function renderHist() {
           <div class="serv-eq">${esc(s.equipo)}</div>
           <div class="serv-meta">${esc(s.responsable||'—')}${s.tipoServicio ? ` · ${esc(s.tipoServicio)}` : ''} · ${s.horometro} h</div>
         </div>
-        <div class="serv-fecha">${esc(s.fecha)}${s.costo ? `<div style="font-size:11px;color:#4ade80;margin-top:3px">L. ${s.costo.toLocaleString('es-HN')}</div>` : ''}</div>
+        <div class="serv-fecha">${esc(s.fecha)}</div>
       </div>
       <div class="serv-tareas">
         ${s.tareas.map(t=>`<span class="st-chip">${esc(t.tarea)} <small>(${t.intervalo}h)</small></span>`).join('')}
