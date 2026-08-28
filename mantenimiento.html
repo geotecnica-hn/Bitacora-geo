@@ -291,9 +291,16 @@ function normalizarNiveles() {
                        a.equipo.localeCompare(b.equipo));
 }
 
+const REFRESH_INTERVAL = 60000;
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('r-fecha').value = new Date().toISOString().split('T')[0];
   loadData();
+  // Se refresca solo, pero sin pisar el formulario si lo están llenando
+  setInterval(() => {
+    const escribiendo = document.querySelector('#p-reg.active') &&
+                        document.getElementById('r-equipo').value;
+    if (!escribiendo) loadData();
+  }, REFRESH_INTERVAL);
 });
 
 async function loadData() {
