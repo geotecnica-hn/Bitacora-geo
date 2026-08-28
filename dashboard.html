@@ -112,6 +112,7 @@
   .btn-inicio:hover { background: #334155; color: #e2e8f0; }
   .btn-mant { background: #0c2a1a; color: #6ee7b7; border: 1px solid #166534; padding: 9px 16px; border-radius: 9px; font-size: 13px; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 7px; transition: all 0.2s; }
   .btn-mant:hover { background: #166534; color: #d1fae5; }
+  .btn-mant span:not(:empty) { background: #f59e0b; color: #1a1200; font-size: 11px; font-weight: 800; padding: 1px 7px; border-radius: 10px; }
 
   /* ── Overview sections (Opción B) ── */
   .overview-section { background: #1a1f2e; border: 1px solid #2d3748; border-radius: 12px; padding: 16px; margin-bottom: 12px; border-left: 4px solid; }
@@ -139,7 +140,7 @@
   <div class="header-right">
     <a href="inicio.html" class="btn-inicio">🏠 Inicio</a>
     <a href="alertas.html" class="btn-alertas">⚠️ Centro de Alertas<span id="alertas-count"></span></a>
-    <a href="mantenimiento.html" class="btn-mant">🔧 Mantenimientos</a>
+    <a href="mantenimiento.html" class="btn-mant">🔧 Mantenimientos<span id="mant-count"></span></a>
     <div>
       <div class="semana-badge" id="semana-badge">📅 Cargando...</div>
       <div class="last-update" id="last-update"></div>
@@ -362,6 +363,7 @@ async function loadData() {
       populateFilters();
       applyFilters();
       document.getElementById('last-update').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-HN');
+      actualizarBadgeMant();
     }
   } catch (e) {
     document.getElementById('last-update').textContent = 'Sin conexión — mostrando últimos datos';
@@ -412,6 +414,18 @@ function applyFilters() {
 }
 
 // Muestra en el botón del header cuántos ítems en MALO hay en la vista actual
+// Trae cuántos equipos tienen mantenimiento vencido o urgente
+async function actualizarBadgeMant() {
+  try {
+    const res = await fetch(`${SCRIPT_URL}?action=getEstadoMant`);
+    const json = await res.json();
+    if (json.status !== 'ok' || !Array.isArray(json.data)) return;
+    const n = json.data.filter(e => ['VENCIDO','URGENTE'].includes(e.nivel)).length;
+    const el = document.getElementById('mant-count');
+    if (el) el.textContent = n > 0 ? n : '';
+  } catch(_) {}
+}
+
 function actualizarBadgeAlertas() {
   const malos = FILTERED.reduce((s,r) => s + CHECKLIST_COLS.filter(c => normalizeBIM(r[c.id], c.mode) === 'M').length, 0);
   const el = document.getElementById('alertas-count');
