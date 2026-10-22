@@ -202,6 +202,35 @@
     .hoja-sec { page-break-inside: avoid; }
   }
 
+  /* Avisos de operadores */
+  .av-card { background:#161b28; border:1px solid #2d3748; border-left:4px solid; border-radius:12px;
+             padding:15px 17px; margin-bottom:11px; }
+  .av-card.parada  { border-left-color:#ef4444; }
+  .av-card.pronto  { border-left-color:#f97316; }
+  .av-card.esperar { border-left-color:#eab308; }
+  .av-card.cerrado { opacity:.58; border-left-color:#22c55e; }
+  .av-top { display:flex; justify-content:space-between; align-items:flex-start; gap:12px;
+            flex-wrap:wrap; margin-bottom:10px; }
+  .av-eq { font-size:15px; font-weight:700; color:#f1f5f9; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .av-meta { font-size:11px; color:#64748b; margin-top:3px; }
+  .av-grav { font-size:10px; font-weight:700; padding:3px 10px; border-radius:7px; border:1px solid;
+             text-transform:uppercase; letter-spacing:.04em; white-space:nowrap; }
+  .g-parada  { background:rgba(239,68,68,.14);  color:#fca5a5; border-color:#7f1d1d; }
+  .g-pronto  { background:rgba(249,115,22,.13); color:#fdba74; border-color:#7c2d12; }
+  .g-esperar { background:rgba(234,179,8,.12);  color:#fde047; border-color:#713f12; }
+  .g-cerrado { background:rgba(34,197,94,.12);  color:#86efac; border-color:#14532d; }
+  .av-txt { background:#0f1720; border:1px solid #1e293b; border-radius:8px; padding:12px 14px;
+            font-size:13.5px; color:#e2e8f0; line-height:1.6; white-space:pre-wrap; word-break:break-word; }
+  .av-pie { display:flex; justify-content:space-between; align-items:center; gap:10px;
+            margin-top:11px; flex-wrap:wrap; }
+  .av-fecha { font-size:11px; color:#475569; }
+  .av-btn { background:#166534; color:#bbf7d0; border:1px solid #14532d; padding:7px 14px;
+            border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit; }
+  .av-btn:hover { background:#15803d; color:#dcfce7; }
+  .av-btn:disabled { opacity:.5; cursor:not-allowed; }
+  .av-cierre { margin-top:10px; padding-top:10px; border-top:1px solid #14532d;
+               font-size:11.5px; color:#86efac; }
+
   .empty { text-align: center; padding: 46px 20px; color: #475569; font-size: 14px; }
   .empty .big { font-size: 40px; display: block; margin-bottom: 12px; }
   .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid #1e293b; border-top-color: #ea580c; border-radius: 50%; animation: spin .8s linear infinite; vertical-align: middle; margin-right: 8px; }
@@ -235,7 +264,8 @@
 
 <!-- ══ TABS ══ -->
 <div class="tabs">
-  <button class="tab active" data-panel="p-flota" onclick="cambiarTab(this)">🚦 Estado de la flota</button>
+  <button class="tab active" data-panel="p-avisos" onclick="cambiarTab(this)">🔴 Avisos de operadores <span class="badge" id="bd-avisos"></span></button>
+  <button class="tab" data-panel="p-flota" onclick="cambiarTab(this)">🚦 Estado de la flota</button>
   <button class="tab" data-panel="p-pend" onclick="cambiarTab(this)">⏳ Pendientes <span class="badge" id="bd-pend"></span></button>
   <button class="tab" data-panel="p-semanal" onclick="cambiarTab(this)">📅 Revisión semanal</button>
   <button class="tab" data-panel="p-reportes" onclick="cambiarTab(this)">📋 Reportes <span class="badge" id="bd-rep"></span></button>
@@ -244,7 +274,7 @@
 </div>
 
 <!-- ── Filtros comunes ── -->
-<div class="filters">
+<div class="filters" id="filtros-generales">
   <div class="filter-group">
     <label>Semana</label>
     <select id="fil-semana" onchange="applyFilters()"><option value="">Todas</option></select>
@@ -281,7 +311,39 @@
 </div>
 
 <!-- ══ PANEL: ESTADO DE FLOTA ══ -->
-<div class="panel active" id="p-flota">
+<!-- ═══ AVISOS DE OPERADORES — lo que reportan sin llenar la bitácora ═══ -->
+<div class="panel active" id="p-avisos">
+  <div class="aviso">
+    🔴 Lo que los operadores mandan desde el botón <b>Reportar problema mecánico</b> de la bitácora.
+    No hace falta que llenen la bitácora completa — por eso llegan más seguido.
+  </div>
+  <div class="filters">
+    <div class="filter-group">
+      <label>Mostrar</label>
+      <select id="av-est" onchange="renderAvisos()">
+        <option value="abiertos">Sin atender</option>
+        <option value="todos">Todos</option>
+        <option value="atendidos">Ya atendidos</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Gravedad</label>
+      <select id="av-grav" onchange="renderAvisos()">
+        <option value="">Todas</option>
+        <option value="parada">🔴 Máquina parada</option>
+        <option value="pronto">🟠 Hay que verlo pronto</option>
+        <option value="esperar">🟡 Puede esperar</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Buscar</label>
+      <input type="text" id="av-txt" placeholder="equipo, operador..." oninput="renderAvisos()">
+    </div>
+  </div>
+  <div id="avisos"><div class="empty">Cargando...</div></div>
+</div>
+
+<div class="panel" id="p-flota">
   <div id="aviso-flota" class="aviso" style="display:none"></div>
   <div class="equipos-grid" id="equipos-grid"><div class="empty">Cargando...</div></div>
   <div class="leyenda">
@@ -441,11 +503,13 @@ function nivelDe(nM, nI) {
 }
 const NIVEL_TXT = { crit:'Crítico', aten:'Atención', vigi:'Vigilar', ok:'Sin novedad' };
 
-let ALL_DATA=[], REPORTES=[], EQUIPOS=[], FILTRADOS=[], EQ_FILTRADOS=[];
+let ALL_DATA=[], REPORTES=[], EQUIPOS=[], FILTRADOS=[], EQ_FILTRADOS=[], AVISOS=[];
 let PENDIENTES=[], CERRADOS=[], PEND_FILTRADOS=[];
 let mostrados=PAGE_SIZE, mostradosCom=PAGE_SIZE, filtroNivel='';
 
 document.addEventListener('DOMContentLoaded', () => {
+  const fg = document.getElementById('filtros-generales');
+  if (fg) fg.style.display = 'none';   // arranca en Avisos
   loadData(); setInterval(loadData, REFRESH_INTERVAL);
   document.addEventListener('keydown', e => { if (e.key==='Escape') cerrarModal(); });
 });
@@ -454,18 +518,100 @@ async function loadData() {
   const btn=document.getElementById('btnRefresh'), icon=document.getElementById('refresh-icon');
   btn.classList.add('loading'); icon.innerHTML='<span class="loading-spinner"></span>';
   try {
-    const res = await fetch(`${SCRIPT_URL}?action=getDashboardData`);
+    const [res, resAv] = await Promise.all([
+      fetch(`${SCRIPT_URL}?action=getDashboardData`),
+      fetch(`${SCRIPT_URL}?action=getReportes`).catch(() => null)
+    ]);
     const json = await res.json();
+    if (resAv) {
+      try { const ja = await resAv.json(); if (ja.status==='ok') AVISOS = ja.data || []; } catch(_) {}
+    }
     if (json.status==='ok' && Array.isArray(json.data)) {
       ALL_DATA = json.data;
       construir();
       poblarFiltros();
       applyFilters();
+      renderAvisos();
       document.getElementById('last-update').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-HN');
     }
   } catch(e) {
     document.getElementById('last-update').textContent = 'Sin conexión — últimos datos';
   } finally { btn.classList.remove('loading'); icon.textContent='⟳'; }
+}
+
+// ═══ AVISOS DE OPERADORES ═══
+const GRAV = {
+  parada:  { lbl:'Máquina parada',      cls:'g-parada',  emoji:'🔴' },
+  pronto:  { lbl:'Hay que verlo pronto', cls:'g-pronto',  emoji:'🟠' },
+  esperar: { lbl:'Puede esperar',        cls:'g-esperar', emoji:'🟡' }
+};
+
+function renderAvisos() {
+  const modo = document.getElementById('av-est').value;
+  const grav = document.getElementById('av-grav').value;
+  const txt  = document.getElementById('av-txt').value.trim().toLowerCase();
+
+  let lista = AVISOS.filter(a => {
+    if (modo === 'abiertos'  && a.estado !== 'ABIERTO')  return false;
+    if (modo === 'atendidos' && a.estado !== 'ATENDIDO') return false;
+    if (grav && a.gravedad !== grav) return false;
+    if (txt && !(a.equipo+' '+a.operador+' '+a.descripcion).toLowerCase().includes(txt)) return false;
+    return true;
+  });
+
+  const abiertos = AVISOS.filter(a => a.estado === 'ABIERTO').length;
+  document.getElementById('bd-avisos').textContent = abiertos || '';
+
+  const cont = document.getElementById('avisos');
+  if (!lista.length) {
+    cont.innerHTML = AVISOS.length
+      ? '<div class="empty"><span class="big">✅</span>Nada sin atender con estos filtros</div>'
+      : '<div class="empty"><span class="big">📭</span>Todavía no hay avisos.<br><span style="font-size:12px">Los operadores los mandan desde el botón rojo de la bitácora.</span></div>';
+    return;
+  }
+
+  cont.innerHTML = lista.map(a => {
+    const g = GRAV[a.gravedad] || GRAV.pronto;
+    const cerrado = a.estado === 'ATENDIDO';
+    return `
+    <div class="av-card ${cerrado ? 'cerrado' : esc(a.gravedad)}">
+      <div class="av-top">
+        <div>
+          <div class="av-eq">${esc(a.equipo)}
+            <span class="av-grav ${cerrado ? 'g-cerrado' : g.cls}">${cerrado ? '✓ Atendido' : g.emoji + ' ' + g.lbl}</span>
+          </div>
+          <div class="av-meta">Reportó ${esc(a.operador)} · ${esc(a.timestamp)}</div>
+        </div>
+        ${cerrado ? '' : `<button class="av-btn" onclick="marcarAtendido('${escAttr(a.id)}')">Marcar atendido</button>`}
+      </div>
+      <div class="av-txt">${esc(a.descripcion)}</div>
+      ${cerrado && (a.atendidoPor || a.notasCierre) ? `
+        <div class="av-cierre">✓ ${esc(a.atendidoPor || '—')}${a.fechaAtendido ? ' · ' + esc(a.fechaAtendido) : ''}${a.notasCierre ? ' — ' + esc(a.notasCierre) : ''}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function marcarAtendido(id) {
+  const quien = prompt('¿Quién lo atendió? (opcional)') ?? '';
+  const notas = prompt('¿Qué se hizo? (opcional)') ?? '';
+  const btns = document.querySelectorAll('.av-btn');
+  btns.forEach(b => b.disabled = true);
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method:'POST', headers:{'Content-Type':'text/plain'}, redirect:'follow',
+      body: JSON.stringify({ accion:'cerrarReporte', ID:id, AtendidoPor:quien, Notas:notas })
+    });
+    const d = await res.json();
+    if (d.status !== 'success') throw new Error(d.message || 'Error');
+    // Reflejarlo en pantalla sin esperar a la próxima recarga
+    const a = AVISOS.find(x => x.id === id);
+    if (a) { a.estado = 'ATENDIDO'; a.atendidoPor = quien; a.notasCierre = notas; }
+    renderAvisos();
+  } catch (err) {
+    alert('No se pudo marcar: ' + err.message);
+  } finally {
+    btns.forEach(b => b.disabled = false);
+  }
 }
 
 function construir() {
@@ -991,7 +1137,11 @@ function cambiarTab(btn) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById(btn.dataset.panel).classList.add('active');
+  const panel = btn.dataset.panel;
+  document.getElementById(panel).classList.add('active');
+  // Los avisos tienen sus propios filtros; los generales no aplican ahí
+  const fg = document.getElementById('filtros-generales');
+  if (fg) fg.style.display = (panel === 'p-avisos') ? 'none' : '';
 }
 
 function mostrarMas()    { mostrados += PAGE_SIZE; renderReportes(); }
