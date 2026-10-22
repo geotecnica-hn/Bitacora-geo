@@ -72,6 +72,52 @@
     .header-text p  { font-size: 0.65rem; color: rgba(255,255,255,0.65); margin-top: 1px; letter-spacing: 0.02em; }
     .header-inicio { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 1.05rem; padding: 6px 9px; border-radius: 8px; background: rgba(255,255,255,0.10); flex-shrink: 0; line-height: 1; transition: background .2s; }
     .header-inicio:hover { background: rgba(255,255,255,0.22); }
+    /* ── Reporte rápido ── */
+    .btn-reporte { display:flex; align-items:center; gap:13px; width:calc(100% - 28px); margin:14px auto 0;
+                   background:linear-gradient(135deg,#7f1d1d,#991b1b); border:1px solid #b91c1c; color:#fff;
+                   padding:14px 16px; border-radius:14px; cursor:pointer; text-align:left; font-family:inherit;
+                   box-shadow:0 3px 12px rgba(185,28,28,.28); transition:transform .15s, box-shadow .15s; }
+    .btn-reporte:active { transform:scale(.985); }
+    .btn-reporte-ico { font-size:1.4rem; line-height:1; flex-shrink:0; }
+    .btn-reporte-txt { flex:1; min-width:0; }
+    .btn-reporte-txt b { display:block; font-size:0.95rem; font-weight:700; }
+    .btn-reporte-txt small { display:block; font-size:0.72rem; opacity:.82; margin-top:2px; line-height:1.35; }
+    .btn-reporte-flecha { font-size:1.5rem; opacity:.6; flex-shrink:0; }
+
+    .rep-bg { display:none; position:fixed; inset:0; background:rgba(8,10,16,.82); z-index:300;
+              padding:18px; overflow-y:auto; }
+    .rep-bg.open { display:block; }
+    .rep-card { background:#fff; border-radius:18px; max-width:520px; margin:0 auto; overflow:hidden;
+                box-shadow:0 18px 50px rgba(0,0,0,.4); }
+    .rep-head { background:linear-gradient(135deg,#7f1d1d,#991b1b); color:#fff; padding:18px 22px;
+                display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+    .rep-head h2 { font-size:1.1rem; font-weight:700; margin:0; }
+    .rep-head p { font-size:0.76rem; opacity:.85; margin:4px 0 0; line-height:1.4; }
+    .rep-cerrar { background:rgba(255,255,255,.18); border:none; color:#fff; width:30px; height:30px;
+                  border-radius:8px; font-size:1.05rem; cursor:pointer; flex-shrink:0; line-height:1; }
+    .rep-body { padding:20px 22px 24px; }
+    .rep-g { margin-bottom:16px; }
+    .rep-g label { display:block; font-size:0.78rem; font-weight:700; color:#374151; margin-bottom:6px; }
+    .rep-g select, .rep-g input[type=text], .rep-g textarea {
+        width:100%; border:1.5px solid #d1d5db; border-radius:10px; padding:11px 13px;
+        font-size:0.95rem; font-family:inherit; color:#111827; background:#fff; }
+    .rep-g textarea { min-height:95px; resize:vertical; line-height:1.5; }
+    .rep-g select:focus, .rep-g input:focus, .rep-g textarea:focus { outline:none; border-color:#991b1b; }
+    .rep-grav { display:grid; grid-template-columns:1fr; gap:8px; }
+    .rep-op { display:flex; align-items:center; gap:11px; border:1.5px solid #d1d5db; border-radius:11px;
+              padding:11px 13px; cursor:pointer; transition:all .15s; background:#fff; }
+    .rep-op input { width:19px; height:19px; flex-shrink:0; accent-color:#991b1b; }
+    .rep-op-txt b { display:block; font-size:0.88rem; color:#111827; }
+    .rep-op-txt small { display:block; font-size:0.72rem; color:#6b7280; margin-top:1px; }
+    .rep-op.sel { border-color:#991b1b; background:#fef2f2; }
+    .rep-enviar { width:100%; background:#991b1b; color:#fff; border:none; padding:14px; border-radius:11px;
+                  font-size:1rem; font-weight:700; cursor:pointer; font-family:inherit; margin-top:4px; }
+    .rep-enviar:disabled { opacity:.55; cursor:not-allowed; }
+    .rep-ok { text-align:center; padding:34px 22px; }
+    .rep-ok-ico { font-size:3rem; }
+    .rep-ok h3 { font-size:1.15rem; color:#111827; margin:14px 0 7px; }
+    .rep-ok p { font-size:0.88rem; color:#6b7280; line-height:1.55; margin:0 0 20px; }
+
     .header-stripe { height: 3px; background: linear-gradient(90deg, #FF9800, #FFCC80 60%, transparent); opacity: 0.6; }
 
     /* ── STEP NAV ────────────────────────────── */
@@ -389,6 +435,16 @@
   </div>
   <div class="header-stripe"></div>
 </header>
+
+<!-- Aviso rápido: para cuando solo hay que reportar algo, sin llenar la bitácora -->
+<button type="button" class="btn-reporte" onclick="abrirReporte()">
+  <span class="btn-reporte-ico">🔴</span>
+  <span class="btn-reporte-txt">
+    <b>Reportar problema mecánico</b>
+    <small>Si solo querés avisar de una falla de la máquina — toma 30 segundos</small>
+  </span>
+  <span class="btn-reporte-flecha">›</span>
+</button>
 
 <nav class="step-nav" id="stepNav"></nav>
 <div class="step-progress"><div class="step-progress-fill" id="stepProgressFill" style="width:20%"></div></div>
@@ -1186,6 +1242,179 @@ function showToast(msg,isError=false) {
 function showLoading(show) { document.getElementById('loading').style.display=show?'flex':'none'; }
 
 function escHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ═══════════════════════════════════════════════════════════
+//  REPORTE RÁPIDO — avisar de una falla sin llenar la bitácora
+// ═══════════════════════════════════════════════════════════
+function abrirReporte() {
+  const sel = document.getElementById('rp_equipo');
+  // Reusar la lista de máquinas que ya cargó la bitácora
+  if (sel.options.length <= 1 && Array.isArray(APP.maquinas) && APP.maquinas.length) {
+    sel.innerHTML = '<option value="">Seleccionar…</option>' +
+      APP.maquinas.map(m => `<option value="${escHtml(m.nombre)}">${escHtml(m.nombre)}</option>`).join('');
+  }
+  // Si ya eligió equipo u operador en la bitácora, arrancamos con eso
+  const eqBit = document.getElementById('sel_equipo');
+  if (eqBit && eqBit.value && !sel.value) sel.value = eqBit.value;
+  const opBit = document.getElementById('f_operador');
+  const opRep = document.getElementById('rp_operador');
+  if (opBit && opBit.value && !opRep.value) opRep.value = opBit.value;
+
+  document.getElementById('repForm').style.display = '';
+  document.getElementById('repOk').style.display = 'none';
+  document.getElementById('repBg').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function cerrarReporte() {
+  document.getElementById('repBg').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function cerrarReporteFuera(ev) { if (ev.target.id === 'repBg') cerrarReporte(); }
+
+function marcarGravedad() {
+  ['parada','pronto','esperar'].forEach(k => {
+    const op = document.getElementById('rp_op_' + k);
+    const rb = op.querySelector('input');
+    op.classList.toggle('sel', rb.checked);
+  });
+}
+
+async function enviarReporte() {
+  const equipo   = document.getElementById('rp_equipo').value;
+  const operador = document.getElementById('rp_operador').value.trim();
+  const desc     = document.getElementById('rp_desc').value.trim();
+  const grav     = document.querySelector('input[name=rp_grav]:checked')?.value || 'pronto';
+
+  if (!equipo)   { showToast('Elegí la máquina', true); return; }
+  if (!operador) { showToast('Poné tu nombre', true); return; }
+  if (!desc)     { showToast('Contá qué está pasando', true); return; }
+
+  const btn = document.getElementById('rp_btn');
+  btn.disabled = true; btn.textContent = 'Enviando…';
+
+  const payload = { accion:'saveReporte', Equipo:equipo, Operador:operador,
+                    Gravedad:grav, Descripcion:desc };
+
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method:'POST', headers:{'Content-Type':'text/plain'}, redirect:'follow',
+      body: JSON.stringify(payload)
+    });
+    const d = await res.json();
+    if (d.status !== 'success') throw new Error(d.message || 'Error al enviar');
+
+    document.getElementById('repForm').style.display = 'none';
+    document.getElementById('repOkTxt').textContent =
+      grav === 'parada' ? 'Ya le llegó el aviso a la oficina. Por ser máquina parada, va marcado como urgente.'
+                        : 'Ya le llegó el aviso a la oficina.';
+    document.getElementById('repOk').style.display = '';
+    document.getElementById('rp_desc').value = '';
+  } catch (err) {
+    // Sin señal: guardarlo para reenviar, igual que las bitácoras
+    guardarReportePendiente(payload);
+    document.getElementById('repForm').style.display = 'none';
+    document.getElementById('repOkTxt').textContent =
+      'No hay señal ahora mismo. El reporte quedó guardado y se manda solo cuando vuelva la conexión.';
+    document.getElementById('repOk').style.display = '';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Enviar reporte';
+  }
+}
+
+const REPORTES_PEND = 'reportes_pendientes_v1';
+
+function guardarReportePendiente(payload) {
+  try {
+    const l = JSON.parse(localStorage.getItem(REPORTES_PEND) || '[]');
+    l.push(payload);
+    localStorage.setItem(REPORTES_PEND, JSON.stringify(l));
+  } catch(_) {}
+}
+
+async function reenviarReportesPendientes() {
+  let l;
+  try { l = JSON.parse(localStorage.getItem(REPORTES_PEND) || '[]'); } catch(_) { return; }
+  if (!l.length) return;
+  const quedan = [];
+  for (const p of l) {
+    try {
+      const r = await fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain'},
+                                          redirect:'follow', body: JSON.stringify(p) });
+      const d = await r.json();
+      if (d.status !== 'success') quedan.push(p);
+    } catch(_) { quedan.push(p); }
+  }
+  try { localStorage.setItem(REPORTES_PEND, JSON.stringify(quedan)); } catch(_) {}
+  const mandados = l.length - quedan.length;
+  if (mandados > 0) showToast(`Se enviaron ${mandados} reporte${mandados>1?'s':''} que estaban pendientes`);
+}
+
+function escHtml(str) {
+  return String(str == null ? '' : str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+window.addEventListener('online', reenviarReportesPendientes);
+document.addEventListener('DOMContentLoaded', () => { setTimeout(reenviarReportesPendientes, 2500); });
+
 </script>
+<!-- ══ REPORTE RÁPIDO ══ -->
+<div class="rep-bg" id="repBg" onclick="cerrarReporteFuera(event)">
+  <div class="rep-card">
+    <div class="rep-head">
+      <div>
+        <h2>🔴 Reportar problema mecánico</h2>
+        <p>Solo lo necesario. No hace falta llenar la bitácora.</p>
+      </div>
+      <button class="rep-cerrar" onclick="cerrarReporte()" title="Cerrar">✕</button>
+    </div>
+
+    <div class="rep-body" id="repForm">
+      <div class="rep-g">
+        <label for="rp_equipo">¿Qué máquina?</label>
+        <select id="rp_equipo"><option value="">Seleccionar…</option></select>
+      </div>
+
+      <div class="rep-g">
+        <label for="rp_operador">¿Quién reporta?</label>
+        <input type="text" id="rp_operador" placeholder="Tu nombre" autocomplete="name">
+      </div>
+
+      <div class="rep-g">
+        <label for="rp_desc">¿Qué está pasando?</label>
+        <textarea id="rp_desc" placeholder="Ej: está botando aceite por la manguera del lado derecho, cada vez más."></textarea>
+      </div>
+
+      <div class="rep-g">
+        <label>¿Qué tan grave es?</label>
+        <div class="rep-grav">
+          <label class="rep-op" id="rp_op_parada">
+            <input type="radio" name="rp_grav" value="parada" onchange="marcarGravedad()">
+            <span class="rep-op-txt"><b>🔴 La máquina está parada</b><small>No puede trabajar</small></span>
+          </label>
+          <label class="rep-op sel" id="rp_op_pronto">
+            <input type="radio" name="rp_grav" value="pronto" checked onchange="marcarGravedad()">
+            <span class="rep-op-txt"><b>🟠 Hay que verlo pronto</b><small>Trabaja, pero no está bien</small></span>
+          </label>
+          <label class="rep-op" id="rp_op_esperar">
+            <input type="radio" name="rp_grav" value="esperar" onchange="marcarGravedad()">
+            <span class="rep-op-txt"><b>🟡 Puede esperar</b><small>Para tenerlo anotado</small></span>
+          </label>
+        </div>
+      </div>
+
+      <button class="rep-enviar" id="rp_btn" onclick="enviarReporte()">Enviar reporte</button>
+    </div>
+
+    <div class="rep-ok" id="repOk" style="display:none">
+      <div class="rep-ok-ico">✅</div>
+      <h3>Reporte enviado</h3>
+      <p id="repOkTxt">Ya le llegó el aviso a la oficina.</p>
+      <button class="rep-enviar" style="background:#374151" onclick="cerrarReporte()">Listo</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
