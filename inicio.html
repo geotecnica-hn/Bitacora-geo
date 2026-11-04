@@ -32,6 +32,7 @@
   .sec.dash::before  { background:#3b82f6; }
   .sec.alert::before { background:#ef4444; }
   .sec.mant::before  { background:#f59e0b; }
+  .sec.pend::before  { background:#8b5cf6; }
   .sec-ico { font-size:34px; margin-bottom:14px; line-height:1; }
   .sec-t { font-size:18px; font-weight:700; color:#f1f5f9; margin-bottom:7px; }
   .sec-d { font-size:12.5px; color:#94a3b8; line-height:1.55; flex:1; margin-bottom:16px; }
@@ -44,7 +45,7 @@
   .q-op { background:#0c2a1a; color:#6ee7b7; border:1px solid #166534; }
   .q-of { background:#172554; color:#93c5fd; border:1px solid #1e3a8a; }
 
-  .verde{color:#4ade80} .azul{color:#60a5fa} .rojo{color:#f87171} .ambar{color:#fbbf24} .blanco{color:#f1f5f9}
+  .verde{color:#4ade80} .azul{color:#60a5fa} .rojo{color:#f87171} .ambar{color:#fbbf24} .blanco{color:#f1f5f9} .morado{color:#a78bfa}
   .cargando { color:#475569; font-size:12px; }
   .pie { margin-top:26px; padding-top:18px; border-top:1px solid #1e293b; font-size:11.5px; color:#475569; display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; }
   .pie a { color:#64748b; text-decoration:none; }
@@ -72,6 +73,17 @@
   <div class="resumen" id="resumen"></div>
 
   <div class="secciones">
+
+    <a href="pendientes.html" class="sec pend">
+      <span class="quien q-of">Oficina</span>
+      <div class="sec-ico">✅</div>
+      <div class="sec-t">Mis Pendientes</div>
+      <div class="sec-d">Todo lo que falta por resolver en una sola lista: reportes mecánicos, lo que sigue malo en el checklist y los mantenimientos vencidos. Agrupado por equipo.</div>
+      <div class="sec-pie">
+        <div class="sec-dato"><b class="morado" id="d-pend">—</b>pendientes abiertos</div>
+        <span class="sec-ir">Abrir →</span>
+      </div>
+    </a>
 
     <a href="index.html" class="sec bit">
       <span class="quien q-op">Operadores</span>
@@ -195,6 +207,16 @@ async function cargar() {
     document.getElementById('d-horas').textContent = horas.toFixed(0);
     document.getElementById('d-fallas').textContent = fallas;
     document.getElementById('d-mant').textContent  = porAtender;
+
+    // Pendientes: su propia llamada, no bloquea el resto del portal
+    fetch(`${SCRIPT_URL}?action=getPendientes`)
+      .then(r => r.json())
+      .then(j => {
+        if (j.status === 'ok' && j.resumen) {
+          document.getElementById('d-pend').textContent = j.resumen.total;
+        }
+      })
+      .catch(() => {});
     document.getElementById('estado').textContent  = `Semana ${semanas[0] || '—'} · ${estaSemana} bitácoras`;
     document.getElementById('actualizado').textContent = 'Actualizado ' + new Date().toLocaleTimeString('es-HN');
   } catch(err) {

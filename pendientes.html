@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<title>Pendientes · Flota Geotécnica</title>
+<style>
+  :root {
+    --bg:        #f5f6f8;
+    --surface:   #ffffff;
+    --surface-2: #fafbfc;
+    --border:    #e3e6eb;
+    --text:      #141821;
+    --dim:       #6b7280;
+    --dim-2:     #9aa1ad;
+
+    --rojo:      #d92d20;  --rojo-bg:    #fef3f2;  --rojo-bd:   #fecdc9;
+    --naranja:   #e0620d;  --naranja-bg: #fff6ed;  --naranja-bd:#fdd7ab;
+    --amar:      #b78103;  --amar-bg:    #fffaeb;  --amar-bd:   #fde68a;
+    --verde:     #067647;  --verde-bg:   #ecfdf3;  --verde-bd:  #a9e5c3;
+    --azul:      #175cd3;  --azul-bg:    #eff6ff;  --azul-bd:   #b2ddff;
+
+    --sombra: 0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.04);
+    --radio: 12px;
+  }
+  :root[data-theme="dark"] {
+    --bg:        #0e1014;
+    --surface:   #171a20;
+    --surface-2: #1d2128;
+    --border:    #272c36;
+    --text:      #e7eaef;
+    --dim:       #9aa3b2;
+    --dim-2:     #6b7482;
+
+    --rojo:      #ff8077;  --rojo-bg:    #2a1413;  --rojo-bd:   #5c241f;
+    --naranja:   #ffa15c;  --naranja-bg: #27170c;  --naranja-bd:#5c3415;
+    --amar:      #f3c045;  --amar-bg:    #231c08;  --amar-bd:   #574212;
+    --verde:     #4fd99b;  --verde-bg:   #0d2019;  --verde-bd:  #1d4a35;
+    --azul:      #7cb3ff;  --azul-bg:    #0f1b2e;  --azul-bd:   #214272;
+
+    --sombra: 0 1px 2px rgba(0,0,0,.4);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px; line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 60px;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  /* ── Barra superior ── */
+  .top {
+    position: sticky; top: 0; z-index: 40;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px) * 0);
+  }
+  .top-row { display: flex; align-items: center; gap: 12px; max-width: 1100px; margin: 0 auto; }
+  .volver {
+    display: flex; align-items: center; justify-content: center;
+    width: 34px; height: 34px; border-radius: 9px; flex: none;
+    border: 1px solid var(--border); background: var(--surface-2);
+    font-size: 16px; color: var(--dim);
+  }
+  .top h1 { font-size: 19px; font-weight: 650; margin: 0; letter-spacing: -.02em; flex: 1; }
+  .top h1 small { display: block; font-size: 12px; font-weight: 400; color: var(--dim); letter-spacing: 0; margin-top: 1px; }
+  .icon-btn {
+    width: 34px; height: 34px; border-radius: 9px; flex: none; cursor: pointer;
+    border: 1px solid var(--border); background: var(--surface-2); color: var(--dim);
+    font-size: 15px; display: flex; align-items: center; justify-content: center;
+  }
+  .icon-btn:active { transform: scale(.94); }
+
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 16px; }
+
+  /* ── Tarjetas de resumen ── */
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+  .tile {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radio);
+    padding: 13px 14px; cursor: pointer; text-align: left;
+    box-shadow: var(--sombra); transition: border-color .15s, transform .1s;
+    font-family: inherit; color: inherit;
+  }
+  .tile:active { transform: scale(.985); }
+  .tile.on { border-color: currentColor; }
+  .tile .n { font-size: 27px; font-weight: 700; line-height: 1.1; letter-spacing: -.03em; }
+  .tile .lbl { font-size: 12px; color: var(--dim); margin-top: 3px; font-weight: 500; }
+  .tile.p1 { color: var(--rojo); }
+  .tile.p2 { color: var(--naranja); }
+  .tile.p3 { color: var(--amar); }
+  .tile .lbl { color: var(--dim); }
+
+  /* ── Filtros ── */
+  .filtros { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; align-items: center; }
+  .chip {
+    border: 1px solid var(--border); background: var(--surface); color: var(--dim);
+    border-radius: 999px; padding: 6px 12px; font-size: 13px; cursor: pointer;
+    font-family: inherit; font-weight: 500; white-space: nowrap;
+  }
+  .chip.on { background: var(--text); color: var(--surface); border-color: var(--text); }
+  .chip .c { opacity: .6; margin-left: 4px; font-variant-numeric: tabular-nums; }
+  .buscar {
+    flex: 1; min-width: 150px; border: 1px solid var(--border); background: var(--surface);
+    color: var(--text); border-radius: 999px; padding: 7px 14px; font-size: 13px;
+    font-family: inherit; outline: none;
+  }
+  .buscar:focus { border-color: var(--azul); }
+
+  /* ── Bloque por equipo ── */
+  .eq {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radio);
+    margin-bottom: 12px; overflow: hidden; box-shadow: var(--sombra);
+  }
+  .eq-head {
+    display: flex; align-items: center; gap: 10px; padding: 12px 14px;
+    cursor: pointer; background: var(--surface-2); border-bottom: 1px solid var(--border);
+  }
+  .eq-bar { width: 4px; align-self: stretch; border-radius: 2px; flex: none; }
+  .eq-nom { font-weight: 640; font-size: 15px; flex: 1; letter-spacing: -.01em; }
+  .eq-nom span { display: block; font-size: 11.5px; color: var(--dim); font-weight: 400; margin-top: 1px; }
+  .eq-cuenta { font-size: 12px; color: var(--dim); font-variant-numeric: tabular-nums; }
+  .eq-flecha { color: var(--dim-2); font-size: 11px; transition: transform .18s; }
+  .eq.cerrado .eq-flecha { transform: rotate(-90deg); }
+  .eq.cerrado .eq-body { display: none; }
+
+  /* ── Ítem ── */
+  .it { display: flex; gap: 11px; padding: 12px 14px; border-bottom: 1px solid var(--border); }
+  .it:last-child { border-bottom: 0; }
+  .it.hecho { opacity: .5; }
+  .it-pill {
+    flex: none; width: 7px; height: 7px; border-radius: 50%; margin-top: 7px;
+  }
+  .it-main { flex: 1; min-width: 0; }
+  .it-top { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .it-asunto { font-weight: 560; font-size: 14.5px; letter-spacing: -.005em; }
+  .it.hecho .it-asunto { text-decoration: line-through; }
+  .it-tag {
+    font-size: 10.5px; font-weight: 600; padding: 2px 7px; border-radius: 5px;
+    border: 1px solid; text-transform: uppercase; letter-spacing: .03em; white-space: nowrap;
+  }
+  .it-det { font-size: 12.5px; color: var(--dim); margin-top: 3px; }
+  .it-origen { font-size: 11.5px; color: var(--dim-2); margin-top: 4px; }
+  .it-nota {
+    font-size: 12px; color: var(--dim); margin-top: 6px; padding: 6px 9px;
+    background: var(--surface-2); border-left: 2px solid var(--border); border-radius: 0 6px 6px 0;
+  }
+  .it-acc { display: flex; gap: 6px; margin-top: 9px; flex-wrap: wrap; }
+  .btn {
+    font-size: 12.5px; font-weight: 550; padding: 5px 11px; border-radius: 7px; cursor: pointer;
+    border: 1px solid var(--border); background: var(--surface); color: var(--dim);
+    font-family: inherit;
+  }
+  .btn:active { transform: scale(.96); }
+  .btn.ok   { color: var(--verde);   border-color: var(--verde-bd);   background: var(--verde-bg); }
+  .btn.prog { color: var(--azul);    border-color: var(--azul-bd);    background: var(--azul-bg); }
+  .btn.undo { color: var(--dim); }
+  .btn[disabled] { opacity: .5; pointer-events: none; }
+
+  .p1 .it-pill, .bar1 { background: var(--rojo); }
+  .p2 .it-pill, .bar2 { background: var(--naranja); }
+  .p3 .it-pill, .bar3 { background: var(--amar); }
+
+  .tag1 { color: var(--rojo);    border-color: var(--rojo-bd);    background: var(--rojo-bg); }
+  .tag2 { color: var(--naranja); border-color: var(--naranja-bd); background: var(--naranja-bg); }
+  .tag3 { color: var(--amar);    border-color: var(--amar-bd);    background: var(--amar-bg); }
+  .tagP { color: var(--azul);    border-color: var(--azul-bd);    background: var(--azul-bg); }
+
+  /* ── Estados ── */
+  .vacio, .cargando {
+    text-align: center; padding: 56px 20px; color: var(--dim);
+  }
+  .vacio .em { font-size: 40px; display: block; margin-bottom: 10px; }
+  .vacio b { color: var(--text); display: block; font-size: 16px; margin-bottom: 4px; }
+  .spin {
+    width: 26px; height: 26px; border: 2.5px solid var(--border); border-top-color: var(--azul);
+    border-radius: 50%; margin: 0 auto 12px; animation: g .7s linear infinite;
+  }
+  @keyframes g { to { transform: rotate(360deg); } }
+
+  .err {
+    background: var(--rojo-bg); border: 1px solid var(--rojo-bd); color: var(--rojo);
+    padding: 12px 14px; border-radius: var(--radio); font-size: 13.5px; margin-bottom: 14px;
+  }
+  .toast {
+    position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 80px);
+    background: var(--text); color: var(--bg); padding: 10px 18px; border-radius: 999px;
+    font-size: 13.5px; font-weight: 500; z-index: 90; transition: transform .22s;
+    box-shadow: 0 6px 20px rgba(0,0,0,.25); max-width: 90vw; text-align: center;
+  }
+  .toast.on { transform: translate(-50%, 0); }
+
+  .pie { text-align: center; color: var(--dim-2); font-size: 11.5px; padding: 22px 16px 8px; }
+
+  @media (max-width: 560px) {
+    .tile .n { font-size: 23px; }
+    .wrap { padding: 13px; }
+    .tiles { gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-row">
+    <a href="inicio.html" class="volver" aria-label="Volver al inicio">←</a>
+    <h1>Pendientes<small id="sub">Cargando…</small></h1>
+    <button class="icon-btn" id="btn-tema" onclick="cambiarTema()" aria-label="Cambiar tema">◐</button>
+    <button class="icon-btn" onclick="cargar(true)" aria-label="Actualizar">↻</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div id="error"></div>
+
+  <div class="tiles">
+    <button class="tile p1" data-p="1" onclick="filtrarPrioridad(1)">
+      <div class="n" id="n1">—</div><div class="lbl">Ahora</div>
+    </button>
+    <button class="tile p2" data-p="2" onclick="filtrarPrioridad(2)">
+      <div class="n" id="n2">—</div><div class="lbl">Esta semana</div>
+    </button>
+    <button class="tile p3" data-p="3" onclick="filtrarPrioridad(3)">
+      <div class="n" id="n3">—</div><div class="lbl">Vigilar</div>
+    </button>
+  </div>
+
+  <div class="filtros">
+    <button class="chip on" data-f="todo"          onclick="filtrarFuente('todo')">Todo <span class="c" id="c-todo"></span></button>
+    <button class="chip"    data-f="reporte"       onclick="filtrarFuente('reporte')">🔧 Reportes <span class="c" id="c-reporte"></span></button>
+    <button class="chip"    data-f="checklist"     onclick="filtrarFuente('checklist')">📋 Checklist <span class="c" id="c-checklist"></span></button>
+    <button class="chip"    data-f="mantenimiento" onclick="filtrarFuente('mantenimiento')">⚙️ Mantenimiento <span class="c" id="c-mantenimiento"></span></button>
+    <button class="chip"    data-f="resueltos"     onclick="filtrarFuente('resueltos')">✓ Resueltos <span class="c" id="c-resueltos"></span></button>
+    <input class="buscar" id="q" type="search" placeholder="Buscar equipo o problema…" oninput="render()">
+  </div>
+
+  <div id="lista"><div class="cargando"><div class="spin"></div>Juntando todo lo que falta…</div></div>
+  <div class="pie" id="pie"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxYxKG8sxlRGQJrbZxGVeXhpu8YRrbgeHPYuqM_4FLtUOy5Ng2Hffts7hTm5B7iFmYi/exec';
+
+let DATOS = [], RESUMEN = {}, fPrio = 0, fFuente = 'todo', CERRADOS = {};
+
+/* ── Tema ── */
+function temaInicial() {
+  try {
+    const g = localStorage.getItem('tema_pend');
+    if (g) return g;
+  } catch (e) {}
+  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+function aplicarTema(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  document.getElementById('btn-tema').textContent = t === 'dark' ? '☀' : '☾';
+  const m = document.querySelector('meta[name=theme-color]');
+  if (m) m.setAttribute('content', t === 'dark' ? '#171a20' : '#ffffff');
+}
+function cambiarTema() {
+  const t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  aplicarTema(t);
+  try { localStorage.setItem('tema_pend', t); } catch (e) {}
+}
+aplicarTema(temaInicial());
+
+/* ── Quién marca ── */
+function quienSoy() {
+  let q = '';
+  try { q = localStorage.getItem('pend_quien') || ''; } catch (e) {}
+  if (!q) {
+    q = (prompt('¿Tu nombre? (queda guardado para no volver a preguntarte)') || '').trim();
+    if (q) { try { localStorage.setItem('pend_quien', q); } catch (e) {} }
+  }
+  return q;
+}
+
+/* ── Carga ── */
+async function cargar(forzar) {
+  if (forzar) {
+    document.getElementById('lista').innerHTML =
+      '<div class="cargando"><div class="spin"></div>Actualizando…</div>';
+  }
+  document.getElementById('error').innerHTML = '';
+  try {
+    const r = await fetch(SCRIPT_URL + '?action=getPendientes&t=' + Date.now());
+    const j = await r.json();
+    if (j.status !== 'ok') throw new Error(j.message || 'El servidor respondió con un error');
+    DATOS = j.data || [];
+    RESUMEN = j.resumen || {};
+    CERRADOS = {};
+    pintarResumen();
+    render();
+  } catch (e) {
+    document.getElementById('error').innerHTML =
+      '<div class="err"><b>No se pudo cargar.</b> ' + esc(e.message) +
+      '<br><span style="opacity:.8">Revisá la conexión y tocá ↻ para reintentar.</span></div>';
+    document.getElementById('lista').innerHTML = '';
+    document.getElementById('sub').textContent = 'Sin conexión';
+  }
+}
+
+function pintarResumen() {
+  const r = RESUMEN, f = r.porFuente || {};
+  document.getElementById('n1').textContent = r.ahora   || 0;
+  document.getElementById('n2').textContent = r.semana  || 0;
+  document.getElementById('n3').textContent = r.vigilar || 0;
+  document.getElementById('c-todo').textContent          = r.total || 0;
+  document.getElementById('c-reporte').textContent       = f.reporte || 0;
+  document.getElementById('c-checklist').textContent     = f.checklist || 0;
+  document.getElementById('c-mantenimiento').textContent = f.mantenimiento || 0;
+  document.getElementById('c-resueltos').textContent =
+    DATOS.filter(p => p.estado === 'RESUELTO').length;
+
+  const n = r.total || 0;
+  const sub = document.getElementById('sub');
+  if (!n)            sub.textContent = 'No hay nada abierto';
+  else if (r.ahora)  sub.textContent = n + ' abiertos · ' + r.ahora + ' necesitan atención ya';
+  else               sub.textContent = n + ' abiertos · nada crítico';
+}
+
+/* ── Filtros ── */
+function filtrarPrioridad(p) {
+  fPrio = (fPrio === p) ? 0 : p;
+  document.querySelectorAll('.tile').forEach(t =>
+    t.classList.toggle('on', Number(t.dataset.p) === fPrio));
+  render();
+}
+function filtrarFuente(f) {
+  fFuente = f;
+  document.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c.dataset.f === f));
+  render();
+}
+
+/* ── Render ── */
+function render() {
+  const q = (document.getElementById('q').value || '').toLowerCase().trim();
+
+  const verResueltos = fFuente === 'resueltos';
+
+  let vis = DATOS.filter(p => {
+    const resuelto = p.estado === 'RESUELTO';
+    if (verResueltos) {
+      if (!resuelto) return false;
+    } else {
+      if (resuelto) return false;
+      if (fFuente !== 'todo' && p.fuente !== fFuente) return false;
+    }
+    if (fPrio && p.prioridad !== fPrio) return false;
+    if (q && !((p.equipo + ' ' + p.asunto + ' ' + p.detalle).toLowerCase().includes(q))) return false;
+    return true;
+  });
+
+  const lista = document.getElementById('lista');
+  const pie = document.getElementById('pie');
+
+  if (!vis.length) {
+    let em = '🔍', tit = 'Nada con ese filtro', txt = 'Probá quitando el filtro o buscando otra cosa.';
+    if (verResueltos) {
+      em = '📭'; tit = 'Todavía no has cerrado nada';
+      txt = 'Lo que marqués como "ya quedó" se va a guardar aquí.';
+    } else if (!DATOS.filter(p => p.estado !== 'RESUELTO').length) {
+      em = '🎉'; tit = 'Todo al día'; txt = 'No hay ningún pendiente abierto en la flota.';
+    }
+    lista.innerHTML = '<div class="vacio"><span class="em">' + em + '</span><b>' + tit + '</b>' + txt + '</div>';
+    pie.textContent = '';
+    return;
+  }
+
+  // Agrupado por equipo: así se va una sola vez a cada máquina
+  const porEq = {};
+  vis.forEach(p => (porEq[p.equipo] = porEq[p.equipo] || []).push(p));
+
+  const equipos = Object.keys(porEq).sort((a, b) => {
+    const pa = Math.min(...porEq[a].map(x => x.prioridad));
+    const pb = Math.min(...porEq[b].map(x => x.prioridad));
+    return pa - pb || porEq[b].length - porEq[a].length || a.localeCompare(b);
+  });
+
+  lista.innerHTML = equipos.map(eq => {
+    const items = porEq[eq].sort((a, b) => a.prioridad - b.prioridad);
+    const peor = Math.min(...items.map(x => x.prioridad));
+    const enProc = items.filter(x => x.estado === 'EN_PROCESO').length;
+    const cerrado = CERRADOS[eq] ? ' cerrado' : '';
+
+    return '<div class="eq' + cerrado + '" data-eq="' + escAttr(eq) + '">' +
+      '<div class="eq-head" onclick="plegar(this)">' +
+        '<div class="eq-bar bar' + peor + '"></div>' +
+        '<div class="eq-nom">' + esc(eq) +
+          '<span>' + resumenEquipo(items) + '</span>' +
+        '</div>' +
+        '<div class="eq-cuenta">' + items.length +
+          (enProc ? ' · ' + enProc + ' en proceso' : '') + '</div>' +
+        '<div class="eq-flecha">▼</div>' +
+      '</div>' +
+      '<div class="eq-body">' + items.map(tarjeta).join('') + '</div>' +
+    '</div>';
+  }).join('');
+
+  pie.textContent = verResueltos
+    ? vis.length + ' ya resueltos · ' + equipos.length + (equipos.length === 1 ? ' equipo' : ' equipos')
+    : vis.length + ' de ' + (RESUMEN.total || 0) + ' pendientes · ' +
+      equipos.length + (equipos.length === 1 ? ' equipo' : ' equipos');
+}
+
+function resumenEquipo(items) {
+  const c = { reporte: 0, checklist: 0, mantenimiento: 0 };
+  items.forEach(i => c[i.fuente]++);
+  const partes = [];
+  if (c.reporte)       partes.push(c.reporte + ' reporte' + (c.reporte > 1 ? 's' : ''));
+  if (c.checklist)     partes.push(c.checklist + ' del checklist');
+  if (c.mantenimiento) partes.push(c.mantenimiento + ' de mantenimiento');
+  return partes.join(' · ');
+}
+
+const ICONO = { reporte: '🔧', checklist: '📋', mantenimiento: '⚙️' };
+
+function tarjeta(p) {
+  const enProc   = p.estado === 'EN_PROCESO';
+  const resuelto = p.estado === 'RESUELTO';
+  const tag = resuelto ? 'tag3' : (enProc ? 'tagP' : ('tag' + p.prioridad));
+  const etiqueta = resuelto ? 'Resuelto' : (enProc ? 'En proceso' : p.etiqueta);
+
+  let extra = '';
+  if (p.consumible) extra = p.consumible + (p.parte ? ' · parte ' + p.parte : '');
+
+  return '<div class="it p' + p.prioridad + (enProc ? ' prog' : '') + (resuelto ? ' hecho' : '') +
+         '" data-clave="' + escAttr(p.clave) + '">' +
+    '<div class="it-pill"></div>' +
+    '<div class="it-main">' +
+      '<div class="it-top">' +
+        '<span class="it-asunto">' + esc(p.asunto) + '</span>' +
+        '<span class="it-tag ' + tag + '">' + esc(etiqueta) + '</span>' +
+      '</div>' +
+      '<div class="it-det">' + esc(p.detalle) + '</div>' +
+      '<div class="it-origen">' + (ICONO[p.fuente] || '•') + ' ' + esc(p.fuenteTxt) +
+        (extra ? ' · ' + esc(extra) : '') +
+        (p.reabierto ? ' · <b style="color:var(--naranja)">se volvió a reportar</b>' : '') +
+      '</div>' +
+      (p.notas ? '<div class="it-nota">' + esc(p.notas) +
+                 (p.por ? ' — ' + esc(p.por) : '') + '</div>' : '') +
+      '<div class="it-acc">' +
+        (resuelto
+          ? '<button class="btn undo" onclick="marcar(this,\'ABIERTO\')">↩ Volver a abrir</button>'
+          : enProc
+            ? '<button class="btn ok"   onclick="marcar(this,\'RESUELTO\')">✓ Ya quedó</button>' +
+              '<button class="btn undo" onclick="marcar(this,\'ABIERTO\')">Volver a abierto</button>'
+            : '<button class="btn ok"   onclick="marcar(this,\'RESUELTO\')">✓ Ya quedó</button>' +
+              '<button class="btn prog" onclick="marcar(this,\'EN_PROCESO\')">En proceso</button>') +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+function plegar(head) {
+  const eq = head.parentElement;
+  eq.classList.toggle('cerrado');
+  CERRADOS[eq.dataset.eq] = eq.classList.contains('cerrado');
+}
+
+/* ── Marcar ── */
+async function marcar(btn, estado) {
+  const caja = btn.closest('.it');
+  const clave = caja.dataset.clave;
+  const p = DATOS.find(x => x.clave === clave);
+  if (!p) return;
+
+  let notas = '';
+  if (estado === 'RESUELTO' || estado === 'EN_PROCESO') {
+    const pide = estado === 'RESUELTO'
+      ? '¿Qué se hizo? (opcional — ayuda a no repetir el trabajo)'
+      : '¿Qué se está haciendo? (opcional)';
+    const r = prompt(pide, '');
+    if (r === null) return;              // canceló
+    notas = r.trim();
+  }
+  const por = quienSoy();
+
+  caja.querySelectorAll('.btn').forEach(b => b.disabled = true);
+  btn.textContent = 'Guardando…';
+
+  try {
+    const r = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        accion: 'marcarPendiente',
+        Clave: clave, Estado: estado, Equipo: p.equipo, Fuente: p.fuente,
+        Asunto: p.asunto, Huella: p.huella, Por: por, Notas: notas
+      })
+    });
+    const j = await r.json();
+    if (j.status !== 'success') throw new Error(j.message || 'No se pudo guardar');
+
+    p.estado = estado; p.notas = notas; p.por = por; p.reabierto = false;
+    recalcular();
+    pintarResumen();
+    render();
+    toast(estado === 'RESUELTO' ? '✓ Listo, fuera de la lista'
+         : estado === 'EN_PROCESO' ? 'Marcado en proceso' : 'Vuelto a abierto');
+  } catch (e) {
+    caja.querySelectorAll('.btn').forEach(b => b.disabled = false);
+    toast('No se guardó: ' + e.message);
+    render();
+  }
+}
+
+function recalcular() {
+  const ab = DATOS.filter(p => p.estado !== 'RESUELTO');
+  RESUMEN.total     = ab.length;
+  RESUMEN.ahora     = ab.filter(p => p.prioridad === 1).length;
+  RESUMEN.semana    = ab.filter(p => p.prioridad === 2).length;
+  RESUMEN.vigilar   = ab.filter(p => p.prioridad === 3).length;
+  RESUMEN.enProceso = ab.filter(p => p.estado === 'EN_PROCESO').length;
+  RESUMEN.porFuente = {
+    reporte:       ab.filter(p => p.fuente === 'reporte').length,
+    checklist:     ab.filter(p => p.fuente === 'checklist').length,
+    mantenimiento: ab.filter(p => p.fuente === 'mantenimiento').length
+  };
+}
+
+let tToast;
+function toast(txt) {
+  const t = document.getElementById('toast');
+  t.textContent = txt; t.classList.add('on');
+  clearTimeout(tToast);
+  tToast = setTimeout(() => t.classList.remove('on'), 2600);
+}
+
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function escAttr(s) { return esc(s).replace(/"/g, '&quot;'); }
+
+cargar();
+setInterval(() => { if (!document.hidden) cargar(); }, 120000);
+</script>
+</body>
+</html>
