@@ -103,6 +103,19 @@
         font-size:0.95rem; font-family:inherit; color:#111827; background:#fff; }
     .rep-g textarea { min-height:95px; resize:vertical; line-height:1.5; }
     .rep-g select:focus, .rep-g input:focus, .rep-g textarea:focus { outline:none; border-color:#991b1b; }
+    .rep-foto-btn { display:flex; align-items:center; justify-content:center; gap:9px; width:100%;
+                    padding:14px; border:1.5px dashed #d1d5db; border-radius:11px; background:#fafafa;
+                    color:#4b5563; font-size:0.88rem; font-weight:600; font-family:inherit; cursor:pointer; }
+    .rep-foto-btn:active { background:#f3f4f6; }
+    .rep-foto-btn[disabled] { opacity:.5; }
+    .rep-foto-ico { font-size:1.2rem; }
+    .rep-thumbs { display:flex; flex-wrap:wrap; gap:9px; margin-top:10px; }
+    .rep-thumb { position:relative; width:78px; height:78px; border-radius:10px; overflow:hidden;
+                 border:1.5px solid #e5e7eb; background:#f3f4f6; }
+    .rep-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+    .rep-thumb-x { position:absolute; top:3px; right:3px; width:22px; height:22px; border:none;
+                   border-radius:50%; background:rgba(17,24,39,.82); color:#fff; font-size:0.8rem;
+                   line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center; }
     .rep-grav { display:grid; grid-template-columns:1fr; gap:8px; }
     .rep-op { display:flex; align-items:center; gap:11px; border:1.5px solid #d1d5db; border-radius:11px;
               padding:11px 13px; cursor:pointer; transition:all .15s; background:#fff; }
@@ -1260,6 +1273,7 @@ function abrirReporte() {
   const opRep = document.getElementById('rp_operador');
   if (opBit && opBit.value && !opRep.value) opRep.value = opBit.value;
 
+  FOTOS_REP = []; pintarFotos();
   document.getElementById('repForm').style.display = '';
   document.getElementById('repOk').style.display = 'none';
   document.getElementById('repBg').classList.add('open');
@@ -1280,6 +1294,80 @@ function marcarGravedad() {
   });
 }
 
+// ── Fotos del reporte ──────────────────────────────────────────
+// La cámara de un celular tira 4 MB. Eso no pasa por una red de obra,
+// así que la foto se reduce aquí antes de salir.
+const MAX_FOTOS_REP = 3;
+let FOTOS_REP = [];
+
+const TOPE_FOTO = 420 * 1024;           // lo que aguanta una red de obra
+
+function comprimirFoto(file, maxLado = 1280) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const escala = Math.min(1, maxLado / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width  = Math.round(img.width  * escala);
+      c.height = Math.round(img.height * escala);
+      c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+
+      // Una foto con mucho detalle (grava, óxido) no baja con la primera
+      // pasada. Se vuelve a apretar hasta que entre, antes que dejarla pesada.
+      let d = c.toDataURL('image/jpeg', 0.62);
+      for (let q = 0.5; d.length * 0.75 > TOPE_FOTO && q >= 0.3; q -= 0.1) {
+        d = c.toDataURL('image/jpeg', q);
+      }
+      resolve(d);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('No se pudo leer la foto')); };
+    img.src = url;
+  });
+}
+
+async function agregarFotos(input) {
+  const files = Array.from(input.files || []);
+  input.value = '';                       // para poder re-elegir la misma foto
+  if (!files.length) return;
+
+  const btn = document.getElementById('rp_foto_btn');
+  const txt = document.getElementById('rp_foto_txt');
+  btn.disabled = true; txt.textContent = 'Preparando la foto…';
+
+  for (const f of files) {
+    if (FOTOS_REP.length >= MAX_FOTOS_REP) {
+      showToast(`Hasta ${MAX_FOTOS_REP} fotos por reporte`, true);
+      break;
+    }
+    if (!/^image\//.test(f.type)) { showToast('Eso no es una foto', true); continue; }
+    try { FOTOS_REP.push(await comprimirFoto(f)); }
+    catch (_) { showToast('Una foto no se pudo preparar', true); }
+  }
+
+  btn.disabled = false;
+  pintarFotos();
+}
+
+function quitarFoto(i) { FOTOS_REP.splice(i, 1); pintarFotos(); }
+
+function pintarFotos() {
+  document.getElementById('rp_thumbs').innerHTML = FOTOS_REP.map((d, i) =>
+    `<div class="rep-thumb"><img src="${d}" alt="Foto ${i + 1}">` +
+    `<button type="button" class="rep-thumb-x" onclick="quitarFoto(${i})" title="Quitar">✕</button></div>`
+  ).join('');
+  document.getElementById('rp_foto_txt').textContent =
+    FOTOS_REP.length === 0            ? 'Tomar o elegir foto'
+    : FOTOS_REP.length >= MAX_FOTOS_REP ? 'Ya son 3 fotos'
+    : 'Agregar otra foto';
+  document.getElementById('rp_foto_btn').disabled = FOTOS_REP.length >= MAX_FOTOS_REP;
+}
+
+function fotosParaEnviar() {
+  return FOTOS_REP.map(d => ({ mime: 'image/jpeg', datos: d.substring(d.indexOf(',') + 1) }));
+}
+
 async function enviarReporte() {
   const equipo   = document.getElementById('rp_equipo').value;
   const operador = document.getElementById('rp_operador').value.trim();
@@ -1294,7 +1382,7 @@ async function enviarReporte() {
   btn.disabled = true; btn.textContent = 'Enviando…';
 
   const payload = { accion:'saveReporte', Equipo:equipo, Operador:operador,
-                    Gravedad:grav, Descripcion:desc };
+                    Gravedad:grav, Descripcion:desc, Fotos: fotosParaEnviar() };
 
   try {
     const res = await fetch(SCRIPT_URL, {
@@ -1305,18 +1393,29 @@ async function enviarReporte() {
     if (d.status !== 'success') throw new Error(d.message || 'Error al enviar');
 
     document.getElementById('repForm').style.display = 'none';
-    document.getElementById('repOkTxt').textContent =
-      grav === 'parada' ? 'Ya le llegó el aviso a la oficina. Por ser máquina parada, va marcado como urgente.'
-                        : 'Ya le llegó el aviso a la oficina.';
+    let msg = grav === 'parada'
+      ? 'Ya le llegó el aviso a la oficina. Por ser máquina parada, va marcado como urgente.'
+      : 'Ya le llegó el aviso a la oficina.';
+    // Que no crea que mandó la foto si el servidor no la pudo guardar.
+    const pedidas = payload.Fotos.length, guardadas = (d.fotos || []).length;
+    if (pedidas && guardadas < pedidas) {
+      msg += guardadas === 0
+        ? ' La foto no se pudo guardar, así que el aviso va solo con tu descripción.'
+        : ` Se guardaron ${guardadas} de ${pedidas} fotos.`;
+    }
+    document.getElementById('repOkTxt').textContent = msg;
     document.getElementById('repOk').style.display = '';
     document.getElementById('rp_desc').value = '';
+    FOTOS_REP = []; pintarFotos();
   } catch (err) {
     // Sin señal: guardarlo para reenviar, igual que las bitácoras
-    guardarReportePendiente(payload);
+    const perdioFotos = guardarReportePendiente(payload);
     document.getElementById('repForm').style.display = 'none';
-    document.getElementById('repOkTxt').textContent =
-      'No hay señal ahora mismo. El reporte quedó guardado y se manda solo cuando vuelva la conexión.';
+    document.getElementById('repOkTxt').textContent = perdioFotos
+      ? 'No hay señal ahora mismo. El reporte quedó guardado y se manda solo cuando vuelva, pero no cupo la foto: mandala después desde el equipo.'
+      : 'No hay señal ahora mismo. El reporte quedó guardado y se manda solo cuando vuelva la conexión.';
     document.getElementById('repOk').style.display = '';
+    FOTOS_REP = []; pintarFotos();
   } finally {
     btn.disabled = false; btn.textContent = 'Enviar reporte';
   }
@@ -1324,12 +1423,26 @@ async function enviarReporte() {
 
 const REPORTES_PEND = 'reportes_pendientes_v1';
 
+// Devuelve true si la foto se quedó en el camino, para poder avisarle
+// al operador. Un reporte sin foto sirve; un reporte perdido, no: si el
+// celular no tiene espacio, se guarda solo el texto.
 function guardarReportePendiente(payload) {
+  let l;
+  try { l = JSON.parse(localStorage.getItem(REPORTES_PEND) || '[]'); } catch(_) { l = []; }
+
   try {
-    const l = JSON.parse(localStorage.getItem(REPORTES_PEND) || '[]');
-    l.push(payload);
-    localStorage.setItem(REPORTES_PEND, JSON.stringify(l));
+    localStorage.setItem(REPORTES_PEND, JSON.stringify(l.concat([payload])));
+    return false;
   } catch(_) {}
+
+  if (payload.Fotos && payload.Fotos.length) {
+    const sinFotos = Object.assign({}, payload, { Fotos: [] });
+    try {
+      localStorage.setItem(REPORTES_PEND, JSON.stringify(l.concat([sinFotos])));
+      return true;
+    } catch(__) {}
+  }
+  return false;
 }
 
 async function reenviarReportesPendientes() {
@@ -1384,6 +1497,17 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(reenviarReporte
       <div class="rep-g">
         <label for="rp_desc">¿Qué está pasando?</label>
         <textarea id="rp_desc" placeholder="Ej: está botando aceite por la manguera del lado derecho, cada vez más."></textarea>
+      </div>
+
+      <div class="rep-g">
+        <label>¿Le podés tomar una foto? <span style="font-weight:500;color:#6b7280">(ayuda mucho, pero no es obligatorio)</span></label>
+        <input type="file" id="rp_file" accept="image/*" capture="environment" multiple
+               style="display:none" onchange="agregarFotos(this)">
+        <button type="button" class="rep-foto-btn" id="rp_foto_btn"
+                onclick="document.getElementById('rp_file').click()">
+          <span class="rep-foto-ico">📷</span><span id="rp_foto_txt">Tomar o elegir foto</span>
+        </button>
+        <div class="rep-thumbs" id="rp_thumbs"></div>
       </div>
 
       <div class="rep-g">
